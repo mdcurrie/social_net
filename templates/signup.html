@@ -1,0 +1,32 @@
+{% extends "form_general.html" %}
+
+{% block title %}
+    Sign Up for Hive
+{% end %}
+
+{% block section %}
+    <h1>Join Hive today.</h1>
+    <form method="post" action="signup" novalidate>
+        {% raw xsrf_form_html() %}
+        <div class="input-row">
+            <p class="error-message">.</p>
+            <input type="text" id="full-name" name="username" autocomplete="off" required="required" placeholder="Username" maxlength="20" autofocus>
+        </div>
+        <div class="input-row">
+            <p class="error-message">.</p>
+            <input type="email" id="email" name="email" autocomplete="off" required="required" placeholder="Email">
+        </div>
+        <div class="input-row">
+            <p class="error-message">.</p>
+            <input type="password" id="password" name="password" required="required" placeholder="Password">
+        </div>
+        <button type="submit">Sign Up</button>
+    </form>
+    <h3 id="top-text">By signing up you agree to our <a href="">Terms of Service</a> and <a href="">Privacy Policy</a>, including <a href="">Cookie Policy</a></h3>
+    <h3 id="bot-text">Already have an account? <a href="/login">Log In</a></h3>
+{% end %}
+
+{% block js_files %}
+    <script src="{{ static_url("js/jquery.min.js") }}"></script>
+    <script src="{{ static_url("js/signup.js") }}"></script>
+{% end %}

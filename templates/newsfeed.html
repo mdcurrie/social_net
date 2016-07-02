@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Hive</title>
+        <link href='https://fonts.googleapis.com/css?family=Karla' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
+        <link rel="stylesheet" href="{{ static_url("css/newsfeed.css") }}">
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+	    <header role="banner">
+	    	<div id="logo"><a href="/">Hive</a></div>
+	    	<div class="header-wrapper">
+	    		<nav role="navigation">
+	    			<input type="text" placeholder="Search" autocomplete="off" id="search">
+	    		</nav>
+	    	</div>
+	    </header>
+	    <div id="profile-info">
+	    	<div id="profile-pic">
+	    		<img src="{{ profile["profile_pic_link"] }}" alt="{{ profile["username"] }}'s avatar">
+	    	</div>
+	    	<div id="profile-text">
+		    	<div id="username">
+		    		<h1>{{ profile["username"] }}</h1>
+		    	</div>
+		    	<div id="profile-bio">
+		    		<h3>{{ profile["bio"] }}</h3>
+		    	</div>
+		    </div>
+		    <div id="profile-metrics">
+		    	{% if controlled == False %}
+		    		<div id="profile-buttons">
+				    	<button type="submit" class="profile-button {% if current_user in profile["followers"]%}active{% end %}" id="follow-button">
+				    		{% if current_user in profile["followers"] %}
+				    			Followed
+				    		{% else %}
+				    			Follow
+				    		{% end %}
+				    	</button>
+				    	<button type="submit" class="profile-button {% if current_user in profile["haters"]%}active{% end %}" id="hate-button">
+				    		{% if current_user in profile["haters"] %}
+				    			Hated
+				    		{% else %}
+				    			Hate
+				    		{% end %}
+				    	</button>
+			    	</div>
+				{% end %}
+		    	<table>
+		    		<tr>
+		    			<td>
+					    	<div id="followers">
+					    		<h2>{{ len(profile["followers"]) }}</h2>
+					    		<h3>Followers</h3>
+					    	</div>
+				    	</td>
+				    	<td>
+					    	<div id="following">
+					    		<h2>{{ len(profile["following"]) }}</h2>
+					    		<h3>Following</h3>
+					    	</div>
+					    </td>
+					    <td>
+					    	<div id="haters">
+					    		<h2>{{ len(profile["haters"]) }}</h2>
+					    		<h3>Haters</h3>
+					    	</div>
+					    </td>
+				    </tr>
+			    </table>
+		    </div>
+	    </div>
+	    <div id="poll-metrics">
+		    <h2 id="questions">{{ profile["questions"] }} Questions</h2>
+		    <h2 id="answers">{{ profile["answers"] }} Answers</h2>
+		</div>
+     	<section>
+        	{% for question in questions %}
+	            <article>
+            		<div class="asker-info">
+            			{% set asker = users.find_one({"username": question["asker"]}) %}
+	                    <a href="/users/{{ str(asker["_id"]) }}">
+	                        <img src="{{ asker["profile_pic_link"] }}">
+	                    </a>
+	                    <table>
+	                        <tr>
+	                            <td>
+	                                <h2>
+	                                    <a href="/users/{{ str(asker["_id"]) }}">{{ asker["username"] }}</a>
+	                                </h2>
+	                            </td>
+	                        </tr>
+	                        <tr>
+	                            <td>
+	                                <h3>{{ question["date"].strftime("%Y-%m-%d") }}</h3>
+	                            </td>
+	                        </tr>
+	                    </table>
+            		</div>
+	                <div class="question-image" style="background-image: url({{ question["image_link"] }})"></div>
+	                <div class="chart">
+	                    <h1 class="question"><a href="/questions/{{ str(question["_id"]) }}">{{ question["question"] }}</a></h1>
+	                    <canvas>
+	                        <div class="chart-labels">{{ question["labels"] }}</div>
+	                        <div class="chart-data">{{ question["data"] }}</div>
+	                    </canvas>
+	                    <h4 class="vote-count">{{ sum(question["data"]) }} Votes</h4>
+	                </div>
+	            </article>
+       		{% end %}
+        </section>
+        {% if controlled %}
+	        <button id="myBtn">+</button>
+			<div id="myModal" class="modal">
+				<div class="modal-content">
+					<h1>Got a question?</h1>
+					<form method="post" action="create_question">
+						{% raw xsrf_form_html() %}
+						<input type="text" id="question-title" name="question-title" autocomplete="off" required="required" placeholder="Enter a question" maxlength="30">
+						<input type="text" id="image-link" name="image-link" autocomplete="off" placeholder="Link to image">
+						<input type="text" id="answer-1" name="answer-1" autocomplete="off" required="required" placeholder="Answer 1" maxlength="20">
+						<input type="text" id="answer-2" name="answer-2" autocomplete="off" required="required" placeholder="Answer 2" maxlength="20">
+						<input type="text" id="answer-3" name="answer-3" autocomplete="off" placeholder="Answer 3" maxlength="20">
+						<input type="text" id="answer-4" name="answer-4" autocomplete="off" placeholder="Answer 4" maxlength="20">
+						<input type="text" id="answer-5" name="answer-5" autocomplete="off" placeholder="Answer 5" maxlength="20">
+						<input type="submit" value="Ask!">
+					</form>
+				</div>
+			</div>
+		{% end %}
+        <footer role="contentinfo">
+        	<ul>
+                <li><a class="footer-links" href="">Blog</a></li>
+                <li><a class="footer-links" href="">Email Us</a></li>
+                <li><a class="footer-links" href="">Jobs</a></li>
+                <li><a class="footer-links" href="">Terms</a></li>
+                <li><a class="footer-links" href="">Privacy</a></li>
+                <li><a class="footer-links" href="">Cookie</a></li>
+                <li><a class="footer-links" href="">Copyright</a></li>
+                <li>&copy; 2016<br>Hive, Inc.</li>
+        	</ul>
+        </footer>
+        {% if controlled %}
+	        <form method="post" action="logout">
+	            {% raw xsrf_form_html() %}
+	            <input type="submit" value="Log Out">
+	        </form>
+	    {% end %}
+        <script src="{{ static_url("js/jquery.min.js") }}"></script>
+        <script src="{{ static_url("js/Chart.js") }}"></script>
+        <script src="{{ static_url("js/newsfeed.js") }}"></script>
+    </body>
+</html>

@@ -1,0 +1,17 @@
+{% extends "form_general.html" %}
+
+{% block title %}
+    Log In to Hive
+{% end %}
+
+{% block section %}
+    <h1>Log in to Hive.</h1>
+    <form method="post" action="login">
+        {% raw xsrf_form_html() %}
+        <input type="email" id="email" name="email" autocomplete="off" required="required" placeholder="Email" autofocus>
+        <input type="password" id="password" name="password" required="required" placeholder="Password">
+        <button type="submit">Log In</button>
+    </form>
+    <h3 id="top-text"><a href="">Forgot your password?</a></h3>
+    <h3 id="bot-text">Don't have an account? <a href="/signup">Sign Up</a></h3>
+{% end %}

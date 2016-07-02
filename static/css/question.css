@@ -1,0 +1,121 @@
+/*=================== GENERAL STYLING START ==================*/
+
+html {
+	font-family: Karla, sans-serif;
+}
+a {
+	text-decoration: none;
+	color: #333;
+}
+body {
+	background-color: #f1f1f1;
+}
+
+/*=================== GENERAL STYLING END ====================*/
+
+/*=================== HEADER STYLING START ===================*/
+
+header {
+	position: fixed;
+	width: 100%;
+	background-color: #eee04b;
+	height: 46px;
+	font-size: 2em;
+	text-align: center;
+}
+header h1 {
+	padding-top: 7px;
+}
+
+/*=================== HEADER STYLING END =====================*/
+
+section {
+	line-height: 1.2;
+	padding-top: 90px;
+}
+article {
+	width: 40%;
+	max-width: 800px;
+	margin: 0 auto;
+	margin-bottom: 46px;
+	border-radius: 10px;
+	overflow: auto;
+}
+section h1 {
+	font-size: 200%;
+}
+section h2 {
+	font-size: 150%;
+	display: inline;
+}
+section h3 {
+	font-size: 125%;
+	display: inline;
+}
+.question {
+	font-size: 200%;
+	margin-bottom: 5px;
+}
+.asker-info {
+	background-color: white;
+	padding: 10px;
+	overflow: auto;
+}
+.asker-info img {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	float: left;
+	margin-right: 15px;
+}
+.asker-info h3 {
+	color: #8d8d8d;
+	font-size: 100%
+}
+.question-image {
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position-y: 40%;
+}
+.chart {
+	padding: 20px;
+	background-color: white;
+}
+.poll-count {
+	margin-top: 10px;
+	color: #8d8d8d;
+	text-align: right
+}
+
+/*=================== SECTION STYLING END ====================*/
+
+/*=================== FOOTER STYLING START ===================*/
+
+footer {
+	position: fixed;
+	right: 50px;
+	bottom: 50px;
+	width: auto;
+	height: auto;
+	text-align: right;
+}
+footer ul {
+	width: 100px;
+	list-style-type: none;
+	letter-spacing: 0.02em;
+}
+ul li {
+	line-height: 1.2;
+}
+.footer-links {
+	color: #8d8d8d;
+	font-size: 90%;
+}
+ul li:last-of-type {
+	margin-top: 15px;
+	color: #8d8d8d;
+	opacity: 0.65;
+	font-size: 90%;
+}
+
+/*=================== FOOTER STYLING END =====================*/
