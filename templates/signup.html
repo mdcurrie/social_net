@@ -9,15 +9,15 @@
     <form method="post" action="signup" novalidate>
         {% raw xsrf_form_html() %}
         <div class="input-row">
-            <p class="error-message">.</p>
+            <p class="error-message">{{ username_error }}</p>
             <input type="text" id="full-name" name="username" autocomplete="off" required="required" placeholder="Username" maxlength="20" autofocus>
         </div>
         <div class="input-row">
-            <p class="error-message">.</p>
+            <p class="error-message">{{email_error }}</p>
             <input type="email" id="email" name="email" autocomplete="off" required="required" placeholder="Email">
         </div>
         <div class="input-row">
-            <p class="error-message">.</p>
+            <p class="error-message">{{ password_error }}</p>
             <input type="password" id="password" name="password" required="required" placeholder="Password">
         </div>
         <button type="submit">Sign Up</button>

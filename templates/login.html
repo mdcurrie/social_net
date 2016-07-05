@@ -6,10 +6,16 @@
 
 {% block section %}
     <h1>Log in to Hive.</h1>
-    <form method="post" action="login">
+    <form method="post" action="login" novalidate>
         {% raw xsrf_form_html() %}
-        <input type="email" id="email" name="email" autocomplete="off" required="required" placeholder="Email" autofocus>
-        <input type="password" id="password" name="password" required="required" placeholder="Password">
+        <div class="input-row">
+            <p class="error-message">{{ email_error }}</p>
+            <input type="email" id="email" name="email" autocomplete="off" required="required" placeholder="Email" autofocus>
+        </div>
+        <div class="input-row">
+            <p class="error-message">{{ password_error }}</p>
+            <input type="password" id="password" name="password" required="required" placeholder="Password">
+        </div>
         <button type="submit">Log In</button>
     </form>
     <h3 id="top-text"><a href="">Forgot your password?</a></h3>

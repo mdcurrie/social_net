@@ -15,100 +15,102 @@
         <![endif]-->
     </head>
     <body>
-        <ul class="navigation small-nav-items">
-            <li class="nav-item"><a href="/login">Log In</a></li>
-            <li class="nav-item"><a href="/signup">Sign Up</a></li>
-            <li class="nav-item active"><a href="#">Featured</a></li>
-            <li class="nav-item"><a href="#">Sports</a></li>
-            <li class="nav-item"><a href="#">Entertainment</a></li>
-            <li class="nav-item"><a href="#">Music</a></li>
-            <li class="nav-item"><a href="#">Technology</a></li>
-            <li class="nav-item"><a href="#">Search</a></li>
-        </ul>
-        <input type="checkbox" id="nav-trigger" class="nav-trigger small-nav-items" />
-        <label for="nav-trigger" class="small-nav-items"></label>
-        <div class="site-wrap">
-            <header role="banner">
-                <div id="small-display-nav">
+        <header role="banner">
+            <div id="small-display-nav">
+                <div id="small-logo">
                     <h1><a href="/">Hive</a></h1>
                 </div>
-                <div id="large-display-nav">
-                    <div class="wrapper-top-nav">
-                        <nav role="navigation">
-                            <a href="/" id="logo">Hive</a>
-                            <div id="top-buttons">
-                                <a href="/signup"><button>Sign Up</button></a>
-                                <a href="/login"><button>Log In</button></a>
-                            </div>
-                        </nav>
-                    </div>
-                    <div class="wrapper-bot-nav">
-                        <nav role="navigation">
-                            <a href="" class="nav-button">Search</a>
-                            <a href="" class="nav-button active">Featured</a>
-                            <a href="" class="nav-button">Sports</a>
-                            <a href="" class="nav-button">Entertainment</a>
-                            <a href="" class="nav-button">Music</a>
-                            <a href="" class="nav-button">Technology</a>
-                            <a href="" class="nav-button">More</a>
-                        </nav>
-                    </div>
+                <div id="hamburger-menu">
+                    <input type="checkbox" id="nav-trigger"/>
+                    <label for="nav-trigger"></label>
+                    <ul id="small-navigation">
+                        <li class="nav-item"><a href="/login">Log In</a></li>
+                        <li class="nav-item"><a href="/signup">Sign Up</a></li>
+                        <li class="nav-item active"><a href="#">Featured</a></li>
+                        <li class="nav-item"><a href="#">Sports</a></li>
+                        <li class="nav-item"><a href="#">Entertainment</a></li>
+                        <li class="nav-item"><a href="#">Music</a></li>
+                        <li class="nav-item"><a href="#">Technology</a></li>
+                        <li class="nav-item"><a href="#">Search</a></li>
+                    </ul>
                 </div>
-            </header>
-            <section>
-                {% for question in questions %}
-                    <article>
-                        <div class="question-image" style="background-image: url({{ question["image_link"] }})"></div>
-                        <div class="chart">
-                            <h1 class="question-title"><a href="/questions/{{ str(question["_id"]) }}">{{ question["question"] }}</a></h1>
-                            <canvas>
-                                <div class="chart-labels">{{ question["labels"] }}</div>
-                                <div class="chart-data">{{ question["data"] }}</div>
-                            </canvas>
-                            <h4 class="vote-count">{{ sum(question["data"]) }} Votes</h4>
+            </div>
+            <div id="large-display-nav">
+                <div class="wrapper-top-nav">
+                    <nav role="navigation">
+                        <a href="/" id="logo">Hive</a>
+                        <div id="top-buttons">
+                            <a href="/signup"><button>Sign Up</button></a>
+                            <a href="/login"><button>Log In</button></a>
                         </div>
-                    </article>
-                {% end %}
-            </section>
-            <footer role="contentinfo">
-                <div class="width-wrapper">
-                    <div class="column-wrapper">
-                        <h3 class="column-headings">Social Media</h3>
-                        <ul class="column-items">
-                            <li><a class="footer-links" href="">Facebook</a></li>
-                            <li><a class="footer-links" href="">Twitter</a></li>
-                            <li><a class="footer-links" href="">YouTube</a></li>
-                            <li><a class="footer-links" href="">Blog</a></li>
-                        </ul>
-                    </div>
-                    <div class="column-wrapper">
-                        <h3 class="column-headings">Contact</h3>
-                        <ul class="column-items">
-                            <li><a class="footer-links" href="">Email Us</a></li>
-                            <li><a class="footer-links" href="">Press Kit</a></li>
-                            <li><a class="footer-links" href="">Jobs</a></li>
-                            <li><a class="footer-links" href="">Advertisers</a></li>
-                        </ul>
-                    </div>
-                    <div class="column-wrapper">
-                        <h3 class="column-headings">Legal</h3>
-                        <ul class="column-items">
-                            <li><a class="footer-links" href="">Terms of Service</a></li>
-                            <li><a class="footer-links" href="">Privacy Policy</a></li>
-                            <li><a class="footer-links" href="">Cookie Policy</a></li>
-                            <li><a class="footer-links" href="">Copyright</a></li>
-                        </ul>
-                    </div>
-                    <div class="column-wrapper company-info">
-                        <p>&copy; 2016</p>
-                        <p>Hive Inc.</p>
-                        <p>Bee A Part</p>
-                    </div>
+                    </nav>
                 </div>
-            </footer>
-        </div>
+                <div class="wrapper-bot-nav">
+                    <nav role="navigation">
+                        <a href="" class="nav-button">Search</a>
+                        <a href="" class="nav-button active">Featured</a>
+                        <a href="" class="nav-button">Sports</a>
+                        <a href="" class="nav-button">Entertainment</a>
+                        <a href="" class="nav-button">Music</a>
+                        <a href="" class="nav-button">Technology</a>
+                        <a href="" class="nav-button">More</a>
+                    </nav>
+                </div>
+            </div>
+        </header>
+        <section>
+            {% for question in questions %}
+                <article>
+                    <div class="question-image" style="background-image: url({{ question["image_link"] }})"></div>
+                    <div class="chart">
+                        <h1 class="question-title"><a href="/questions/{{ str(question["_id"]) }}">{{ question["question"] }}</a></h1>
+                        <canvas>
+                            <div class="chart-labels">{{ question["labels"] }}</div>
+                            <div class="chart-data">{{ question["data"] }}</div>
+                        </canvas>
+                        <h4 class="vote-count">{{ sum(question["data"]) }} Votes</h4>
+                    </div>
+                </article>
+            {% end %}
+        </section>
+        <footer role="contentinfo">
+            <div class="width-wrapper">
+                <div class="column-wrapper">
+                    <h3 class="column-headings">Social Media</h3>
+                    <ul class="column-items">
+                        <li><a class="footer-links" href="">Facebook</a></li>
+                        <li><a class="footer-links" href="">Twitter</a></li>
+                        <li><a class="footer-links" href="">YouTube</a></li>
+                        <li><a class="footer-links" href="">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="column-wrapper">
+                    <h3 class="column-headings">Contact</h3>
+                    <ul class="column-items">
+                        <li><a class="footer-links" href="">Email Us</a></li>
+                        <li><a class="footer-links" href="">Press Kit</a></li>
+                        <li><a class="footer-links" href="">Jobs</a></li>
+                        <li><a class="footer-links" href="">Advertisers</a></li>
+                    </ul>
+                </div>
+                <div class="column-wrapper">
+                    <h3 class="column-headings">Legal</h3>
+                    <ul class="column-items">
+                        <li><a class="footer-links" href="">Terms of Service</a></li>
+                        <li><a class="footer-links" href="">Privacy Policy</a></li>
+                        <li><a class="footer-links" href="">Cookie Policy</a></li>
+                        <li><a class="footer-links" href="">Copyright</a></li>
+                    </ul>
+                </div>
+                <div class="column-wrapper company-info">
+                    <p>&copy; 2016</p>
+                    <p>Hive Inc.</p>
+                    <p>Bee A Part</p>
+                </div>
+            </div>
+        </footer>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
         <script src="{{ static_url("js/Chart.js") }}"></script>
-        <script src="{{ static_url("js/index.js") }}"></script>
+        <script src="{{ static_url("js/chartmaker.js") }}"></script>
     </body>
 </html>

@@ -32,21 +32,21 @@ header h1 {
 section {
 	width: 90%;
 	margin: 0 auto;
-	margin-top: 40px;
+	margin-top: 25px;
 }
 section h1 {
-	font-size: 2.5em;
-	margin-bottom: 30px;
+	font-size: 2em;
+	margin-bottom: 20px;
 }
 input, button {
-	font-size: 1.15em;
+	font-size: 1em;
 	display: block;
 	width: 100%;
 	font-family: Karla;
 	outline: none;
 }
 .input-row {
-	margin-bottom: 30px;
+	margin-bottom: 20px;
 }
 input {
 	border: 1px solid #c2c7d0;
@@ -59,14 +59,15 @@ input:focus {
 }
 .error-message {
 	margin-bottom: 10px;
+	font-size: 0.8em;
+	height: 0.8em;
 	color: red;
 	display: block;
-	opacity: 0;
 }
 button {
 	background-color: #eee04b;
 	border: 0px;
-	margin-top: 50px;
+	margin-top: 45px;
 	margin-bottom: 30px;
 	padding: 10px 0;
 	cursor: pointer;
@@ -80,10 +81,11 @@ h3 {
 }
 #top-text {
 	border-bottom: 1px solid #c2c7d0;
+	font-size: 0.8em;
 }
 #bot-text {
-	margin-top: 30px;
-	padding-bottom: 0px;
+	margin: 30px 0;
+	font-size: 0.8em;
 }
 
 @media only screen and (min-width: 768px) {
@@ -95,7 +97,14 @@ h3 {
 		padding: 0px;
 	}
 	section h1 {
+		font-size: 2.5em;
 		margin-bottom: 40px;
+	}
+	#top-text, #bot-text, .error-message {
+		font-size: 0.9em;
+	}
+	#error-message {
+		height: 0.9em;
 	}
 }
 

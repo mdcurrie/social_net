@@ -6,6 +6,8 @@ import datetime
 import pymongo
 import logging
 import os.path
+import bcrypt
+import re
 from bson.objectid import ObjectId
 
 from tornado.options import define, options
@@ -21,6 +23,8 @@ class Application(tornado.web.Application):
 					(r"/users/(\w+)", ProfileHandler),
 					(r"/follow/(\w+)", FollowHandler),
 					(r"/hate/(\w+)", HateHandler),
+					(r"/username_lookup", UsernameHandler),
+					(r"/email_lookup", EmailHandler),
 					(r"/questions/(\w+)", QuestionHandler),
 					(r"/create_question", CreateQuestionHandler),
 		]
@@ -32,7 +36,7 @@ class Application(tornado.web.Application):
 			login_url="/",
 			debug=True,
 		)
-		client = pymongo.MongoClient("mongodb://mcurrie:practice@ds021884.mlab.com:21884/hive")
+		client = pymongo.MongoClient()
 		client.drop_database("hive")
 		self.db = client.hive
 		questions = self.db.questions
@@ -58,7 +62,7 @@ class Application(tornado.web.Application):
 
 		users = self.db.users
 		users.insert_one({"username":         "BasedGod", 
-						  "email":            "based@god",
+						  "email":            "based@god.com",
 						  "password":         "password",
 						  "profile_pic_link": "http://i.imgur.com/MQam61S.jpg",
 						  "questions":        2,
@@ -91,41 +95,67 @@ class SignupHandler(BaseHandler):
 		if self.current_user:
 			self.redirect("/feed")
 		else:
-			self.render("signup.html")
+			self.render("signup.html", username_error='', email_error='', password_error='')
 
 	def post(self):
+		username = self.get_argument("username")
 		users = self.application.db.users
+		if len(username) < 6:
+			self.render("signup.html", username_error='Your username must be at least 6 characters long.', email_error='', password_error='')
+			return
+		if re.compile("^[a-zA-Z0-9_]+$").match(username) == None:
+			self.render("signup.html", username_error='Letters, numbers, and underscores only.', email_error='', password_error='')
+			return
+		if users.find_one({"username": username}) != None:
+			self.render("signup.html", username_error='That username is already taken.', email_error='', password_error='')
+			return
+
 		email = self.get_argument("email")
+		if re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(email) == None:
+			self.render("signup.html", username_error='', email_error='Please enter a valid email address.', password_error='')
+			return
 		if users.find_one({"email": email}) != None:
-			self.redirect("/signup")
-		else:
-			username = self.get_argument("username")
-			email    = self.get_argument("email")
-			password = self.get_argument("password")
-			users.insert_one({"username": username, "email": email, "password": password, "profile_pic_link": "http://i.imgur.com/pq88IQx.png",
-							  "questions": 0, "answers": 0, "following": [], "followers": [], "haters": [], "hating": [], "bio": "I'm new here!"})
-			self.set_secure_cookie("username", username)
-			self.redirect("/feed")
+			self.render("signup.html", username_error='', email_error='That email is already taken.', password_error='')
+			return
+
+		password = self.get_argument("password")
+		if len(password) < 6:
+			self.render("signup.html", username_error='', email_error='', password_error='Your password must be at least 6 characters long.')
+			return
+
+		users.insert_one({"username": username, "email": email, "password": password, "profile_pic_link": "http://i.imgur.com/pq88IQx.png",
+						  "questions": 0, "answers": 0, "following": [], "followers": [], "haters": [], "hating": [], "bio": "I'm new here!"})
+		self.set_secure_cookie("username", username)
+		self.redirect("/feed")
 
 class LoginHandler(BaseHandler):
 	def get(self):
 		if self.current_user:
 			self.redirect("/feed")
 		else:
-			self.render("login.html")
+			self.render("login.html", email_error='', password_error='')
 
 	def post(self):
 		email = self.get_argument("email")
+		if re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(email) == None:
+			self.render("login.html", email_error='Please enter a valid email address.', password_error='')
+			return
+
+		password = self.get_argument("password")
+		if len(password) < 6:
+			self.render("login.html", email_error='', password_error='The password you entered is incorrect.')
+			return
+
 		user = self.application.db.users.find_one({"email": email})
 		if user == None:
-			self.redirect("/login")
+			self.render("login.html", email_error='The email you entered does not match any account.', password_error='')
+			return
+
+		if password == user["password"]:
+			self.set_secure_cookie("username", user["username"])
+			self.redirect("/feed")
 		else:
-			password = self.get_argument("password")
-			if password == user["password"]:
-				self.set_secure_cookie("username", user["username"])
-				self.redirect("/feed")
-			else:
-				self.redirect("/login")
+			self.render("login.html", email_error='', password_error='The password you entered is incorrect.')
 
 class LogoutHandler(BaseHandler):
 	def post(self):
@@ -154,7 +184,23 @@ class HateHandler(BaseHandler):
 		else:
 			self.application.db.users.update_one({"_id": ObjectId(user_id)}, {"$pop": {"haters": self.current_user}})
 			self.application.db.users.update_one({"username": self.current_user}, {"$pop": {"hating": self.application.db.users.find_one({"_id": ObjectId(user_id)})["username"]}})
-			self.write({"haters": len(self.application.db.users.find_one({"_id": ObjectId(user_id)})["haters"]), "display_text": "Hate" })			
+			self.write({"haters": len(self.application.db.users.find_one({"_id": ObjectId(user_id)})["haters"]), "display_text": "Hate" })
+
+class UsernameHandler(BaseHandler):
+	def get(self):
+		username = self.get_argument("username")
+		if self.application.db.users.find_one({"username": username}) == None:
+			self.write({"username_taken": False})
+		else:
+			self.write({"username_taken": True})
+
+class EmailHandler(BaseHandler):
+	def get(self):
+		email = self.get_argument("email")
+		if self.application.db.users.find_one({"email": email}) == None:
+			self.write({"email_taken": False})
+		else:
+			self.write({"email_taken": True})
 
 class QuestionHandler(BaseHandler):
 	def get(self, question_id):
@@ -210,5 +256,5 @@ class FeedHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()

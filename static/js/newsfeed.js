@@ -99,15 +99,14 @@ $(function() {
 	});
 
 	// Get the modal
-/*	var modal = document.getElementById('myModal');
+	var modal = $('#myModal');
 
 	// Get the button that opens the modal
-	var btn = document.getElementById("myBtn");
+	var btn = $('#myBtn');
 
 	// Get the <span> element that closes the modal
-	var span = document.getElementsByClassName("close")[0];
-	var span = $('#myModal');
-
+	var span = $('.close').eq(0);
+	
 	// When the user clicks on the button, open the modal 
 	btn.onclick = function() {
 	    modal.style.display = "block";
@@ -123,7 +122,7 @@ $(function() {
 	    if (event.target == modal) {
 	        modal.style.display = "none";
 	    }
-	}*/
+	}
 
 	$('#answer-2').on('change paste keyup', function() {
 		if ($('#answer-2').val()) {
