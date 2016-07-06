@@ -24,17 +24,19 @@
 	    	</div>
 	    </header>
 	    <div id="profile-info">
-	    	<div id="profile-pic">
-	    		<img src="{{ profile["profile_pic_link"] }}" alt="{{ profile["username"] }}'s avatar">
-	    	</div>
-	    	<div id="profile-text">
-		    	<div id="username">
-		    		<h1>{{ profile["username"] }}</h1>
+	    	<div id="profile-pic-and-text">
+		    	<div id="profile-pic">
+		    		<img src="{{ profile["profile_pic_link"] }}" alt="{{ profile["username"] }}'s avatar">
 		    	</div>
-		    	<div id="profile-bio">
-		    		<h3>{{ profile["bio"] }}</h3>
-		    	</div>
-		    </div>
+		    	<div id="profile-text">
+			    	<div id="username">
+			    		<h1>{{ profile["username"] }}</h1>
+			    	</div>
+			    	<div id="profile-bio">
+			    		<h3>{{ profile["bio"] }}</h3>
+			    	</div>
+			    </div>
+			</div>
 		    <div id="profile-metrics">
 		    	{% if controlled == False %}
 		    		<div id="profile-buttons">
@@ -112,7 +114,7 @@
 	                        <div class="chart-labels">{{ question["labels"] }}</div>
 	                        <div class="chart-data">{{ question["data"] }}</div>
 	                    </canvas>
-	                    <h4 class="vote-count">{{ sum(question["data"]) }} Votes</h4>
+	                    <h4 class="poll-count">{{ sum(question["data"]) }} Votes</h4>
 	                </div>
 	            </article>
        		{% end %}

@@ -41,7 +41,7 @@
                 </div>
                 <div class="question-image" style="background-image: url({{ question["image_link"] }})"></div>
                 <div class="chart">
-                    <h1 class="question"><a href="/questions/{{ str(question["_id"]) }}">{{ question["question"] }}</a></h1>
+                    <h1 class="question">{{ question["question"] }}</h1>
                     <canvas>
                         <div class="chart-labels">{{ question["labels"] }}</div>
                         <div class="chart-data">{{ question["data"] }}</div>
@@ -64,6 +64,6 @@
         </footer>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
         <script src="{{ static_url("js/Chart.js") }}"></script>
-        <script src="{{ static_url("js/question.js") }}"></script>
+        <script src="{{ static_url("js/chartmaker.js") }}"></script>
     </body>
 </html>

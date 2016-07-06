@@ -99,34 +99,27 @@ class SignupHandler(BaseHandler):
 
 	def post(self):
 		username = self.get_argument("username")
-		users = self.application.db.users
+		email    = self.get_argument("email")
+		password = self.get_argument("password")
+		users    = self.application.db.users
+
 		if len(username) < 6:
 			self.render("signup.html", username_error='Your username must be at least 6 characters long.', email_error='', password_error='')
-			return
-		if re.compile("^[a-zA-Z0-9_]+$").match(username) == None:
+		elif re.compile("^[a-zA-Z0-9_]+$").match(username) == None:
 			self.render("signup.html", username_error='Letters, numbers, and underscores only.', email_error='', password_error='')
-			return
-		if users.find_one({"username": username}) != None:
+		elif users.find_one({"username": username}) != None:
 			self.render("signup.html", username_error='That username is already taken.', email_error='', password_error='')
-			return
-
-		email = self.get_argument("email")
-		if re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(email) == None:
+		elif re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(email) == None:
 			self.render("signup.html", username_error='', email_error='Please enter a valid email address.', password_error='')
-			return
-		if users.find_one({"email": email}) != None:
+		elif users.find_one({"email": email}) != None:
 			self.render("signup.html", username_error='', email_error='That email is already taken.', password_error='')
-			return
-
-		password = self.get_argument("password")
-		if len(password) < 6:
+		elif len(password) < 6:
 			self.render("signup.html", username_error='', email_error='', password_error='Your password must be at least 6 characters long.')
-			return
-
-		users.insert_one({"username": username, "email": email, "password": password, "profile_pic_link": "http://i.imgur.com/pq88IQx.png",
-						  "questions": 0, "answers": 0, "following": [], "followers": [], "haters": [], "hating": [], "bio": "I'm new here!"})
-		self.set_secure_cookie("username", username)
-		self.redirect("/feed")
+		else:
+			users.insert_one({"username": username, "email": email, "password": password, "profile_pic_link": "http://i.imgur.com/pq88IQx.png",
+							  "questions": 0, "answers": 0, "following": [], "followers": [], "haters": [], "hating": [], "bio": "I'm new here!"})
+			self.set_secure_cookie("username", username)
+			self.redirect("/feed")
 
 class LoginHandler(BaseHandler):
 	def get(self):
@@ -136,26 +129,22 @@ class LoginHandler(BaseHandler):
 			self.render("login.html", email_error='', password_error='')
 
 	def post(self):
-		email = self.get_argument("email")
+		email    = self.get_argument("email")
+		password = self.get_argument("password")
+
 		if re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(email) == None:
 			self.render("login.html", email_error='Please enter a valid email address.', password_error='')
-			return
-
-		password = self.get_argument("password")
-		if len(password) < 6:
+		elif len(password) < 6:
 			self.render("login.html", email_error='', password_error='The password you entered is incorrect.')
-			return
-
-		user = self.application.db.users.find_one({"email": email})
-		if user == None:
-			self.render("login.html", email_error='The email you entered does not match any account.', password_error='')
-			return
-
-		if password == user["password"]:
-			self.set_secure_cookie("username", user["username"])
-			self.redirect("/feed")
 		else:
-			self.render("login.html", email_error='', password_error='The password you entered is incorrect.')
+			user = self.application.db.users.find_one({"email": email})
+			if user == None:
+				self.render("login.html", email_error='The email you entered does not match any account.', password_error='')
+			elif password != user["password"]:
+				self.render("login.html", email_error='', password_error='The password you entered is incorrect.')
+			else:
+				self.set_secure_cookie("username", user["username"])
+				self.redirect("/feed")
 
 class LogoutHandler(BaseHandler):
 	def post(self):
