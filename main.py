@@ -36,7 +36,7 @@ class Application(tornado.web.Application):
 			login_url="/",
 			debug=True,
 		)
-		client = pymongo.MongoClient()
+		client = pymongo.MongoClient("mongodb://mcurrie:practice@ds021884.mlab.com:21884/hive")
 		client.drop_database("hive")
 		self.db = client.hive
 		questions = self.db.questions
