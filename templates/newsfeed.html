@@ -40,15 +40,15 @@
 		    <div id="profile-metrics">
 		    	{% if controlled == False %}
 		    		<div id="profile-buttons">
-				    	<button type="submit" class="profile-button {% if current_user in profile["followers"]%}active{% end %}" id="follow-button">
-				    		{% if current_user in profile["followers"] %}
+				    	<button type="submit" class="profile-button {% if current_user and current_user["email"] in profile["followers"]%}active{% end %}" id="follow-button">
+				    		{% if current_user and current_user["email"] in profile["followers"] %}
 				    			Followed
 				    		{% else %}
 				    			Follow
 				    		{% end %}
 				    	</button>
-				    	<button type="submit" class="profile-button {% if current_user in profile["haters"]%}active{% end %}" id="hate-button">
-				    		{% if current_user in profile["haters"] %}
+				    	<button type="submit" class="profile-button {% if current_user and current_user["email"] in profile["haters"]%}active{% end %}" id="hate-button">
+				    		{% if current_user and current_user["email"] in profile["haters"] %}
 				    			Hated
 				    		{% else %}
 				    			Hate
@@ -88,7 +88,7 @@
         	{% for question in questions %}
 	            <article>
             		<div class="asker-info">
-            			{% set asker = users.find_one({"username": question["asker"]}) %}
+            			{% set asker = users.find_one({"email": question["asker"]}) %}
 	                    <a href="/users/{{ str(asker["_id"]) }}">
 	                        <img src="{{ asker["profile_pic_link"] }}">
 	                    </a>

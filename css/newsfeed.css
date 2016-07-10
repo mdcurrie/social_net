@@ -1,0 +1,475 @@
+/*=================== GENERAL STYLING START ==================*/
+
+html {
+	font-family: Karla, sans-serif;
+}
+a {
+	text-decoration: none;
+}
+* {
+	color: #333;
+}
+body {
+	background-color: #f1f1f1;
+}
+
+/*=================== GENERAL STYLING END ====================*/
+
+/*=================== HEADER STYLING START ===================*/
+
+header {
+	position: fixed;
+	width: 100%;
+}
+.header-wrapper {
+	height: 46px;
+	background-color: #333;
+	transition: background-color 0.3s;
+}
+nav {
+	width: 90%;
+	max-width: 1300px;
+	margin: 0 auto;
+	overflow: auto;
+}
+#logo {
+	font-size: 200%;
+	top: 7px;
+	position: fixed;
+	left: 50%;
+	transform: translateX(-50%);
+	transition: color 0.3s;
+}
+#logo > a {
+	color: white;
+}
+#search {
+	display: none;
+}
+
+@media only screen and (min-width: 768px) {
+	#search {
+		display: block;
+		font-size: 125%;
+		padding: 4px 0px 4px 15px;
+		width: 170px;
+		font-family: Karla;
+		border-radius: 14px;
+		margin-top: 7px;
+		float: right;
+		border: none;
+		background-color: #f1f1f1;
+		outline: none;
+	}
+}
+
+/*=================== HEADER STYLING END =====================*/
+
+#profile-info {
+	color: #333;
+	letter-spacing: 0.08em;
+	background-color: #eee04b;
+	padding: 30px 15px;
+	padding-top: 70px;
+	padding-bottom: 10px;
+	box-sizing: border-box;
+}
+#profile-pic-and-text {
+	width: 100%;
+	margin-bottom: 10px;
+	overflow: auto;
+}
+#profile-pic {
+	display: block;
+	padding: 3px;
+	float: left;
+	margin-right: 15px;
+}
+#profile-pic > img {
+	height: 80px;
+	width: 80px;
+	box-shadow: 0 0 0 2px white;
+	border-radius: 50%;
+}
+#profile-text {
+	float: left;
+	width: calc(100% - 101px);
+	display: block;
+}
+#username {
+	font-weight: bold;
+	margin-bottom: 10px;
+	font-size: 150%;
+}
+#profile-bio {
+	line-height: 1.2em;
+	font-size: 100%;
+}
+#profile-buttons {
+	text-align: center;
+}
+.profile-button {
+	font-family: Karla;
+	background-color: transparent;
+	color: white;
+	border: 3px solid white;
+	font-size: 125%;
+	width: 40%;
+	max-width: 200px;
+	min-width: 120px;
+	padding: 5px 0;
+	border-radius: 26px;
+	outline: none;
+}
+.active {
+	color: #eee04b;
+	background-color: white;
+}
+.profile-button:hover {
+	background-color: white;
+	color: #eee04b;
+	cursor: pointer;
+}
+#follow-button {
+	margin-right: 10px;
+}
+#hate-button {
+	margin-left: 10px;
+}
+#profile-info table {
+	border-collapse: separate;
+	border-spacing: 30px 0;
+	margin: 0 auto;
+	margin-top: 10px;
+	text-align: center;
+	color: white;
+	letter-spacing: 0em;
+}
+#profile-info table h2 {
+	font-weight: bold;
+	color: white;
+	font-size: 1em;
+}
+#profile-info table h3 {
+	color: white;
+	font-size: 1em;
+}
+td {
+	width: 33%;
+}
+#questions {
+	width: calc(50% - 1px);
+	float: left;
+	text-align: right;
+	padding: 10px 0;
+	padding-right: 20px;
+	box-sizing: border-box;
+	background-color: white;
+	color: #eee04b;
+}
+#answers {
+	width: calc(50% - 1px);
+	float: right;
+	text-align: left;
+	box-sizing: border-box;
+	padding: 10px 0;
+	padding-left: 20px;
+	background-color: white;
+	color: #eee04b;
+}
+
+@media only screen and (min-width: 768px) {
+	#profile-info {
+		padding: 40px;
+		padding-top: 100px;
+		box-sizing: border-box;
+		overflow: auto;
+	}
+	#profile-pic-and-text {
+		width: 60%;
+		float: left;
+		margin-bottom: 0;
+	}
+	#profile-pic {
+		height: 100px;
+		width: 100px;
+		margin-right: 30px;
+		float: left;
+	}
+	#profile-metrics {
+		display: block;
+		width: 40%;
+		float: left;
+	}
+	#profile-pic > img {
+		height: 100%;
+		width: 100%;
+		box-shadow: 0 0 0 2px white;
+		border-radius: 50%;
+	}
+	#profile-text {
+		float: left;
+		width: calc(100% - 180px);
+	}
+	#username {
+		margin-bottom: 20px;
+		font-size: 2em;
+	}
+	#profile-bio {
+		font-size: 1em;
+	}
+	.profile-button {
+		width: 40%;
+		min-width: 100px;
+		max-width: 150px;
+		margin: 0;
+	}
+	#profile-info table {
+		border-collapse: separate;
+		border-spacing: 10px 0;
+		margin-top: 30px;
+		text-align: center;
+	}
+	#profile-info table h2 {
+		font-size: 1.25em;
+	}
+	#profile-info table h3 {
+		font-size: 1em;
+	}
+	#questions {
+		font-size: 1.25em;
+	}
+	#answers {
+		font-size: 1.25em;
+	}
+}
+
+@media only screen and (min-width: 900px) {
+	#profile-info {
+		padding: 60px;
+		padding-top: 100px;
+	}
+	#profile-pic {
+		height: 120px;
+		width: 120px;
+		margin-right: 40px;
+	}
+	.profile-button {
+		width: 40%;
+		min-width: 100px;
+		max-width: 150px;
+		margin: 0;
+	}
+	#profile-info table {
+		border-collapse: separate;
+		border-spacing: 15px 0;
+		margin-top: 30px;
+		text-align: center;
+	}
+	#profile-info table h2 {
+		font-size: 1.5em;
+	}
+	#profile-info table h3 {
+		font-size: 1.25em;
+	}
+	#questions {
+		font-size: 1.25em;
+	}
+	#answers {
+		font-size: 1.25em;
+	}
+}
+
+@media only screen and (min-width: 900px) {
+		#profile-info table {
+		border-spacing: 30px 0;
+	}
+}
+
+/*=================== SECTION STYLING START ==================*/
+
+section {
+	padding-top: 70px;
+}
+article {
+	width: 100%;
+	margin-bottom: 30px;
+	overflow: auto;
+}
+.asker-info {
+	background-color: white;
+	padding: 10px;
+}
+.asker-info a:hover {
+	color: #00a2d7;
+}
+.asker-info img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	float: left;
+	margin-right: 15px;
+}
+.asker-info h2 {
+	font-size: 125%;
+	display: inline-block;
+	margin-bottom: 3px;
+}
+.asker-info h3 {
+	font-size: 100%;
+	display: inline;
+	color: #8d8d8d;
+}
+.question-image {
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position-y: 40%;
+}
+.chart {
+	padding: 15px 10px;
+	background-color: white;
+}
+.question {
+	font-size: 150%;
+	margin-bottom: 5px;
+}
+.question a:hover {
+	color: #00a2d7;
+}
+.poll-count {
+	margin-top: 10px;
+	color: #8d8d8d;
+	text-align: right
+}
+@media only screen and (min-width: 768px) {
+	article {
+		width: 37%;
+		max-width: 800px;
+		min-width: 600px;
+		margin: 0 auto;
+		margin-bottom: 46px;
+		border-radius: 10px;
+	}
+}
+
+/*=================== SECTION STYLING END ====================*/
+
+/*=================== MODAL STYLING START ====================*/
+
+#myBtn {
+	position: fixed;
+	right: 50px;
+	bottom: 70px;
+	border-radius: 50%;
+	border: 0;
+	width: 78px;
+	height: 78px;
+	background-color: #693ca1;
+	color: white;
+	font-size: 46px;
+	cursor: pointer;
+	outline: none;
+	box-shadow: 0 5px 5px rgba(0,0,0,.15);
+}
+#myBtn:hover {
+	background-color: #4f2d78;
+	box-shadow: 0 7px 5px rgba(0,0,0,.15);
+}
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: white;
+    margin: 0 auto;
+    margin-top: 10%;
+    border-radius: 10px;
+    overflow: auto;
+    width: 34%; /* Could be more or less, depending on screen size */
+}
+.modal-content h1 {
+	background-color: #693ca1;
+	color: white;
+	text-align: center;
+	padding: 10px;
+}
+input {
+	font-size: 125%;
+	display: block;
+	width: 70%;
+	margin: 0 auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	font-family: Karla;
+}
+input:not([type="submit"]) {
+	border: 1px solid #c2c7d0;
+	padding: 10px 0 10px 10px;
+}
+input[type="submit"] {
+	background-color: #693ca1;
+	color: white;
+	border: 0px;
+	width: 72%;
+	padding: 10px 0;
+	cursor: pointer;
+}
+#answer-3 {
+	display: none;
+}
+#answer-4 {
+	display: none;
+}
+#answer-5 {
+	display: none;
+}
+
+/*=================== MODAL STYLING END ======================*/
+
+/*=================== FOOTER STYLING START ===================*/
+
+footer {
+	display: none;
+}
+
+@media only screen and (min-width: 900px) {
+	footer {
+		display: block;
+		position: absolute;
+		right: 50px;
+		top: 450px;
+		width: auto;
+		height: auto;
+		text-align: right;
+	}
+	footer ul {
+		width: 100px;
+		list-style-type: none;
+		letter-spacing: 0.02em;
+	}
+	ul li {
+		line-height: 1.2;
+	}
+	.footer-links {
+		color: #8d8d8d;
+		font-size: 90%;
+	}
+	ul li:last-of-type {
+		margin-top: 15px;
+		color: #8d8d8d;
+		opacity: 0.65;
+		font-size: 90%;
+	}
+}
+
+/*=================== FOOTER STYLING END =====================*/

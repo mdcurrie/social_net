@@ -1,0 +1,222 @@
+/*=================== GENERAL STYLING START ==================*/
+
+html {
+	font-family: Karla, sans-serif;
+}
+a {
+	text-decoration: none;
+}
+* {
+	color: #333;
+}
+body {
+	background-color: #f1f1f1;
+}
+
+/*=================== GENERAL STYLING END ====================*/
+
+/*=================== HEADER STYLING START ===================*/
+
+header {
+	position: fixed;
+	width: 100%;
+	background-color: #333;
+	height: 46px;
+	font-size: 2em;
+	text-align: center;
+	box-shadow: 0 1px 2px rgba(0,0,0,.1);
+	transition: background-color 0.3s;
+}
+header a {
+	color: white;
+	transition: color 0.3s;
+}
+header h1 {
+	padding-top: 7px;
+}
+
+/*=================== HEADER STYLING END =====================*/
+
+section {
+	padding-top: 65px;
+}
+article {
+	width: 100%;
+	box-shadow: 0 1px 2px rgba(0,0,0,.1);
+}
+.asker-info {
+	background-color: white;
+	padding: 10px;
+	overflow: auto;
+}
+.asker-info img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	float: left;
+	margin-right: 15px;
+}
+.asker-info h2 {
+	font-size: 1.2em;
+	font-weight: bold;
+	display: inline-block;
+	margin-bottom: 3px;
+}
+.asker-info h3 {
+	font-size: 0.9em;
+	display: inline;
+	color: #8d8d8d;
+}
+.question {
+	font-size: 1em;
+	margin-bottom: 5px;
+}
+.asker-info a:hover {
+	color: #00a2d7;
+}
+.question-image {
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position-y: 40%;
+	max-height: 280px;
+}
+.chart {
+	padding: 10px;
+	background-color: white;
+}
+.chart-footer {
+	margin: 0 auto;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	border-top: 2px solid rgba(141, 141, 141, 0.15);
+	border-bottom: 2px solid rgba(141, 141, 141, 0.15);
+	padding: 5px 0;
+	width: 100%;
+	font-size: 0.9em;
+	overflow: auto;
+}
+.chart-footer h4 {
+	color: #8d8d8d;
+	display: block;
+	width: 33.3%;
+	float: left;
+}
+svg {
+	fill: #8d8d8d;
+	width: 20px;
+	height: 20px;
+	vertical-align: middle;
+}
+.share-count {
+	text-align: center;
+}
+.poll-count {
+	text-align: right;
+	width: 33.4%;
+}
+.comment {
+	overflow: auto;
+	margin-bottom: 15px;
+	padding: 5px;
+	background-color: #f1f1f1;
+	border-radius: 10px;
+}
+.profile-pic {
+	height: 40px;
+	width: 40px;
+	border-radius: 50%;
+	margin-right: 15px;
+	float: left;
+}
+.comment-text {
+	float: left;
+	width: calc(100% - 55px);
+	line-height: 1.1em;
+}
+.comment-text h3 {
+	display: inline-block;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.comment-text h3:hover {
+	color: #00a2d7;
+}
+input[name="comment"] {
+	width: 100%;
+	font-size: 1.05em;
+	letter-spacing: 0.08em;
+	color: #333;
+	background-color: #f1f1f1;
+	font-family: Karla;
+	padding: 5px 0;
+	padding-left: 5px;
+	box-sizing: border-box;
+	border-radius: 10px;
+	border: none;
+	outline: none;
+}
+
+@media only screen and (min-width: 600px) {
+	article {
+		width: 37%;
+		max-width: 800px;
+		min-width: 600px;
+		margin: 0 auto;
+		overflow: auto;
+		margin-bottom: 50px;
+	}
+	.question-image {
+		max-height: 340px;
+	}
+	.question {
+		font-size: 1.3em;
+	}
+	.chart-footer h4 {
+		font-size: 1.1em;
+	}
+	svg {
+		height: 30px;
+		width: 30px;
+	}
+}
+
+/*=================== SECTION STYLING END ====================*/
+
+/*=================== FOOTER STYLING START ===================*/
+
+footer {
+	display: none;
+}
+
+@media only screen and (min-width: 900px) {
+	footer {
+		display: block;
+		position: fixed;
+		right: 50px;
+		bottom: 50px;
+		width: auto;
+		height: auto;
+		text-align: right;
+	}
+	footer ul {
+		width: 100px;
+		list-style-type: none;
+		letter-spacing: 0.02em;
+	}
+	ul li {
+		line-height: 1.2;
+	}
+	.footer-links {
+		color: #8d8d8d;
+		font-size: 90%;
+	}
+	ul li:last-of-type {
+		margin-top: 15px;
+		color: #8d8d8d;
+		opacity: 0.65;
+		font-size: 90%;
+	}
+}
+
+
+/*=================== FOOTER STYLING END =====================*/
