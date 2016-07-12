@@ -1,63 +1,70 @@
 $(function() {
-	Chart.defaults.global.defaultFontFamily = "Karla, sans-serif";
-	Chart.defaults.global.defaultFontSize   = 16;
+	var scroll_pos = 0;
+    $(document).scroll(function() { 
+        scroll_pos = $(this).scrollTop();
+        if(scroll_pos >= 80) {
+            $("header").css('background-color', '#eee04b');
+            $("header a").css('color', '#333');
+        } else {
+            $("header").css('background-color', '#333');
+            $("header a").css('color', 'white');
+        }
+    });
 
-	$("canvas").each(function() {
-		var ctx = $(this);
-		var label = $(this).find('.chart-labels').html();
-		var data = $(this).find('.chart-data').html();
-		label = label.slice(1, -1);
-		label = label.split(",");
-		for (var i = 0; i < label.length; i++) {
-			label[i] = label[i].slice(1, -1);
-			if (i > 0) {
-				label[i] = label[i].slice(1, label[i].length);
-			}
-		}
-		data = data.slice(1, -1);
-		data = data.split(",").map(Number);
+    $('.chart-footer img').eq(0).on('click', function(e) {
+        var question_id = window.location.href.split("/").pop();
+        $.getJSON('/favorite/' + question_id, function(data) {
+            if (data.favorite == true) {
+                $('.chart-footer img').eq(1).removeClass('active');
+                $('.chart-footer img').eq(0).addClass('active');
+            }
+            else {
+                $('.chart-footer img').eq(0).removeClass('active');
+                $('.chart-footer img').eq(1).addClass('active');
+            }
+        })
+    });
 
-		var myChart = new Chart(ctx, {
-		    type: 'pie',
-		    data: {
-		        labels: label,
-		        datasets: [{
-		            label: '# of Votes',
-		            data: data,
-		            backgroundColor: [
-		                '#EEE04B',
-		                '#693CA1',
-		                '#6A041D',
-		                '#19AC9D',
-                		'#3772FF'
-		            ],
-		            borderWidth: 3
-		        }]
-		    },
-		    options: {
-		    	cutoutPercentage: 50,
-		    	animation: {
-		    		animateScale: true,
-		    	},
-		    	legend: {
-		    		labels: {
-		    			fontColor: 'black',
-		    		}
-		    	}
-		    },
-		});
-	});
-	resizeQuestionImage();
-	$(window).resize(function() {
-		setTimeout(function() {
-			resizeQuestionImage();
-		}, 100);
-	});
+    $('.chart-footer img').eq(1).on('click', function(e) {
+        var question_id = window.location.href.split("/").pop();
+        $.getJSON('/favorite/' + question_id, function(data) {
+            if (data.favorite == true) {
+                $('.chart-footer img').eq(1).removeClass('active');
+                $('.chart-footer img').eq(0).addClass('active');
+            }
+            else {
+                $('.chart-footer img').eq(0).removeClass('active');
+                $('.chart-footer img').eq(1).addClass('active');
+            }
+        })
+    });
+
+    $('.chart-footer img').eq(2).on('click', function(e) {
+        var question_id = window.location.href.split("/").pop();
+        $.getJSON('/share/' + question_id, function(data) {
+            if (data.share == true) {
+                $('.chart-footer img').eq(3).removeClass('active');
+                $('.chart-footer img').eq(2).addClass('active');
+            }
+            else {
+                $('.chart-footer img').eq(2).removeClass('active');
+                $('.chart-footer img').eq(3).addClass('active');
+            }
+        })
+    });
+
+    $('.chart-footer img').eq(3).on('click', function(e) {
+        var question_id = window.location.href.split("/").pop();
+        $.getJSON('/share/' + question_id, function(data) {
+            if (data.share == true) {
+                $('.chart-footer img').eq(3).removeClass('active');
+                $('.chart-footer img').eq(2).addClass('active');
+            }
+            else {
+                $('.chart-footer img').eq(2).removeClass('active');
+                $('.chart-footer img').eq(3).addClass('active');
+            }
+        })
+    });
+
 });
-
-function resizeQuestionImage()
-{
-	$('.question-image').each(function(index) {
-		$(this).height($('.chart').eq(index).height() + 40);
-	});
-}
