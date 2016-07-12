@@ -152,7 +152,7 @@ label[for="nav-trigger"] {
 /*=================== SECTION STYLING START ==================*/
 
 section {
-	padding-top: 70px;
+	padding-top: 60px;
 }
 section a {
 	color: #333;
@@ -161,7 +161,7 @@ article {
 	margin-bottom: 46px;
 }
 .question-title {
-	font-size: 1.25em;
+	font-size: 1em;
 	margin-bottom: 5px;
 }
 .question-title a:hover {
@@ -196,7 +196,7 @@ article {
 		border-radius: 10px;
 	}
 	.question-title {
-		font-size: 1.5em;
+		font-size: 1.25em;
 		margin-bottom: 10px;
 	}
 	.question-image {

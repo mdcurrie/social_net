@@ -20,6 +20,7 @@ body {
 header {
 	position: fixed;
 	width: 100%;
+	box-shadow: 0 1px 2px rgba(0,0,0,.1);
 }
 .header-wrapper {
 	height: 46px;
@@ -157,6 +158,10 @@ nav {
 td {
 	width: 33%;
 }
+#poll-metrics {
+	overflow: auto;
+	box-shadow: 0 1px 2px rgba(0,0,0,.1);
+}
 #questions {
 	width: calc(50% - 1px);
 	float: left;
@@ -289,19 +294,17 @@ td {
 /*=================== SECTION STYLING START ==================*/
 
 section {
-	padding-top: 70px;
+	padding-top: 30px;
 }
 article {
 	width: 100%;
+	box-shadow: 0 1px 2px rgba(0,0,0,.1);
 	margin-bottom: 30px;
-	overflow: auto;
 }
 .asker-info {
 	background-color: white;
 	padding: 10px;
-}
-.asker-info a:hover {
-	color: #00a2d7;
+	overflow: auto;
 }
 .asker-info img {
 	width: 40px;
@@ -311,44 +314,53 @@ article {
 	margin-right: 15px;
 }
 .asker-info h2 {
-	font-size: 125%;
+	font-size: 1.2em;
+	font-weight: bold;
 	display: inline-block;
 	margin-bottom: 3px;
 }
 .asker-info h3 {
-	font-size: 100%;
+	font-size: 0.9em;
 	display: inline;
 	color: #8d8d8d;
 }
-.question-image {
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position-y: 40%;
-}
-.chart {
-	padding: 15px 10px;
-	background-color: white;
-}
 .question {
-	font-size: 150%;
+	font-size: 1em;
 	margin-bottom: 5px;
 }
 .question a:hover {
 	color: #00a2d7;
 }
-.poll-count {
-	margin-top: 10px;
-	color: #8d8d8d;
-	text-align: right
+.asker-info a:hover {
+	color: #00a2d7;
 }
-@media only screen and (min-width: 768px) {
+.question-image {
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position-y: 40%;
+	max-height: 280px;
+}
+.chart {
+	padding: 10px;
+	background-color: white;
+}
+@media only screen and (min-width: 600px) {
+	section {
+		padding-top: 46px;
+	}
 	article {
 		width: 37%;
 		max-width: 800px;
-		min-width: 600px;
+		min-width: 590px;
 		margin: 0 auto;
 		margin-bottom: 46px;
-		border-radius: 10px;
+		overflow: auto;
+	}
+	.question-image {
+		max-height: 380px;
+	}
+	.question {
+		font-size: 1.3em;
 	}
 }
 
@@ -358,15 +370,15 @@ article {
 
 #myBtn {
 	position: fixed;
-	right: 50px;
-	bottom: 70px;
+	right: 15px;
+	bottom: 15px;
 	border-radius: 50%;
 	border: 0;
-	width: 78px;
-	height: 78px;
+	width: 50px;
+	height: 50px;
 	background-color: #693ca1;
 	color: white;
-	font-size: 46px;
+	font-size: 36px;
 	cursor: pointer;
 	outline: none;
 	box-shadow: 0 5px 5px rgba(0,0,0,.15);
@@ -432,6 +444,16 @@ input[type="submit"] {
 }
 #answer-5 {
 	display: none;
+}
+
+@media only screen and (min-width: 768px) {
+	#myBtn {
+		right: 50px;
+		bottom: 70px;
+		width: 78px;
+		height: 78px;
+		font-size: 46px;
+	}
 }
 
 /*=================== MODAL STYLING END ======================*/
