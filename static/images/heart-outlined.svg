@@ -1,0 +1,16 @@
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" id="Heart_outlined" x="0px" y="0px" viewBox="0 0 20 20" xml:space="preserve" inkscape:version="0.91 r13725" sodipodi:docname="heart-outlined.svg" enable-background="new 0 0 20 20">
+  <metadata id="metadata3343">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>
+          image/svg+xml
+        </dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs id="defs3341"/>
+  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1051" inkscape:window-height="787" id="namedview3339" showgrid="false" inkscape:zoom="40.4" inkscape:cx="10" inkscape:cy="10" inkscape:window-x="2071" inkscape:window-y="107" inkscape:window-maximized="0" inkscape:current-layer="Heart_outlined"/>
+  <path d="M17.19 4.156c-1.672-1.535-4.383-1.535-6.055 0L10 5.197 8.864 4.156c-1.672-1.535-4.382-1.535-6.054 0 -1.881 1.726-1.881 4.519 0 6.245L10 17l7.19-6.599C19.07 8.675 19.07 5.881 17.19 4.156zM16.124 9.375L10 15.09 3.875 9.375C3.258 8.808 3.019 8.068 3.019 7.281s0.138-1.433 0.756-1.999C4.32 4.781 5.053 4.505 5.838 4.505c0.784 0 1.517 0.476 2.062 0.978L10 7.308l2.099-1.826c0.546-0.502 1.278-0.978 2.063-0.978s1.518 0.276 2.063 0.777c0.618 0.566 0.755 1.212 0.755 1.999S16.742 8.808 16.124 9.375z" fill="#8d8d8d" id="path3337"/>
+</svg>
