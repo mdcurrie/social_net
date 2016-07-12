@@ -10,4 +10,61 @@ $(function() {
             $("header a").css('color', 'white');
         }
     });
+
+    $('.chart-footer img').eq(0).on('click', function(e) {
+        var question_id = window.location.href.split("/").pop();
+        $.getJSON('/favorite/' + question_id, function(data) {
+            if (data.favorite == true) {
+                $('.chart-footer img').eq(1).removeClass('active');
+                $('.chart-footer img').eq(0).addClass('active');
+            }
+            else {
+                $('.chart-footer img').eq(0).removeClass('active');
+                $('.chart-footer img').eq(1).addClass('active');
+            }
+        })
+    });
+
+    $('.chart-footer img').eq(1).on('click', function(e) {
+        var question_id = window.location.href.split("/").pop();
+        $.getJSON('/favorite/' + question_id, function(data) {
+            if (data.favorite == true) {
+                $('.chart-footer img').eq(1).removeClass('active');
+                $('.chart-footer img').eq(0).addClass('active');
+            }
+            else {
+                $('.chart-footer img').eq(0).removeClass('active');
+                $('.chart-footer img').eq(1).addClass('active');
+            }
+        })
+    });
+
+    $('.chart-footer img').eq(2).on('click', function(e) {
+        var question_id = window.location.href.split("/").pop();
+        $.getJSON('/share/' + question_id, function(data) {
+            if (data.share == true) {
+                $('.chart-footer img').eq(3).removeClass('active');
+                $('.chart-footer img').eq(2).addClass('active');
+            }
+            else {
+                $('.chart-footer img').eq(2).removeClass('active');
+                $('.chart-footer img').eq(3).addClass('active');
+            }
+        })
+    });
+
+    $('.chart-footer img').eq(3).on('click', function(e) {
+        var question_id = window.location.href.split("/").pop();
+        $.getJSON('/share/' + question_id, function(data) {
+            if (data.share == true) {
+                $('.chart-footer img').eq(3).removeClass('active');
+                $('.chart-footer img').eq(2).addClass('active');
+            }
+            else {
+                $('.chart-footer img').eq(2).removeClass('active');
+                $('.chart-footer img').eq(3).addClass('active');
+            }
+        })
+    });
+
 });

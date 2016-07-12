@@ -102,7 +102,24 @@
 	                        </tr>
 	                        <tr>
 	                            <td>
-	                                <h3>{{ question["date"].strftime("%Y-%m-%d") }}</h3>
+	                                <h3>
+                                	    {% set total_seconds = (datetime.utcnow() - question["date"]).total_seconds() %}
+                                        {% if total_seconds < 30 %}
+                                            Just now
+                                        {% elif total_seconds < 60 %}
+                                            {{ int(total_seconds) }}s ago
+                                        {% elif total_seconds < 3600 %}
+                                            {{ int(total_seconds * 0.0166667) }}m ago
+                                        {% elif total_seconds < 86400 %}
+                                            {{ int(total_seconds * 0.000277778) }}h
+                                        {% elif total_seconds < 172800 %}
+                                            Yesterday
+                                        {% elif total_seconds < 15770000 %}
+                                            {{ question["date"].strftime("%B %d") }}
+                                        {% else %}
+                                            {{ question["date"].strftime("%B %d, %Y") }}
+                                        {% end %}
+	                                </h3>
 	                            </td>
 	                        </tr>
 	                    </table>
@@ -114,7 +131,6 @@
 	                        <div class="chart-labels">{{ question["labels"] }}</div>
 	                        <div class="chart-data">{{ question["data"] }}</div>
 	                    </canvas>
-	                    <h4 class="poll-count">{{ sum(question["data"]) }} Votes</h4>
 	                </div>
 	            </article>
        		{% end %}

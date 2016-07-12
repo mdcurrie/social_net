@@ -101,11 +101,17 @@ article {
 	width: 33.3%;
 	float: left;
 }
-svg {
-	fill: #8d8d8d;
+.chart-footer img {
 	width: 20px;
 	height: 20px;
 	vertical-align: middle;
+	display: none;
+}
+.chart-footer img:hover {
+	cursor: pointer;
+}
+img.active {
+	display: initial;
 }
 .share-count {
 	text-align: center;
@@ -137,9 +143,15 @@ svg {
 	display: inline-block;
 	font-weight: bold;
 	margin-bottom: 5px;
+	margin-right: 2px;
 }
 .comment-text h3:hover {
 	color: #00a2d7;
+}
+.comment-text h5 {
+	display: inline;
+	font-size: 0.75em;
+	color: #8d8d8d;
 }
 input[name="comment"] {
 	width: 100%;
@@ -174,7 +186,7 @@ input[name="comment"] {
 	.chart-footer h4 {
 		font-size: 1.1em;
 	}
-	svg {
+	.chart-footer img {
 		height: 30px;
 		width: 30px;
 	}

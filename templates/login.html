@@ -10,11 +10,11 @@
         {% raw xsrf_form_html() %}
         <div class="input-row">
             <p class="error-message">{{ email_error }}</p>
-            <input type="email" id="email" name="email" autocomplete="off" required="required" placeholder="Email" autofocus>
+            <input style="background-image: url({{ static_url("images/mail.svg") }})" type="email" id="email" name="email" autocomplete="off" required="required" placeholder="Email" autofocus>
         </div>
         <div class="input-row">
             <p class="error-message">{{ password_error }}</p>
-            <input type="password" id="password" name="password" required="required" placeholder="Password">
+            <input style="background-image: url({{ static_url("images/lock.svg") }})" type="password" id="password" name="password" required="required" placeholder="Password">
         </div>
         <button type="submit">Log In</button>
     </form>

@@ -2,12 +2,12 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.options
 import tornado.web
-import datetime
 import pymongo
 import logging
 import os.path
 import bcrypt
 import re
+from datetime import datetime
 from bson.objectid import ObjectId
 
 from tornado.options import define, options
@@ -26,6 +26,8 @@ class Application(tornado.web.Application):
 					(r"/hate/(\w+)", HateHandler),
 					(r"/questions/(\w+)", QuestionHandler),
 					(r"/comments/(\w+)", CommentHandler),
+					(r"/favorite/(\w+)", FavoriteHandler),
+					(r"/share/(\w+)", ShareHandler),
 					(r"/create_question", CreateQuestionHandler),
 		]
 		settings = dict(
@@ -51,12 +53,14 @@ class Application(tornado.web.Application):
 								  "followers":        [],
 								  "haters":           [],
 								  "hating":			  [],
+								  "favorites":		  [],
+								  "shares":			  [],
 								  "bio":              "Mogul, First Rapper Ever To Write And Publish A Book at 19, Film Score, Composer, Producer, Director #BASED"})
 
 		questions = self.db.questions
 		questions.insert_one({"asker":      "based@god.com",
 							  "question":   "Whos gonna become president? no trolls pls",
-							  "date":	    datetime.datetime.now(),
+							  "date":	    datetime.utcnow(),
 					 		  "image_link": "http://i.imgur.com/l4PPTGC.jpg",
 					 		  "labels":     ("hillary", "trump", "can obama get another term", "i hate them both"),
 					 		  "data":       (63, 13, 300, 120),
@@ -66,16 +70,16 @@ class Application(tornado.web.Application):
 
 		questions.insert_one({"asker":      "based@god.com",
 							  "question":   "Rate Beyonces new album!",
-							  "date":       datetime.datetime.now(),
+							  "date":       datetime.utcnow(),
 							  "image_link": "http://i.imgur.com/SX3tMDg.jpg",
 							  "labels":     ("it was LIT", "shes done better", "worse than Miley"),
 							  "data":       (12, 19, 3),
 							  "favorites":  13203156,
 							  "shares":     191931,
-					 		  "comments":   [("based@god.com", "not really feeling it"),
-					 		  				 ("mcurrie1@umd.edu", "7.568/10"),
-					 		  				 ("mcurrie1@umd.edu", "whatever man"),
-					 		  				 ("based@god.com", "yolo 2016")]})
+					 		  "comments":   [("based@god.com", datetime(2015, 4, 12, 0, 0, 0, 0), "not really feeling it"),
+					 		  				 ("mcurrie1@umd.edu", datetime(2016, 4, 12, 0, 0, 0, 0), "7.568/10"),
+					 		  				 ("mcurrie1@umd.edu", datetime(2016, 7, 11, 0, 0, 0, 0), "whatever man"),
+					 		  				 ("based@god.com", datetime(2016, 7, 12, 0, 2, 23, 0), "yolo 2016")]})
 
 		tornado.web.Application.__init__(self, handlers, **settings)	
 
@@ -127,7 +131,8 @@ class SignupHandler(BaseHandler):
 			salt = bcrypt.gensalt()
 			password = bcrypt.hashpw(password.encode('utf-8'), salt)
 			user = users.insert_one({"username": username, "email": email, "password": password, "salt": salt, "profile_pic_link": "http://i.imgur.com/pq88IQx.png",
-							         "questions": 0, "answers": 0, "following": [], "followers": [], "haters": [], "hating": [], "bio": "I'm new here!"})
+							         "questions": 0, "answers": 0, "following": [], "followers": [], "haters": [], "hating": [], "favorites": [], "shares":[],
+							         "bio": "I'm new here!"})
 			self.set_secure_cookie("auth_id", email, httponly=True)
 			self.redirect("/feed")
 
@@ -200,26 +205,58 @@ class EmailHandler(BaseHandler):
 
 class QuestionHandler(BaseHandler):
 	def get(self, question_id):
-		question = self.application.db.questions.find_one({"_id": ObjectId(question_id)})
-		asker    = self.application.db.users.find_one({"email": question["asker"]})
-		users    = None
+		question_id = ObjectId(question_id)
+		question    = self.application.db.questions.find_one({"_id": question_id})
+		asker       = self.application.db.users.find_one({"email": question["asker"]})
+		users       = None
 		if len(question["comments"]) != 0:
 			user_ids = [{"email": comments[0]} for comments in question["comments"]]
-			users = self.application.db.users.find({"$or": user_ids}, {"username": 1, "email": 1, "profile_pic_link": 1})
+			users = list(self.application.db.users.find({"$or": user_ids}, {"username": 1, "email": 1, "profile_pic_link": 1}))
 		if question == None:
 			pass
 		else:
-			self.render("question.html", question=question, asker=asker, users=users)
+			if self.current_user:
+				favorited = question_id in self.current_user["favorites"]
+				shared    = question_id in self.current_user["shares"]
+			else:
+				favorited = shared = False
+			self.render("question.html", question=question, asker=asker, users=users, favorited=favorited, shared=shared, datetime=datetime)
 
 class CommentHandler(BaseHandler):
 	@tornado.web.authenticated
 	def post(self, question_id):
 		comment = self.get_argument("comment")
-		question = self.application.db.questions.find_one_and_update({"_id": ObjectId(question_id)}, {"$push": {"comments": (self.current_user["email"], comment)}}, {"_id": 1})
+		question = self.application.db.questions.find_one_and_update({"_id": ObjectId(question_id)}, {"$push": {"comments": (self.current_user["email"], datetime.utcnow(), comment)}}, {"_id": 1})
 		if question == None:
 			self.redirect("/feed")
 		else:
 			self.redirect("/questions/" + question_id)
+
+class FavoriteHandler(BaseHandler):
+	@tornado.web.authenticated
+	def get(self, question_id):
+		question_id = ObjectId(question_id)
+		if ObjectId(question_id) not in self.current_user["favorites"]:
+			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$push": {"favorites": question_id}})
+			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"favorites": 1}})
+			self.write({"favorite": True})
+		else:
+			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$pop": {"favorites": question_id}})
+			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"favorites": -1}})
+			self.write({"favorite": False})
+
+class ShareHandler(BaseHandler):
+	@tornado.web.authenticated
+	def get(self, question_id):
+		question_id = ObjectId(question_id)
+		if ObjectId(question_id) not in self.current_user["shares"]:
+			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$push": {"shares": question_id}})
+			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"shares": 1}})
+			self.write({"share": True})
+		else:
+			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$pop": {"shares": question_id}})
+			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"shares": -1}})
+			self.write({"share": False})
 
 class CreateQuestionHandler(BaseHandler):
 	@tornado.web.authenticated
@@ -237,7 +274,7 @@ class CreateQuestionHandler(BaseHandler):
 
 		self.application.db.questions.insert_one({"asker":      self.current_user,
 												  "question":   question_title,
-												  "date":       datetime.datetime.now(),
+												  "date":       datetime.now(),
 										 		  "image_link": image_link,
 										 		  "labels":     labels,
 										          "data":       data,})
@@ -251,16 +288,16 @@ class ProfileHandler(BaseHandler):
 			self.redirect("/feed")
 		else:
 			questions = self.application.db.questions.find().sort("_id", pymongo.DESCENDING).limit(10)
-			self.render("newsfeed.html", profile=target_user, current_user=self.current_user, users=self.application.db.users, questions=questions, controlled=False)
+			self.render("newsfeed.html", profile=target_user, current_user=self.current_user, users=self.application.db.users, questions=questions, controlled=False, datetime=datetime)
 
 class FeedHandler(BaseHandler):
 	@tornado.web.authenticated
 	def get(self):
 		questions = self.application.db.questions.find().sort("_id", pymongo.DESCENDING).limit(10)
-		self.render("newsfeed.html", profile=self.current_user, current_user=self.current_user, users=self.application.db.users, questions=questions, controlled=True)
+		self.render("newsfeed.html", profile=self.current_user, current_user=self.current_user, users=self.application.db.users, questions=questions, controlled=True, datetime=datetime)
 
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen(options.port)
+	http_server.listen((int(os.environ.get('PORT', 8000))))
 	tornado.ioloop.IOLoop.instance().start()
