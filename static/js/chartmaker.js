@@ -40,9 +40,7 @@ $(function() {
 		    		animateScale: true,
 		    	},
 		    	legend: {
-		    		labels: {
-		    			fontColor: 'black',
-		    		}
+		    		display: false,
 		    	}
 		    },
 		});

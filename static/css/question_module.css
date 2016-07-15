@@ -1,0 +1,149 @@
+article {
+	width: 100%;
+	box-shadow: 0 1px 2px rgba(0,0,0,.1);
+	margin-bottom: 30px;
+}
+article:last-of-type {
+	margin-bottom: 0;
+}
+.asker-info {
+	background-color: white;
+	padding: 15px;
+	overflow: auto;
+}
+.info {
+	float: left;
+	width: 50%;
+}
+.asker-info img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	float: left;
+	margin-right: 15px;
+}
+.asker-info h2 {
+	font-size: 1.2em;
+	font-weight: bold;
+	display: inline-block;
+	margin-bottom: 3px;
+}
+.asker-info h3 {
+	font-size: 0.9em;
+	display: inline;
+	color: #8d8d8d;
+}
+.asker-info a:hover {
+	color: #00a2d7;
+}
+.vote-count {
+	float: right;
+	margin-top: 13px;
+}
+.vote-count h4 {
+	color: #8d8d8d;
+}
+.question-image {
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position-y: 40%;
+	max-height: 280px;
+}
+.question {
+	font-size: 1em;
+	margin-bottom: 15px;
+}
+.question a:hover {
+	color: #00a2d7;
+}
+.labels div {
+	width: 30px;
+	height: 15px;
+	float: left;
+	margin-right: 10px;
+}
+.labels h4:nth-child(1) div {
+	background-color: #eee04b;
+}
+.labels h4:nth-child(2) div {
+	background-color: #693ca1;
+}
+.labels h4:nth-child(3) div {
+	background-color: #6a041d;
+}
+.labels h4:nth-child(4) div {
+	background-color: #19ac9d;
+}
+.labels h4:nth-child(5) div {
+	background-color: #3772ff;
+}
+.labels h4 {
+	margin: 10px 0;
+	clear: left;
+}
+.chart {
+	padding: 15px;
+	background-color: white;
+}
+.chart-footer {
+	margin: 0 auto;
+	margin-top: 15px;
+	border-top: 2px solid rgba(141, 141, 141, 0.15);
+	border-bottom: 2px solid rgba(141, 141, 141, 0.15);
+	padding: 5px 0;
+	width: 100%;
+	font-size: 0.9em;
+	overflow: auto;
+}
+.chart-footer h4 {
+	color: #8d8d8d;
+	display: block;
+	width: 33.3%;
+	float: left;
+}
+.chart-footer img {
+	width: 20px;
+	height: 20px;
+	vertical-align: middle;
+	display: none;
+}
+.chart-footer img:hover {
+	cursor: pointer;
+}
+img.active {
+	display: initial;
+}
+.share-count {
+	text-align: center;
+}
+.comment-count {
+	text-align: right;
+	width: 33.4%;
+}
+.comment-count-text {
+	display: inline;
+}
+
+@media only screen and (min-width: 600px) {
+	article {
+		width: 37%;
+		max-width: 800px;
+		min-width: 600px;
+		margin: 0 auto;
+		overflow: auto;
+		margin-bottom: 50px;
+	}
+	.question-image {
+		max-height: 340px;
+	}
+	.question {
+		font-size: 1.3em;
+	}
+	.chart-footer h4 {
+		font-size: 1.1em;
+	}
+	.chart-footer img {
+		height: 30px;
+		width: 30px;
+	}
+}
