@@ -1,0 +1,44 @@
+<div class="comment-section">
+    <div class="all-comments">
+        {% if len(question["comments"]) != 0 %}
+            {% set idx = 0 %}
+            {% for comment in question["comments"] %}
+                {% while users[idx]["email"] != comment[0] %}
+                    {% set idx = (idx + 1) % len(users) %}
+                {% end %}
+                <div class="comment">
+                    <a href="/users/{{ str(users[idx]["_id"]) }}">
+                        <img class="profile-pic" src="{{ users[idx]["profile_pic_link"] }}">
+                    </a>
+                    <div class="comment-text">
+                        <a href="/users/{{ str(users[idx]["_id"]) }}">
+                            <h3>{{ users[idx]["username"] }}</h3>
+                        </a>
+                        <h5>
+                            {% set total_seconds = (datetime.utcnow() - comment[1]).total_seconds() %}
+                            {% if total_seconds < 30 %}
+                                Just now
+                            {% elif total_seconds < 60 %}
+                                {{ int(total_seconds) }}s ago
+                            {% elif total_seconds < 3600 %}
+                                {{ int(total_seconds * 0.0166667) }}m ago
+                            {% elif total_seconds < 86400 %}
+                                {{ int(total_seconds * 0.000277778) }}h
+                            {% elif total_seconds < 172800 %}
+                                Yesterday
+                            {% elif total_seconds < 15770000 %}
+                                {{ comment[1].strftime("%B %d") }}
+                            {% else %}
+                                {{ comment[1].strftime("%B %d, %Y") }}
+                            {% end %}
+                        </h5>
+                        <h4>{{ comment[2] }}</h4>
+                    </div>
+                </div>
+            {% end %}
+        {% end %}
+    </div>
+    <form method="get" action={{ "/comments/" + str(question["_id"]) }}>
+        <input type="text" name="comment" autocomplete="off" required="required" placeholder="Share your thoughts...">
+    </form>
+</div>

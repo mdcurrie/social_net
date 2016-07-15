@@ -36,6 +36,7 @@ class Application(tornado.web.Application):
 			cookie_secret="bZJc2sWbQLKos6GkHn/VB9oXwQt8S0R0kRvJ5/xJ89E=",
 			xsrf_cookies=True,
 			login_url="/",
+			ui_modules={"Question": QuestionModule, "Comment": CommentModule},
 			debug=True,
 		)
 		client = pymongo.MongoClient("mongodb://mcurrie:practice@ds021884.mlab.com:21884/hive")
@@ -218,19 +219,48 @@ class QuestionHandler(BaseHandler):
 			if self.current_user:
 				favorited = question_id in self.current_user["favorites"]
 				shared    = question_id in self.current_user["shares"]
+				commented = self.current_user["email"] in [comment[0] for comment in question["comments"]]
 			else:
-				favorited = shared = False
-			self.render("question.html", question=question, asker=asker, users=users, favorited=favorited, shared=shared, datetime=datetime)
+				favorited = shared = commented = False
+			self.render("question.html", question=question, asker=asker, users=users, favorited=favorited, shared=shared, commented=commented)
+
+class QuestionModule(tornado.web.UIModule):
+	def render(self, question, asker, users, favorited, shared, commented, show_comments=False):
+		return self.render_string("question_module.html", question=question, asker=asker, users=users, favorited=favorited, shared=shared,
+													      commented=commented, show_comments=show_comments, datetime=datetime)
+
+	def css_files(self):
+		return self.handler.static_url("css/question_module.css")
+
+	def javascript_files(self):
+		return [self.handler.static_url("js/Chart.js"),
+				self.handler.static_url("js/chartmaker.js"),
+				self.handler.static_url("js/question_module.js")]
 
 class CommentHandler(BaseHandler):
 	@tornado.web.authenticated
-	def post(self, question_id):
+	def get(self, question_id):
 		comment = self.get_argument("comment")
-		question = self.application.db.questions.find_one_and_update({"_id": ObjectId(question_id)}, {"$push": {"comments": (self.current_user["email"], datetime.utcnow(), comment)}}, {"_id": 1})
+		question = self.application.db.questions.find_one_and_update({"_id": ObjectId(question_id)}, {"$push": {"comments": (self.current_user["email"], datetime.utcnow(), comment)}}, 
+					{"comments": 1}, return_document=pymongo.ReturnDocument.AFTER)
 		if question == None:
 			self.redirect("/feed")
 		else:
-			self.redirect("/questions/" + question_id)
+			users = None
+			if len(question["comments"]) != 0:
+				user_ids = [{"email": comments[0]} for comments in question["comments"]]
+				users = list(self.application.db.users.find({"$or": user_ids}, {"username": 1, "email": 1, "profile_pic_link": 1}))
+			self.render("comment_module.html", question=question, users=users, datetime=datetime)
+
+class CommentModule(tornado.web.UIModule):
+	def render(self, question, users):
+		return self.render_string("comment_module.html", question=question, users=users, datetime=datetime)
+
+	def css_files(self):
+		return self.handler.static_url("css/comment_module.css")
+
+	def javascript_files(self):
+		return self.handler.static_url("js/comment_module.js")
 
 class FavoriteHandler(BaseHandler):
 	@tornado.web.authenticated
@@ -299,5 +329,5 @@ class FeedHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()

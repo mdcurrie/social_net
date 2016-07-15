@@ -85,64 +85,25 @@
 		    <h2 id="answers">{{ profile["answers"] }} Answers</h2>
 		</div>
      	<section>
+     		<article id="ask-button">
+     			<button id="myBtn">+</button>
+     			<h5>Ask a question</h5>
+     		</article>
         	{% for question in questions %}
-	            <article>
-            		<div class="asker-info">
-            			{% set asker = users.find_one({"email": question["asker"]}) %}
-	                    <a href="/users/{{ str(asker["_id"]) }}">
-	                        <img src="{{ asker["profile_pic_link"] }}">
-	                    </a>
-	                    <table>
-	                        <tr>
-	                            <td>
-	                                <h2>
-	                                    <a href="/users/{{ str(asker["_id"]) }}">{{ asker["username"] }}</a>
-	                                </h2>
-	                            </td>
-	                        </tr>
-	                        <tr>
-	                            <td>
-	                                <h3>
-                                	    {% set total_seconds = (datetime.utcnow() - question["date"]).total_seconds() %}
-                                        {% if total_seconds < 30 %}
-                                            Just now
-                                        {% elif total_seconds < 60 %}
-                                            {{ int(total_seconds) }}s ago
-                                        {% elif total_seconds < 3600 %}
-                                            {{ int(total_seconds * 0.0166667) }}m ago
-                                        {% elif total_seconds < 86400 %}
-                                            {{ int(total_seconds * 0.000277778) }}h
-                                        {% elif total_seconds < 172800 %}
-                                            Yesterday
-                                        {% elif total_seconds < 15770000 %}
-                                            {{ question["date"].strftime("%B %d") }}
-                                        {% else %}
-                                            {{ question["date"].strftime("%B %d, %Y") }}
-                                        {% end %}
-	                                </h3>
-	                            </td>
-	                        </tr>
-	                    </table>
-            		</div>
-	                <div class="question-image" style="background-image: url({{ question["image_link"] }})"></div>
-	                <div class="chart">
-	                    <h1 class="question"><a href="/questions/{{ str(question["_id"]) }}">{{ question["question"] }}</a></h1>
-	                    <canvas>
-	                        <div class="chart-labels">{{ question["labels"] }}</div>
-	                        <div class="chart-data">{{ question["data"] }}</div>
-	                    </canvas>
-	                </div>
-	            </article>
+        		{% set asker = users.find_one({"email": question["asker"]}) %}
+        		{% set favorited = question["_id"] in current_user["favorites"] %}
+        		{% set shared    = question["_id"] in current_user["shares"] %}
+        		{% set commented = current_user["email"] in [comment[0] for comment in question["comments"]] %}
+        		{% module Question(question, asker, None, favorited, shared, commented, False) %}
        		{% end %}
         </section>
         {% if controlled %}
-	        <button id="myBtn">+</button>
 			<div id="myModal" class="modal">
 				<div class="modal-content">
 					<h1>Got a question?</h1>
 					<form method="post" action="create_question">
 						{% raw xsrf_form_html() %}
-						<input type="text" id="question-title" name="question-title" autocomplete="off" required="required" placeholder="Enter a question" maxlength="30">
+						<input type="text" id="question-title" name="question-title" autocomplete="off" required="required" placeholder="Enter a question" maxlength="30" autofocus>
 						<input type="text" id="image-link" name="image-link" autocomplete="off" placeholder="Link to image">
 						<input type="text" id="answer-1" name="answer-1" autocomplete="off" required="required" placeholder="Answer 1" maxlength="20">
 						<input type="text" id="answer-2" name="answer-2" autocomplete="off" required="required" placeholder="Answer 2" maxlength="20">

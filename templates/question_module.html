@@ -1,0 +1,114 @@
+<article>
+    <div class="asker-info">
+        <div class="info">
+            <a href="/users/{{ str(asker["_id"]) }}">
+                <img src="{{ asker["profile_pic_link"] }}">
+            </a>
+            <table>
+                <tr>
+                    <td>
+                        <h2>
+                            <a href="/users/{{ str(asker["_id"]) }}">{{ asker["username"] }}</a>
+                        </h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3>
+                            {% set total_seconds = (datetime.utcnow() - question["date"]).total_seconds() %}
+                            {% if total_seconds < 30 %}
+                                Just now
+                            {% elif total_seconds < 60 %}
+                                {{ int(total_seconds) }}s ago
+                            {% elif total_seconds < 3600 %}
+                                {{ int(total_seconds * 0.0166667) }}m ago
+                            {% elif total_seconds < 86400 %}
+                                {{ int(total_seconds * 0.000277778) }}h
+                            {% elif total_seconds < 172800 %}
+                                Yesterday
+                            {% elif total_seconds < 15770000 %}
+                                {{ question["date"].strftime("%B %d") }}
+                            {% else %}
+                                {{ question["date"].strftime("%B %d, %Y") }}
+                            {% end %}
+                        </h3>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="vote-count">
+            <h4>496 Votes</h4>
+        </div>
+    </div>
+    <div class="question-image" style="background-image: url({{ question["image_link"] }})"></div>
+    <div class="chart">
+        <h1 class="question"><a href="{{ "/questions/" + str(question["_id"]) }}">{{ question["question"] }}</a></h1>
+        <div class="labels">
+            {% for label in question["labels"] %}
+                <h4><div class="label-box"></div>{{ label }}</h4>
+            {% end %}
+        </div>
+        <canvas>
+            <div class="chart-labels">{{ question["labels"] }}</div>
+            <div class="chart-data">{{ question["data"] }}</div>
+        </canvas>
+        <div class="chart-footer">
+            <h4 class="favorite-count">
+                {% set favorites = question["favorites"] %}
+                {% if favorites <= 1000 %}
+                    {{ favorites }}
+                {% elif favorites <= 999999 %}
+                    {{ round(favorites/1000, 1) }}K
+                {% else %}
+                    {{ round(favorites/1000000, 1) }}M
+                {% end %}
+                {% if favorited %}
+                    <img class="{{ str(question["_id"]) }} active" src="{{ static_url("images/heart.svg") }}">
+                    <img class="{{ str(question["_id"]) }} inactive" src="{{ static_url("images/heart-outlined.svg") }}">
+                {% else %}
+                    <img class="{{ str(question["_id"]) }} inactive" src="{{ static_url("images/heart.svg") }}">
+                    <img class="{{ str(question["_id"]) }} active" src="{{ static_url("images/heart-outlined.svg") }}">  
+                {% end %}
+            </h4>
+            <h4 class="share-count">
+                {% set shares = question["shares"] %}
+                {% if shares <= 1000 %}
+                    {{ shares }}
+                {% elif shares <= 999999 %}
+                    {{ round(shares/1000, 1) }}K
+                {% else %}
+                    {{ round(shares/1000000, 1) }}M
+                {% end %}
+                {% if shared %}
+                    <img class="{{ str(question["_id"]) }} active" src="{{ static_url("images/forward-purple.svg") }}">
+                    <img class="{{ str(question["_id"]) }} inactive" src="{{ static_url("images/forward.svg") }}">
+                {% else %}
+                    <img class="{{ str(question["_id"]) }} inactive" src="{{ static_url("images/forward-purple.svg") }}">
+                    <img class="{{ str(question["_id"]) }} active" src="{{ static_url("images/forward.svg") }}">  
+                {% end %}
+            </h4>
+            <h4 class="comment-count">
+                <div class="comment-count-text">
+                    {% set comments = len(question["comments"]) %}
+                    {% if comments <= 1000 %}
+                        {{ comments }}
+                    {% elif comments <= 999999 %}
+                        {{ round(comments/1000, 1) }}K
+                    {% else %}
+                        {{ round(comments/1000000, 1) }}M
+                    {% end %}
+                </div>
+                {% if commented %}
+                    <img class="active" src="{{ static_url("images/chat-purple.svg") }}">
+                    <img src="{{ static_url("images/chat.svg") }}">
+                {% else %}
+                    <img src="{{ static_url("images/chat-purple.svg") }}">
+                    <img class="active" src="{{ static_url("images/chat.svg") }}">  
+                {% end %}
+            </h4>
+        </div>
+        {% if show_comments %}
+            {% module Comment(question, users) %}
+        {% end %}
+    </div>
+</article>
