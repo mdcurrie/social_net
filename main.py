@@ -7,6 +7,7 @@ import logging
 import os.path
 import bcrypt
 import re
+import json
 from datetime import datetime
 from bson.objectid import ObjectId
 
@@ -28,7 +29,9 @@ class Application(tornado.web.Application):
 					(r"/comments/(\w+)", CommentHandler),
 					(r"/favorite/(\w+)", FavoriteHandler),
 					(r"/share/(\w+)", ShareHandler),
+					(r"/vote/(\w+)", VoteHandler),
 					(r"/create_question", CreateQuestionHandler),
+
 		]
 		settings = dict(
 			template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -56,6 +59,7 @@ class Application(tornado.web.Application):
 								  "hating":			  [],
 								  "favorites":		  [],
 								  "shares":			  [],
+								  "votes":			  [],
 								  "bio":              "Mogul, First Rapper Ever To Write And Publish A Book at 19, Film Score, Composer, Producer, Director #BASED"})
 
 		questions = self.db.questions
@@ -63,8 +67,16 @@ class Application(tornado.web.Application):
 							  "question":   "Whos gonna become president? no trolls pls",
 							  "date":	    datetime.utcnow(),
 					 		  "image_link": "http://i.imgur.com/l4PPTGC.jpg",
-					 		  "labels":     ("hillary", "trump", "can obama get another term", "i hate them both"),
-					 		  "data":       (63, 13, 300, 120),
+					 		  "labels":     {"label0": "hillary",
+					 		  				 "label1": "trump",
+					 		  				 "label2": "can obama get another term",
+					 		  				 "label3": "i hate them both",
+					 		  				},
+					 		  "data":       {"option0": 63,
+					 		  				 "option1": 13,
+					 		  				 "option2": 300,
+					 		  				 "option3": 120,
+					 		  				},
 					 		  "favorites":  1934,
 					 		  "shares":     92903,
 					 		  "comments":	[]})
@@ -73,8 +85,14 @@ class Application(tornado.web.Application):
 							  "question":   "Rate Beyonces new album!",
 							  "date":       datetime.utcnow(),
 							  "image_link": "http://i.imgur.com/SX3tMDg.jpg",
-							  "labels":     ("it was LIT", "shes done better", "worse than Miley"),
-							  "data":       (12, 19, 3),
+							  "labels":     {"label0": "it was LIT",
+					 		  				 "label1": "shes done better",
+					 		  				 "label2": "worse than Miley",
+					 		  				},
+							  "data":       {"option0": 12,
+							  				 "option1": 19,
+							  				 "option2": 3,
+							  				},
 							  "favorites":  13203156,
 							  "shares":     191931,
 					 		  "comments":   [("based@god.com", datetime(2015, 4, 12, 0, 0, 0, 0), "not really feeling it"),
@@ -132,7 +150,7 @@ class SignupHandler(BaseHandler):
 			salt = bcrypt.gensalt()
 			password = bcrypt.hashpw(password.encode('utf-8'), salt)
 			user = users.insert_one({"username": username, "email": email, "password": password, "salt": salt, "profile_pic_link": "http://i.imgur.com/pq88IQx.png",
-							         "questions": 0, "answers": 0, "following": [], "followers": [], "haters": [], "hating": [], "favorites": [], "shares":[],
+							         "questions": 0, "answers": 0, "following": [], "followers": [], "haters": [], "hating": [], "favorites": [], "shares":[], "votes":[],
 							         "bio": "I'm new here!"})
 			self.set_secure_cookie("auth_id", email, httponly=True)
 			self.redirect("/feed")
@@ -226,8 +244,18 @@ class QuestionHandler(BaseHandler):
 
 class QuestionModule(tornado.web.UIModule):
 	def render(self, question, asker, users, favorited, shared, commented, show_comments=False):
+		vote = None
+		if self.current_user:
+			if len(self.current_user["votes"]):
+				question_id = ObjectId(question["_id"])
+				for idx, x in enumerate(self.current_user["votes"]):
+					if question_id in self.current_user["votes"][idx].values():
+						logging.info(self.current_user["votes"][idx])
+						vote = self.current_user["votes"][idx]['vote']
+						break
+
 		return self.render_string("question_module.html", question=question, asker=asker, users=users, favorited=favorited, shared=shared,
-													      commented=commented, show_comments=show_comments, datetime=datetime)
+													      commented=commented, show_comments=show_comments, datetime=datetime, json=json, vote=vote)
 
 	def css_files(self):
 		return self.handler.static_url("css/question_module.css")
@@ -288,6 +316,26 @@ class ShareHandler(BaseHandler):
 			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"shares": -1}})
 			self.write({"share": False})
 
+class VoteHandler(BaseHandler):
+	@tornado.web.authenticated
+	def get(self, question_id):
+		question_id = ObjectId(question_id)
+		vote_index  = self.get_argument("vote_index")
+
+		if self.application.db.users.find_one({"email": self.current_user["email"], "votes.question_id": question_id}) == None:
+			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$push": {"votes": {"question_id": question_id, "vote": vote_index}}})
+			question = self.application.db.questions.find_one_and_update({"_id": question_id}, {"$inc": {"data.option"+str(vote_index): 1}}, return_document=pymongo.ReturnDocument.AFTER)
+		else:
+			for idx, vote in enumerate(self.current_user["votes"]):
+				if vote["question_id"] == question_id:
+					self.current_user["votes"][idx]["vote"] = vote_index
+					old_vote = self.application.db.users.find_one_and_replace({"email": self.current_user["email"]}, self.current_user)["votes"][idx]["vote"]
+					self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"data.option"+str(old_vote): -1}})
+					question = self.application.db.questions.find_one_and_update({"_id": question_id}, {"$inc": {"data.option"+str(vote_index): 1}}, return_document=pymongo.ReturnDocument.AFTER)
+
+		question = question["data"]
+		self.write({"idx": vote_index, "votes": sum(question.values())})
+
 class CreateQuestionHandler(BaseHandler):
 	@tornado.web.authenticated
 	def post(self):
@@ -329,5 +377,5 @@ class FeedHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen(options.port)
+	http_server.listen((int(os.environ.get('PORT', 8000))))
 	tornado.ioloop.IOLoop.instance().start()
