@@ -8,7 +8,7 @@ article:last-of-type {
 }
 .asker-info {
 	background-color: white;
-	padding: 15px;
+	padding: 10px 15px;
 	overflow: auto;
 }
 .info {
@@ -47,6 +47,7 @@ article:last-of-type {
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position-y: 40%;
+	background-position-x: 50%;
 	max-height: 280px;
 }
 .question {
@@ -78,8 +79,20 @@ article:last-of-type {
 	background-color: #3772ff;
 }
 .labels h4 {
-	margin: 10px 0;
+	padding: 10px;
+	border-radius: 10px;
 	clear: left;
+	transition: background-color 0.3s;
+}
+.labels h4:hover {
+	background-color: #f1f1f1;
+	cursor: pointer;
+}
+.labels .active {
+	background-color: #f1f1f1;
+}
+canvas {
+	margin: 10px 0;
 }
 .chart {
 	padding: 15px;
@@ -87,7 +100,6 @@ article:last-of-type {
 }
 .chart-footer {
 	margin: 0 auto;
-	margin-top: 15px;
 	border-top: 2px solid rgba(141, 141, 141, 0.15);
 	border-bottom: 2px solid rgba(141, 141, 141, 0.15);
 	padding: 5px 0;
@@ -122,15 +134,19 @@ img.active {
 }
 .comment-count-text {
 	display: inline;
+	color: #8d8d8d;
 }
 
 @media only screen and (min-width: 600px) {
 	article {
 		width: 37%;
 		max-width: 800px;
-		min-width: 600px;
+		min-width: 580px;
 		margin: 0 auto;
 		overflow: auto;
+		margin-bottom: 50px;
+	}
+	article:last-of-type {
 		margin-bottom: 50px;
 	}
 	.question-image {
@@ -138,6 +154,9 @@ img.active {
 	}
 	.question {
 		font-size: 1.3em;
+	}
+	canvas {
+		margin: 20px 0;
 	}
 	.chart-footer h4 {
 		font-size: 1.1em;

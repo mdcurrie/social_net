@@ -122,7 +122,7 @@ nav {
 	border-radius: 26px;
 	outline: none;
 }
-.active {
+img .active {
 	color: #eee04b;
 	background-color: white;
 }

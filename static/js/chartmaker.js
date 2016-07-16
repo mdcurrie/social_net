@@ -4,26 +4,36 @@ $(function() {
 
 	$("canvas").each(function() {
 		var ctx = $(this);
-		var label = $(this).find('.chart-labels').html();
-		var data = $(this).find('.chart-data').html();
-		label = label.slice(1, -1);
-		label = label.split(",");
-		for (var i = 0; i < label.length; i++) {
-			label[i] = label[i].slice(1, -1);
-			if (i > 0) {
-				label[i] = label[i].slice(1, label[i].length);
-			}
+		const label = JSON.parse($(this).find('.chart-labels').html());
+		const data  = JSON.parse($(this).find('.chart-data').html());
+
+		const ordered_label = {};
+		Object.keys(label).sort().forEach(function(key) {
+			ordered_label[key] = label[key];
+		});
+
+		const ordered_data = {};
+		Object.keys(data).sort().forEach(function(key) {
+			ordered_data[key] = data[key];
+		});
+
+		var x = [];
+		for (var key in ordered_label) {
+			x.push(ordered_label[key]);
 		}
-		data = data.slice(1, -1);
-		data = data.split(",").map(Number);
+
+		var y = [];
+		for (var key in ordered_data) {
+			y.push(ordered_data[key]);
+		}
 
 		var myChart = new Chart(ctx, {
 		    type: 'pie',
 		    data: {
-		        labels: label,
+		        labels: x,
 		        datasets: [{
 		            label: '# of Votes',
-		            data: data,
+		            data: y,
 		            backgroundColor: [
 		                '#EEE04B',
 		                '#693CA1',
@@ -31,11 +41,11 @@ $(function() {
 		                '#19AC9D',
                 		'#3772FF'
 		            ],
-		            borderWidth: 3
+		            borderWidth: 0
 		        }]
 		    },
 		    options: {
-		    	cutoutPercentage: 50,
+		    	cutoutPercentage: 35,
 		    	animation: {
 		    		animateScale: true,
 		    	},
@@ -45,6 +55,7 @@ $(function() {
 		    },
 		});
 	});
+
 	resizeQuestionImage();
 	$(window).resize(function() {
 		setTimeout(function() {
