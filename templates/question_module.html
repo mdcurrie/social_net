@@ -37,27 +37,26 @@
             </table>
         </div>
         <div class="vote-count">
-            <h4>{{ sum(question["data"].values()) }} Votes</h4>
+            <h4>{{ sum([q["votes"] for q in question["data"]]) }} Votes</h4>
         </div>
     </div>
     <div class="question-image" style="background-image: url({{ question["image_link"] }})"></div>
     <div class="chart">
         <h1 class="question"><a href="{{ "/questions/" + str(question["_id"]) }}">{{ question["question"] }}</a></h1>
         <div class="labels {{ str(question["_id"]) }}">
-            {% for idx, label in enumerate(sorted(question["labels"].items())) %}
+            {% for idx, q in enumerate(question["data"]) %}
                 {% if vote == None %}
-                    <h4><div class="label-box"></div>{{ label[1] }}</h4>
+                    <h4><div class="label-box"></div>{{ q["label"] }}</h4>
                 {% else %}
                     {% if int(idx) == int(vote) %}
-                        <h4 class="active"><div class="label-box"></div>{{ label[1] }}</h4>
+                        <h4 class="active"><div class="label-box"></div>{{ q["label"] }}</h4>
                     {% else %}
-                        <h4><div class="label-box"></div>{{ label[1] }}</h4>
+                        <h4><div class="label-box"></div>{{ q["label"] }}</h4>
                     {% end %}
                 {% end %}
             {% end %}
         </div>
         <canvas>
-            <div class="chart-labels">{{ json.dumps(question["labels"]) }}</div>
             <div class="chart-data">{{ json.dumps(question["data"]) }}</div>
         </canvas>
         <div class="chart-footer">

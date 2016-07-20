@@ -60,17 +60,8 @@
         </header>
         <section>
             {% for question in questions %}
-                <article>
-                    <div class="question-image" style="background-image: url({{ question["image_link"] }})"></div>
-                    <div class="chart">
-                        <h1 class="question-title"><a href="/questions/{{ str(question["_id"]) }}">{{ question["question"] }}</a></h1>
-                        <canvas>
-                            <div class="chart-labels">{{ question["labels"] }}</div>
-                            <div class="chart-data">{{ question["data"] }}</div>
-                        </canvas>
-                        <h4 class="vote-count">{{ sum(question["data"]) }} Votes</h4>
-                    </div>
-                </article>
+                {% set asker = users.find_one({"email": question["asker"]}) %}
+                {% module Question(question, asker, None, False, False, False, False) %}
             {% end %}
         </section>
         <footer role="contentinfo">

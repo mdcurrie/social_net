@@ -19,6 +19,7 @@
 	    	<div id="logo"><a href="/">Hive</a></div>
 	    	<div class="header-wrapper">
 	    		<nav role="navigation">
+	    			<img id="mag-glass" src="{{ static_url("images/magnifying-glass-white.svg") }}">
 	    			<input type="text" placeholder="Search" autocomplete="off" id="search">
 	    		</nav>
 	    	</div>
@@ -85,36 +86,59 @@
 		    <h2 id="answers">{{ profile["answers"] }} Answers</h2>
 		</div>
      	<section>
-     		<article id="ask-button">
-     			<button id="myBtn">+</button>
-     			<h5>Ask a question</h5>
-     		</article>
+     		{% if controlled %}
+	     		<article id="ask-article">
+	     			<div id="close-button">
+	     				<img src="{{ static_url("images/cross.svg") }}">
+	     			</div>
+	     			<div id="open-button">
+		     			<button>+</button>
+		     			<h5>Ask a question</h5>
+		     		</div>
+					<div id="modal">
+						<div id="modal-content">
+							<form method="post" action="create_question">
+								{% raw xsrf_form_html() %}
+								<p id="question-error"></p>
+								<div class="input-row">
+									<input style="background-image: url({{ static_url("images/help.svg") }})" type="text" id="question-title" name="question-title" autocomplete="off" placeholder="Enter a question" maxlength="30">
+								</div>
+								<div class="input-row">
+									<input style="background-image: url({{ static_url("images/image.svg") }})" type="text" id="image-link" name="image-link" autocomplete="off" placeholder="Link to image (not required)">
+								</div>
+								<div class="input-row">
+									<input style="background-image: url({{ static_url("images/chevron-small-right.svg") }})" type="text" id="answer-1" name="answer-1" autocomplete="off" placeholder="Option 1" maxlength="20">
+								</div>
+								<div class="input-row">
+									<input style="background-image: url({{ static_url("images/chevron-small-right.svg") }})" type="text" id="answer-2" name="answer-2" autocomplete="off" placeholder="Option 2" maxlength="20">
+								</div>
+								<div class="input-row">
+									<input style="background-image: url({{ static_url("images/chevron-small-right.svg") }})" type="text" id="answer-3" name="answer-3" autocomplete="off" placeholder="Option 3 (not required)" maxlength="20">
+								</div>
+								<div class="input-row">
+									<input style="background-image: url({{ static_url("images/chevron-small-right.svg") }})" type="text" id="answer-4" name="answer-4" autocomplete="off" placeholder="Option 4 (not required)" maxlength="20">
+								</div>
+								<div class="input-row">
+									<input style="background-image: url({{ static_url("images/chevron-small-right.svg") }})" type="text" id="answer-5" name="answer-5" autocomplete="off" placeholder="Option 5 (not required)" maxlength="20">
+								</div>
+								<button type="submit">Post Your Question<img src="{{ static_url("images/chevron-thin-right.svg") }}"></button>
+							</form>
+						</div>
+					</div>
+	     		</article>
+	     	{% end %}
         	{% for question in questions %}
         		{% set asker = users.find_one({"email": question["asker"]}) %}
-        		{% set favorited = question["_id"] in current_user["favorites"] %}
-        		{% set shared    = question["_id"] in current_user["shares"] %}
-        		{% set commented = current_user["email"] in [comment[0] for comment in question["comments"]] %}
-        		{% module Question(question, asker, None, favorited, shared, commented, False) %}
+        		{% if current_user %}
+	        		{% set favorited = question["_id"] in current_user["favorites"] %}
+	        		{% set shared    = question["_id"] in current_user["shares"] %}
+	        		{% set commented = current_user["email"] in [comment[0] for comment in question["comments"]] %}
+	        		{% module Question(question, asker, None, favorited, shared, commented, False) %}
+	        	{% else %}
+	        		{% module Question(question, asker, None, None, None, None, False) %}
+	        	{% end %}
        		{% end %}
         </section>
-        {% if controlled %}
-			<div id="myModal" class="modal">
-				<div class="modal-content">
-					<h1>Got a question?</h1>
-					<form method="post" action="create_question">
-						{% raw xsrf_form_html() %}
-						<input type="text" id="question-title" name="question-title" autocomplete="off" required="required" placeholder="Enter a question" maxlength="30" autofocus>
-						<input type="text" id="image-link" name="image-link" autocomplete="off" placeholder="Link to image">
-						<input type="text" id="answer-1" name="answer-1" autocomplete="off" required="required" placeholder="Answer 1" maxlength="20">
-						<input type="text" id="answer-2" name="answer-2" autocomplete="off" required="required" placeholder="Answer 2" maxlength="20">
-						<input type="text" id="answer-3" name="answer-3" autocomplete="off" placeholder="Answer 3" maxlength="20">
-						<input type="text" id="answer-4" name="answer-4" autocomplete="off" placeholder="Answer 4" maxlength="20">
-						<input type="text" id="answer-5" name="answer-5" autocomplete="off" placeholder="Answer 5" maxlength="20">
-						<input type="submit" value="Ask!">
-					</form>
-				</div>
-			</div>
-		{% end %}
         <footer role="contentinfo">
         	<ul>
                 <li><a class="footer-links" href="">Blog</a></li>
