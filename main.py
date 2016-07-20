@@ -2,6 +2,7 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.options
 import tornado.web
+import tornado.gen
 import pymongo
 import logging
 import os.path
@@ -67,16 +68,24 @@ class Application(tornado.web.Application):
 							  "question":   "Whos gonna become president? no trolls pls",
 							  "date":	    datetime.utcnow(),
 					 		  "image_link": "http://i.imgur.com/l4PPTGC.jpg",
-					 		  "labels":     {"label0": "hillary",
-					 		  				 "label1": "trump",
-					 		  				 "label2": "can obama get another term",
-					 		  				 "label3": "i hate them both",
-					 		  				},
-					 		  "data":       {"option0": 63,
-					 		  				 "option1": 13,
-					 		  				 "option2": 300,
-					 		  				 "option3": 120,
-					 		  				},
+					 		  "data":		[
+					 		 					{
+						 		 					"label": "hillary",
+						 		 					"votes": 63,
+					 		 					},
+					 		 					{
+						 		 					"label": "trump",
+						 		 					"votes": 13,
+					 		 					},
+					 		 					{
+					 		 						"label": "can obama get another term",
+					 		 						"votes": 300,
+					 		 					},
+					 		 					{
+					 		 						"label": "i hate them both",
+					 		 						"votes": 120,
+					 		 					},
+					 		  				],
 					 		  "favorites":  1934,
 					 		  "shares":     92903,
 					 		  "comments":	[]})
@@ -85,19 +94,23 @@ class Application(tornado.web.Application):
 							  "question":   "Rate Beyonces new album!",
 							  "date":       datetime.utcnow(),
 							  "image_link": "http://i.imgur.com/SX3tMDg.jpg",
-							  "labels":     {"label0": "it was LIT",
-					 		  				 "label1": "shes done better",
-					 		  				 "label2": "worse than Miley",
-					 		  				},
-							  "data":       {"option0": 12,
-							  				 "option1": 19,
-							  				 "option2": 3,
-							  				},
+							  "data":		[
+					 		 					{
+						 		 					"label": "it was LIT",
+						 		 					"votes": 12,
+					 		 					},
+					 		 					{
+						 		 					"label": "shes done better",
+						 		 					"votes": 19,
+					 		 					},
+					 		 					{
+					 		 						"label": "worse than Miley",
+					 		 						"votes": 3,
+					 		 					},
+					 		  				],
 							  "favorites":  13203156,
 							  "shares":     191931,
 					 		  "comments":   [("based@god.com", datetime(2015, 4, 12, 0, 0, 0, 0), "not really feeling it"),
-					 		  				 ("mcurrie1@umd.edu", datetime(2016, 4, 12, 0, 0, 0, 0), "7.568/10"),
-					 		  				 ("mcurrie1@umd.edu", datetime(2016, 7, 11, 0, 0, 0, 0), "whatever man"),
 					 		  				 ("based@god.com", datetime(2016, 7, 12, 0, 2, 23, 0), "yolo 2016")]})
 
 		tornado.web.Application.__init__(self, handlers, **settings)	
@@ -121,7 +134,7 @@ class IndexHandler(BaseHandler):
 			self.redirect("/feed")
 		else:
 			questions = self.application.db.questions.find().sort("_id", pymongo.DESCENDING).limit(10)
-			self.render("index.html", questions=questions)
+			self.render("index.html", questions=questions, users=self.application.db.users)
 
 class SignupHandler(BaseHandler):
 	def get(self):
@@ -171,7 +184,7 @@ class LoginHandler(BaseHandler):
 		elif len(password) < 6:
 			self.render("login.html", email_error='', password_error='The password you entered is incorrect.')
 		else:
-			user = self.application.db.users.find_one({"email": email})
+			user = self.application.db.users.find_one({"email": email}, {"salt": 1, "password": 1})
 			if user == None:
 				self.render("login.html", email_error='The email you entered does not match any account.', password_error='')
 			elif bcrypt.hashpw(password.encode('utf-8'), user["salt"]) != user["password"]:
@@ -250,7 +263,6 @@ class QuestionModule(tornado.web.UIModule):
 				question_id = ObjectId(question["_id"])
 				for idx, x in enumerate(self.current_user["votes"]):
 					if question_id in self.current_user["votes"][idx].values():
-						logging.info(self.current_user["votes"][idx])
 						vote = self.current_user["votes"][idx]['vote']
 						break
 
@@ -324,22 +336,25 @@ class VoteHandler(BaseHandler):
 
 		if self.application.db.users.find_one({"email": self.current_user["email"], "votes.question_id": question_id}) == None:
 			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$push": {"votes": {"question_id": question_id, "vote": vote_index}}})
-			question = self.application.db.questions.find_one_and_update({"_id": question_id}, {"$inc": {"data.option"+str(vote_index): 1}}, return_document=pymongo.ReturnDocument.AFTER)
+			question = self.application.db.questions.find_one_and_update({"_id": question_id}, {"$inc": {"data."+str(vote_index)+".votes": 1}}, return_document=pymongo.ReturnDocument.AFTER)
 		else:
 			for idx, vote in enumerate(self.current_user["votes"]):
 				if vote["question_id"] == question_id:
 					self.current_user["votes"][idx]["vote"] = vote_index
 					old_vote = self.application.db.users.find_one_and_replace({"email": self.current_user["email"]}, self.current_user)["votes"][idx]["vote"]
-					self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"data.option"+str(old_vote): -1}})
-					question = self.application.db.questions.find_one_and_update({"_id": question_id}, {"$inc": {"data.option"+str(vote_index): 1}}, return_document=pymongo.ReturnDocument.AFTER)
+					self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"data."+str(old_vote)+".votes": -1}})
+					question = self.application.db.questions.find_one_and_update({"_id": question_id}, {"$inc": {"data."+str(vote_index)+".votes": 1}}, return_document=pymongo.ReturnDocument.AFTER)
 
 		question = question["data"]
-		self.write({"idx": vote_index, "votes": sum(question.values())})
+		self.write({"idx": vote_index, "votes": sum([q["votes"] for q in question])})
 
 class CreateQuestionHandler(BaseHandler):
 	@tornado.web.authenticated
 	def post(self):
 		question_title = self.get_argument("question-title")
+		if question_title == '':
+			return
+
 		image_link     = self.get_argument("image-link")
 		answer_1       = self.get_argument("answer-1")
 		answer_2       = self.get_argument("answer-2")
@@ -347,16 +362,31 @@ class CreateQuestionHandler(BaseHandler):
 		answer_4       = self.get_argument("answer-4")
 		answer_5       = self.get_argument("answer-5")
 
-		labels = [answer for answer in [answer_1, answer_2, answer_3, answer_4, answer_5] if answer]
-		data = [0 for count in range(len(labels))]
+		if answer_1 == '' or answer_2 == '':
+			return
+		if answer_1 == answer_2:
+			return
+		if answer_3 != '' and (answer_3 == answer_1 or answer_3 == answer_2):
+			return
+		if answer_4 != '' and (answer_4 == answer_1 or answer_4 == answer_2 or answer_4 == answer_3):
+			return
+		if answer_5 != '' and (answer_5 == answer_1 or answer_5 == answer_2 or answer_5 == answer_3 or answer_5 == answer_4):
+			return
 
-		self.application.db.questions.insert_one({"asker":      self.current_user,
+		labels = [answer for answer in [answer_1, answer_2, answer_3, answer_4, answer_5] if answer]
+		data   = [{'label': label, 'votes': 0} for label in labels]
+
+		self.application.db.questions.insert_one({"asker":      self.current_user["email"],
 												  "question":   question_title,
 												  "date":       datetime.now(),
 										 		  "image_link": image_link,
-										 		  "labels":     labels,
-										          "data":       data,})
-		self.application.db.users.update_one({"email": self.current_user}, {"$inc": {"questions": 1}})
+										          "data":       data,
+										          "favorites":	0,
+										          "shares":		0,
+										          "comments":	[],
+										        })
+
+		self.application.db.users.update_one({"email": self.current_user["email"]}, {"$inc": {"questions": 1}})
 		self.redirect("/feed")
 
 class ProfileHandler(BaseHandler):
@@ -377,5 +407,5 @@ class FeedHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
