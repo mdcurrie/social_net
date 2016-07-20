@@ -1,11 +1,39 @@
 $(function() {
-	resizeQuestionImage();
-	var metrics_top = $('#poll-metrics').position().top - 3;
-	$(window).resize(function() {
-		setTimeout(function() {
-			resizeQuestionImage();
-			metrics_top = $('#poll-metrics').position().top - 3;
-		}, 100);
+	$('#modal form').on('submit', function(e) {
+		e.preventDefault();
+		if ($('#question-title').val() == '') {
+			$('#question-error').text('Please enter a question.');
+			return;
+		}
+
+		var an1 = $('#answer-1').val();
+		var an2 = $('#answer-2').val();
+		var an3 = $('#answer-3').val();
+		var an4 = $('#answer-4').val();
+		var an5 = $('#answer-5').val();
+
+		if ((an1 == '') || (an2 == '')) {
+			$('#question-error').text('Please fill out option 1 and option 2.');
+			return;
+		}
+		if (an1 == an2) {
+			$('#question-error').text('Please enter unique options.');
+			return;
+		}
+		if (an3 != '' && (an3 == an1 || an3 == an2)) {
+			$('#question-error').text('Please enter unique options.');
+			return;
+		}
+		if (an4 != '' && (an4 == an1 || an4 == an2 || an4 == an3)) {
+			$('#question-error').text('Please enter unique options.');
+			return;
+		}
+		if (an5 != '' && (an5 == an1 || an5 == an2 || an5 == an3 || an5 == an4)) {
+			$('#question-error').text('Please enter unique options.');
+			return;
+		}
+
+		$(this).unbind('submit').submit();
 	});
 
 	var scroll_pos = 0;
@@ -52,19 +80,19 @@ $(function() {
 		})
 	});
 
-	// Get the modal
-	var modal = $('#myModal');
+	$('#open-button').on('click', function() {
+		$(this).css({"display": "none"});
+		$('#close-button').css({"display": "block"});
+		$('#modal').css({"display": "block"});
+		$('#question-title').focus();
+	});
 
-	// Get the button that opens the modal
-	var btn = $('#myBtn');
-	
-	// When the user clicks on the button, open the modal
-	btn.on('click', function() {
-		modal.css({"display": "block"});
-		//$('*:not(#myModal)').on('click', function() {
-		//	modal.css({"display": "none"});
-		//	$('*:not(#myModal)').off('click');
-		//});
+	$('#close-button').on('click', function() {
+		$(this).css({"display": "none"});
+		$('#modal').css({"display": "none"});
+		$('#open-button').css({"display": "block"});
+		$('.input-row input').val('');
+		$('#question-error').text('');
 	});
 
 	$('#answer-2').on('change paste keyup', function() {
@@ -93,10 +121,3 @@ $(function() {
 	});
 
 });
-
-function resizeQuestionImage()
-{
-	$('.question-image').each(function(index) {
-		$(this).height($('.chart').eq(index).height() + 40);
-	});
-}

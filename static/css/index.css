@@ -5,7 +5,9 @@ html {
 }
 a {
 	text-decoration: none;
-	color: white;
+}
+* {
+	color: #333;
 }
 body {
 	background-color: #f1f1f1;
@@ -69,10 +71,11 @@ label[for="nav-trigger"] {
 }
 .nav-item a {
 	display: block;
+	color: white;
 	padding: 0.9em;
 	font-size: 1.25em;
 }
-.active {
+header .active {
 	border-left: 5px solid #eee04b;
 }
 
@@ -140,7 +143,7 @@ label[for="nav-trigger"] {
 		float: left;
 		color: #333;
 	}
-	.active {
+	header .active {
 		padding-bottom: 10px;
 		border: 0px;
 		border-bottom: 5px solid #eee04b
@@ -153,60 +156,12 @@ label[for="nav-trigger"] {
 
 section {
 	padding-top: 60px;
-}
-section a {
-	color: #333;
-}
-article {
-	margin-bottom: 46px;
-}
-.question-title {
-	font-size: 1em;
-	margin-bottom: 5px;
-}
-.question-title a:hover {
-	color: #00a2d7;
-}
-.question-image {
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position-y: 30%;
-}
-.chart {
-	padding: 10px;
-	box-sizing: border-box;
-	background-color: white;
-}
-.vote-count {
-	margin-top: 10px;
-	color: #8d8d8d;
-	text-align: right
+	margin-bottom: 40px;
 }
 
 @media only screen and (min-width: 768px) {
 	section {
-		padding-top: 163px;
-	}
-	article {
-		width: 90%;
-		max-width: 1200px;
-		margin: 0 auto;
-		margin-bottom: 46px;
-		overflow: auto;
-		border-radius: 10px;
-	}
-	.question-title {
-		font-size: 1.25em;
-		margin-bottom: 10px;
-	}
-	.question-image {
-		width: 50%;
-		float: left;
-	}
-	.chart {
-		width: 50%;
-		float: left;
-		padding: 20px;
+		padding-top: 146px;
 	}
 }
 
@@ -241,6 +196,7 @@ footer {
 }
 .footer-links {
 	font-size: 0.8em;
+	color: white;
 }
 .footer-links:hover {
 	color: #8d8d8d;

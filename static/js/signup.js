@@ -6,19 +6,19 @@ $(function() {
 	var timer_username = null;
 	$('input[name="username"]').on('input', function() {
 		clearTimeout(timer_username);
-		timer_username = setTimeout(validateUsername, 750);
+		timer_username = setTimeout(validateUsername, 1000);
 	});
 
 	var timer_email = null;
 	$('input[name="email"]').on('input', function() {
 		clearTimeout(timer_email);
-		timer_email = setTimeout(validateEmail, 750);
+		timer_email = setTimeout(validateEmail, 1000);
 	});
 
 	var timer_password = null;
 	$('input[name="password"]').on('input', function() {
 		clearTimeout(timer_password);
-		timer_password = setTimeout(validatePassword, 750);
+		timer_password = setTimeout(validatePassword, 1000);
 	});
 
 	$('form').on('submit', function(e) {
@@ -38,6 +38,10 @@ function validateUsername() {
 
 	valid_username = false;
 
+	if (username == '') {
+		error.text('');
+		return;
+	}
 	if (!(/^[a-zA-Z0-9_ ]+$/i.test(username))) {
 		error.text('Letters, numbers, spaces, and underscores only.');
 		error.css({"display": "block", "color": "red"});
@@ -60,12 +64,18 @@ function validateEmail(send_json=true) {
 	
 	valid_email = false;
 
+	if (email == '') {
+		error.text('');
+		return;
+	}
 	if (!(/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/i.test(email))) {
 		error.text('Please enter a valid email address.');
 		error.css({"display": "block", "color": "red"});
+		return;
 	}
 	if (send_json == false) {
 		valid_email = true;
+		return;
 	}
 	else {
 		$.getJSON('email_lookup', {email: email}, function(data) {
@@ -74,7 +84,7 @@ function validateEmail(send_json=true) {
 				error.css({"display": "block", "color": "red"});
 			}
 			else {
-				error.text('Cool.');
+				error.text('Looks good.');
 				error.css({"display": "block", "color": "green"});
 				valid_email = true;
 			}
@@ -94,7 +104,7 @@ function validatePassword() {
 		error.css({"display": "block", "color": "red"});	
 	}
 	else {
-		error.text('Looks good.');
+		error.text("Don't share it with anyone.");
 		error.css({"display": "block", "color": "green"});
 		valid_password = true;
 	}

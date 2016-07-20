@@ -21,6 +21,7 @@ header {
 	position: fixed;
 	width: 100%;
 	box-shadow: 0 1px 2px rgba(0,0,0,.1);
+	z-index: 1;
 }
 .header-wrapper {
 	height: 46px;
@@ -44,11 +45,21 @@ nav {
 #logo > a {
 	color: white;
 }
+#mag-glass {
+	height: 30px;
+	width: 30px;
+	display: block;
+	float: right;
+	margin-top: 8px;
+}
 #search {
 	display: none;
 }
 
 @media only screen and (min-width: 768px) {
+	#mag-glass {
+		display: none;
+	}
 	#search {
 		display: block;
 		font-size: 125%;
@@ -301,69 +312,100 @@ section {
 
 /*=================== MODAL STYLING START ====================*/
 
-#ask-button {
+#ask-article {
 	text-align: center;
-	padding: 10px 0;
+	padding: 20px 0;
 	margin-bottom: 30px;
 	background-color: white;
+	position: relative;
 }
-#myBtn {
+#close-button img {
+	height: 30px;
+	width: 30px;
+	position: absolute;
+	top: 7px;
+	right: 7px;
+}
+#close-button {
+	display: none;
+	cursor: pointer;
+}
+#open-button button {
 	border-radius: 50%;
+	font-family: initial;
 	border: 1px solid #693ca1;
-	width: 60px;
-	height: 60px;
+	width: 70px;
+	height: 70px;
 	background-color: white;
 	margin-bottom: 10px;
 	color: #693ca1;
 	font-size: 50px;
-	cursor: pointer;
 	outline: none;
 }
-#ask-button h5 {
+#open-button * {
+	cursor: pointer;
+}
+#ask-article h5 {
 	color: #693ca1;
 }
-.modal {
+#modal {
     display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
 }
-.modal-content {
+#modal-content {
     background-color: white;
     height: 100%;
 }
-.modal-content h1 {
+#modal-content h1 {
 	background-color: #693ca1;
 	font-size: 1.5em;
 	color: white;
 	text-align: center;
 	padding: 15px;
 }
+.input-row {
+	margin-bottom: 20px;
+}
 input {
+	padding: 10px 0 10px 45px;
+	background-repeat: no-repeat;
+	background-size: 20px;
+	background-position: 9px;
 	font-size: 1em;
 	box-sizing: border-box;
 	display: block;
 	width: 90%;
 	margin: 0 auto;
-	margin-top: 20px;
-	margin-bottom: 20px;
-	padding: 10px;
 	font-family: Karla;
 	outline: none;
+	border: none;
+	border-radius: 10px;
+	background-color: #f1f1f1;
+}
+.input-row:nth-of-type(1) {
+	margin-top: 20px;
 }
 input[type="text"]:focus {
-	border: none;
+	border-color: #eee04b;
 	box-shadow: 0 0 3px 2px rgba(238, 224, 75, 1);
 }
-input[type="submit"] {
-	background-color: #693ca1;
-	color: white;
+#modal button {
+	background-color: #eee04b;
+	border-radius: 10px;
+	font-family: Karla;
+	font-size: 1em;
+	color: #333;
+	width: 90%;
 	border: 0px;
 	padding: 10px;
 	cursor: pointer;
+	position: relative;
+}
+button img {
+	width: 23px;
+	height: 23px;
+	position: absolute;
+	top: 7px;
+	right: 7px;
 }
 #answer-3 {
 	display: none;
@@ -376,18 +418,8 @@ input[type="submit"] {
 }
 
 @media only screen and (min-width: 500px) {
-	.modal {
-	    background-color: rgba(0,0,0,0.4);
-	}
-	.modal-content {
+	#modal-content {
 	    background-color: white;
-	    margin: 0 auto;
-	    margin-top: 200px;
-	    overflow: auto;
-	    width: 70%;
-	    min-width: 400px;
-	    max-width: 550px;
-	    height: initial;
 	}
 }
 

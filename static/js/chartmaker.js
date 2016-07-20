@@ -4,27 +4,16 @@ $(function() {
 
 	$("canvas").each(function() {
 		var ctx = $(this);
-		const label = JSON.parse($(this).find('.chart-labels').html());
-		const data  = JSON.parse($(this).find('.chart-data').html());
-
-		const ordered_label = {};
-		Object.keys(label).sort().forEach(function(key) {
-			ordered_label[key] = label[key];
-		});
-
-		const ordered_data = {};
-		Object.keys(data).sort().forEach(function(key) {
-			ordered_data[key] = data[key];
-		});
-
-		var x = [];
-		for (var key in ordered_label) {
-			x.push(ordered_label[key]);
-		}
+		var data  = JSON.parse($(this).find('.chart-data').html());
 
 		var y = [];
-		for (var key in ordered_data) {
-			y.push(ordered_data[key]);
+		for (var key in data) {
+			y.push(data[key]["votes"]);
+		}
+
+		var x = [];
+		for (var key in data) {
+			x.push(data[key]["label"]);
 		}
 
 		var myChart = new Chart(ctx, {

@@ -1,10 +1,11 @@
 $(function() {
     $('.labels h4').on('click', function(e) {
         var question_id = $(this).parent().attr('class').split(' ')[1];
-        var vote_index = $('.labels h4').index($(this));
+        var vote_index = $(this).prevAll().length;
+        var q = $(this);
         $.getJSON('/vote/' + question_id, {vote_index: vote_index}, function(data) {
-            $('.labels h4').removeClass('active');
-            $('.labels h4').eq(data.idx).addClass('active');
+            q.siblings().removeClass('active');
+            q.addClass('active');
             $('.vote-count h4').text(data.votes + ' Votes');
         });
     });
