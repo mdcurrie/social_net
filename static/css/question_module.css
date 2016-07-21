@@ -113,14 +113,15 @@ canvas {
 	width: 33.3%;
 	float: left;
 }
-.chart-footer img {
+.svg-image {
 	width: 20px;
 	height: 20px;
-	vertical-align: middle;
-	display: none;
+	display: inline-block;
 }
-.chart-footer img:hover {
-	cursor: pointer;
+.chart-footer svg {
+	height: 20px;
+	width: 20px;
+	vertical-align: middle;
 }
 img.active {
 	display: initial;
@@ -161,7 +162,11 @@ img.active {
 	.chart-footer h4 {
 		font-size: 1.1em;
 	}
-	.chart-footer img {
+	.svg-image {
+		height: 30px;
+		width: 30px;
+	}
+	.chart-footer svg {
 		height: 30px;
 		width: 30px;
 	}

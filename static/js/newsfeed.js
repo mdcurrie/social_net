@@ -36,6 +36,14 @@ $(function() {
 		$(this).unbind('submit').submit();
 	});
 
+	var metrics_top = $('#poll-metrics').position().top - 3;
+  	$(window).resize(function() {
+  		setTimeout(function() {
+  			resizeQuestionImage();
+ 			metrics_top = $('#poll-metrics').position().top - 3;
+  		}, 100);
+  	});
+
 	var scroll_pos = 0;
     $(document).scroll(function() { 
         scroll_pos = $(this).scrollTop();
