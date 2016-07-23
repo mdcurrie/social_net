@@ -36,11 +36,20 @@ $(function() {
 		$(this).unbind('submit').submit();
 	});
 
-	var metrics_top = $('#poll-metrics').position().top - 3;
+	var metrics_top = $('#profile-metrics').position().top - 3;
+	if ($(window).width() < 768) {
+		$('#overlay-content').height($(window).height() - 90);
+	}
   	$(window).resize(function() {
   		setTimeout(function() {
   			resizeQuestionImage();
- 			metrics_top = $('#poll-metrics').position().top - 3;
+ 			metrics_top = $('#profile-metrics').position().top - 3;
+ 			if ($(window).width() < 768) {
+				$('#overlay-content').height($(window).height() - 90);
+			}
+			else {
+				$('#overlay-content').height(300);
+			}
   		}, 100);
   	});
 
@@ -58,6 +67,40 @@ $(function() {
             $("footer").css('position', 'absolute');
             $("footer").css('top', '450px');
         }
+    });
+
+    $('#profile-metrics a').on('click', function(e) {
+    	e.preventDefault();
+    	var clicked = $(this);
+    	var url = $(this).attr('href');
+    	$.getJSON(url, function(data) {
+    		$('body').addClass('no-scroll');
+    		$('#background-dark').css({"display": "block"});
+    		$('#overlay-close').css({"display": "block"});
+    		$('#overlay-content').html('');
+
+    		if ($('#profile-metrics a').index(clicked) == 0) {
+    			$('#overlay-title').text('Followers');
+    		}
+    		else if ($('#profile-metrics a').index(clicked) == 1) {
+    			$('#overlay-title').text('Following');
+    		}
+    		else {
+    			$('#overlay-title').text('Haters');
+    		}
+
+    		for (var key in data) {
+    			$('#overlay-content').append('<div class="image-row"><img src="' + data[key]["profile_pic_link"] + '"/><h4>' + data[key]["username"] + '</h4></div>');
+    		}
+    		$('#overlay').css({"display": "block"});
+    	});
+    });
+
+    $('#overlay-close, #background-dark').on('click', function() {
+	    $('body').removeClass('no-scroll');
+		$('#background-dark').css({"display": "none"});
+		$('#overlay-close').css({"display": "none"});
+		$('#overlay').css({"display": "none"});
     });
 
     $('#follow-button').on('click', function(e) {

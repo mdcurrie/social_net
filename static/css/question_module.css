@@ -22,14 +22,17 @@ article:last-of-type {
 	float: left;
 	margin-right: 15px;
 }
+.asker-info a {
+	color: #333;
+}
 .asker-info h2 {
-	font-size: 1.2em;
+	font-size: 1em;
 	font-weight: bold;
 	display: inline-block;
 	margin-bottom: 3px;
 }
 .asker-info h3 {
-	font-size: 0.9em;
+	font-size: 0.8em;
 	display: inline;
 	color: #8d8d8d;
 }
@@ -42,6 +45,7 @@ article:last-of-type {
 }
 .vote-count h4 {
 	color: #8d8d8d;
+	font-size: 0.8em;
 }
 .question-image {
 	background-repeat: no-repeat;
@@ -53,6 +57,9 @@ article:last-of-type {
 .question {
 	font-size: 1em;
 	margin-bottom: 15px;
+}
+.question a {
+	color: #333;
 }
 .question a:hover {
 	color: #00a2d7;
@@ -149,6 +156,15 @@ img.active {
 	}
 	article:last-of-type {
 		margin-bottom: 50px;
+	}
+	.asker-info h2 {
+		font-size: 1.2em;
+	}
+	.asker-info h3 {
+		font-size: 0.9em;
+	}
+	.vote-count h4 {
+		font-size: 1em;
 	}
 	.question-image {
 		max-height: 340px;
