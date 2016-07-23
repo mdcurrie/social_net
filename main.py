@@ -29,6 +29,7 @@ class Application(tornado.web.Application):
 					(r"/users/(\w+)/followers", GetFollowersHandler),
 					(r"/users/(\w+)/following", GetFollowingHandler),
 					(r"/users/(\w+)/haters", GetHatersHandler),
+					(r"/groups/(\w+)", GroupHandler),
 					(r"/questions/(\w+)", QuestionHandler),
 					(r"/comments/(\w+)", CommentHandler),
 					(r"/favorite/(\w+)", FavoriteHandler),
@@ -57,8 +58,8 @@ class Application(tornado.web.Application):
 								  "profile_pic_link": "http://i.imgur.com/MQam61S.jpg",
 								  "questions":        2,
 								  "answers":          58,
-								  "following":        [],
-								  "followers":        [],
+								  "following":        ["m@e.com"],
+								  "followers":        ["m@e.com"],
 								  "haters":           [],
 								  "hating":			  [],
 								  "favorites":		  [],
@@ -66,7 +67,65 @@ class Application(tornado.web.Application):
 								  "votes":			  [],
 								  "bio":              "Mogul, First Rapper Ever To Write And Publish A Book at 19, Film Score, Composer, Producer, Director #BASED"})
 
+		user  = users.insert_one({"username":         "marcus", 
+								  "email":            "m@e.com",
+								  "password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
+								  "salt":			  b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
+								  "profile_pic_link": "http://i.imgur.com/pq88IQx.png",
+								  "questions":        2,
+								  "answers":          58,
+								  "following":        ["based@god.com"],
+								  "followers":        ["based@god.com"],
+								  "haters":           [],
+								  "hating":			  [],
+								  "favorites":		  [],
+								  "shares":			  [],
+								  "votes":			  [],
+								  "bio":              "I'm new here!"})
+
+		groups = self.db.groups
+		groups.insert_one({"name":			  "Music",
+						   "pic_link":		  "http://i.imgur.com/2RrtWCM.jpg",
+						   "posts":			  2,
+						   "followers":		  [],
+						   "bio":		      "The official music group of Hive. Discuss your favorite music and discover new sounds."})
+
+		groups.insert_one({"name":			  "Sports",
+						   "pic_link":		  "http://i.imgur.com/Lky0iUM.png",
+						   "posts":			  0,
+						   "followers":		  [],
+						   "bio":		      "The official sports group of Hive. Discuss your favorite sports team. Remember to keep it civil."})
+
+		groups.insert_one({"name":			  "Videogames",
+						   "pic_link":		  "http://i.imgur.com/9ZJyqmH.png",
+						   "posts":			  0,
+						   "followers":		  [],
+						   "bio":		      "The official videogames group of Hive. Discuss your favorite videogames and try not to start any console wars."})
+
 		questions = self.db.questions
+		questions.insert_one({"asker":      "based@god.com",
+						      "group":		"Music",
+							  "question":   "Rate Beyonces new album!",
+							  "date":       datetime.utcnow(),
+							  "image_link": "http://i.imgur.com/SX3tMDg.jpg",
+							  "data":		[
+					 		 					{
+						 		 					"label": "it was LIT",
+						 		 					"votes": 12,
+					 		 					},
+					 		 					{
+						 		 					"label": "shes done better",
+						 		 					"votes": 19,
+					 		 					},
+					 		 					{
+					 		 						"label": "worse than Miley",
+					 		 						"votes": 3,
+					 		 					},
+					 		  				],
+							  "favorites":  13203156,
+							  "shares":     191931,
+					 		  "comments":   []})
+		
 		questions.insert_one({"asker":      "based@god.com",
 							  "question":   "Whos gonna become president? no trolls pls",
 							  "date":	    datetime.utcnow(),
@@ -93,28 +152,28 @@ class Application(tornado.web.Application):
 					 		  "shares":     92903,
 					 		  "comments":	[]})
 
-		questions.insert_one({"asker":      "based@god.com",
-							  "question":   "Rate Beyonces new album!",
+		questions.insert_one({"asker":      "m@e.com",
+							  "group":		"Music",
+							  "question":   "Best album of 2016?",
 							  "date":       datetime.utcnow(),
-							  "image_link": "http://i.imgur.com/SX3tMDg.jpg",
+							  "image_link": "http://i.imgur.com/BpXMFZw.jpg",
 							  "data":		[
 					 		 					{
-						 		 					"label": "it was LIT",
-						 		 					"votes": 12,
+						 		 					"label": "views by drake",
+						 		 					"votes": 560,
 					 		 					},
 					 		 					{
-						 		 					"label": "shes done better",
-						 		 					"votes": 19,
+						 		 					"label": "tlop by kanye",
+						 		 					"votes": 940,
 					 		 					},
 					 		 					{
-					 		 						"label": "worse than Miley",
-					 		 						"votes": 3,
+					 		 						"label": "lemonade by beyonce",
+					 		 						"votes": 20400,
 					 		 					},
 					 		  				],
 							  "favorites":  13203156,
 							  "shares":     191931,
-					 		  "comments":   [("based@god.com", datetime(2015, 4, 12, 0, 0, 0, 0), "not really feeling it"),
-					 		  				 ("based@god.com", datetime(2016, 7, 12, 0, 2, 23, 0), "yolo 2016")]})
+					 		  "comments":   []})
 
 		tornado.web.Application.__init__(self, handlers, **settings)	
 
@@ -137,7 +196,8 @@ class IndexHandler(BaseHandler):
 			self.redirect("/feed")
 		else:
 			questions = self.application.db.questions.find().sort("_id", pymongo.DESCENDING).limit(10)
-			self.render("index.html", questions=questions, users=self.application.db.users)
+			groups    = list(self.application.db.groups.find().limit(3))
+			self.render("index.html", questions=questions, users=self.application.db.users, groups=groups)
 
 class SignupHandler(BaseHandler):
 	def get(self):
@@ -234,21 +294,66 @@ class GetFollowersHandler(BaseHandler):
 	def get(self, target_id):
 		target_id = ObjectId(target_id)
 		target_user = self.application.db.users.find_one({"_id": target_id}, {"_id": 0, "followers": 1})
-		followers = self.application.db.users.find({"email": {"$in": target_user["followers"]}}, {"_id": 0, "username": 1, "profile_pic_link": 1})
+		followers = list(self.application.db.users.find({"email": {"$in": target_user["followers"]}}, {"email": 1, "username": 1, "profile_pic_link": 1}))
+		for follower in followers:
+			follower["_id"] = str(follower["_id"])
+			if self.current_user and self.current_user["email"] == follower["email"]:
+				follower["follow_text"] = False
+				follower["hate_text"]   = False
+				continue
+			if self.current_user and follower["email"] in self.current_user["following"]:
+				follower["follow_text"] = "Following"
+			else:
+				follower["follow_text"] = "Follow"
+			if self.current_user and follower["email"] in self.current_user["hating"]:
+				follower["hate_text"] = "Hating"
+			else:
+				follower["hate_text"] = "Hate"
+
 		self.write(json.dumps(list(followers)))
 
 class GetFollowingHandler(BaseHandler):
 	def get(self, target_id):
 		target_id = ObjectId(target_id)
 		target_user = self.application.db.users.find_one({"_id": target_id}, {"_id": 0, "following": 1})
-		following = self.application.db.users.find({"email": {"$in": target_user["following"]}}, {"_id": 0, "username": 1, "profile_pic_link": 1})
-		self.write(json.dumps(list(following)))
+		followings = list(self.application.db.users.find({"email": {"$in": target_user["following"]}}, {"email": 1, "username": 1, "profile_pic_link": 1}))
+		for following in followings:
+			following["_id"] = str(following["_id"])
+			if self.current_user and self.current_user["email"] == following["email"]:
+				following["follow_text"] = False
+				following["hate_text"]   = False
+				continue
+			if self.current_user and following["email"] in self.current_user["following"]:
+				following["follow_text"] = "Following"
+			else:
+				following["follow_text"] = "Follow"
+			if self.current_user and following["email"] in self.current_user["hating"]:
+				following["hate_text"] = "Hating"
+			else:
+				following["hate_text"] = "Hate"
+
+		self.write(json.dumps(list(followings)))
 
 class GetHatersHandler(BaseHandler):
 	def get(self, target_id):
 		target_id = ObjectId(target_id)
 		target_user = self.application.db.users.find_one({"_id": target_id}, {"_id": 0, "haters": 1})
-		haters = self.application.db.users.find({"email": {"$in": target_user["haters"]}}, {"_id": 0, "username": 1, "profile_pic_link": 1})
+		haters = list(self.application.db.users.find({"email": {"$in": target_user["haters"]}}, {"email": 1, "username": 1, "profile_pic_link": 1}))
+		for hater in haters:
+			hater["_id"] = str(hater["_id"])
+			if self.current_user and self.current_user["email"] == hater["email"]:
+				hater["follow_text"] = False
+				hater["hate_text"]   = False
+				continue
+			if self.current_user and hater["email"] in self.current_user["hater"]:
+				hater["follow_text"] = "Following"
+			else:
+				hater["follow_text"] = "Follow"
+			if self.current_user and hater["email"] in self.current_user["hating"]:
+				hater["hate_text"] = "Hating"
+			else:
+				hater["hate_text"] = "Hate"
+
 		self.write(json.dumps(list(haters)))
 
 class EmailHandler(BaseHandler):
@@ -428,8 +533,14 @@ class FeedHandler(BaseHandler):
 		questions = self.application.db.questions.find().sort("_id", pymongo.DESCENDING).limit(10)
 		self.render("newsfeed.html", profile=self.current_user, current_user=self.current_user, users=self.application.db.users, questions=questions, controlled=True, datetime=datetime)
 
+class GroupHandler(BaseHandler):
+	def get(self, group_name):
+		target_group = self.application.db.groups.find_one({"name": group_name})
+		questions = self.application.db.questions.find({"group": group_name}).sort("_id", pymongo.DESCENDING).limit(10)
+		self.render("group.html", profile=target_group, current_user=self.current_user, questions=questions, users=self.application.db.users)
+
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()

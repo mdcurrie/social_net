@@ -59,7 +59,38 @@
             </div>
         </header>
         <section>
-            {% for question in questions %}
+            {% for idx, question in enumerate(questions) %}
+                {% if idx == 0 %}
+                    <article id="featured-groups">
+                        <h1>Featured Groups</h1>
+                        <div id="groups">
+                            <div class="group">
+                                <a href="/groups/{{ groups[0]["name"] }}">
+                                    <img class="group-img" src="{{ groups[0]["pic_link"] }}">
+                                    <div class="group-text">
+                                        {{ groups[0]["name"] }}
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="group">
+                                <a href="/groups/{{ groups[1]["name"] }}">
+                                    <img class="group-img" src="{{ groups[1]["pic_link"] }}">
+                                    <div class="group-text">
+                                        {{ groups[1]["name"] }}
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="group">
+                                <a href="/groups/{{ groups[2]["name"] }}">
+                                    <img class="group-img" src="{{ groups[2]["pic_link"] }}">
+                                    <div class="group-text">
+                                        {{ groups[2]["name"] }}
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                {% end %}
                 {% set asker = users.find_one({"email": question["asker"]}) %}
                 {% module Question(question, asker, None, False, False, False, False) %}
             {% end %}

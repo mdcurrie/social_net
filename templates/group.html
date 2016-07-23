@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Hive</title>
+        <link href='https://fonts.googleapis.com/css?family=Karla' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
+        <link rel="stylesheet" href="{{ static_url("css/group.css") }}">
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+	    <header role="banner">
+	    	<div id="logo"><a href="/">Hive</a></div>
+	    	<div class="header-wrapper">
+	    		<nav role="navigation">
+	    			<img id="mag-glass" src="{{ static_url("images/magnifying-glass-white.svg") }}">
+	    			<input type="text" placeholder="Search" autocomplete="off" id="search">
+	    		</nav>
+	    	</div>
+	    </header>
+	    <div id="profile-info">
+	    	<div id="profile-wrapper">
+		    	<div id="profile-pic-and-text">
+			    	<div id="profile-pic">
+			    		<img src="{{ profile["pic_link"] }}" alt="{{ profile["name"] }}'s avatar">
+			    	</div>
+			    	<div id="profile-text">
+				    	<div id="username">
+				    		<h1>{{ profile["name"] }}</h1>
+				    	</div>
+				    	<div id="profile-bio">
+				    		<h3>{{ profile["bio"] }}</h3>
+				    	</div>
+				    </div>
+				</div>
+			    <div id="profile-buttons">
+			    	<button type="submit" class="profile-button {% if current_user and current_user["email"] in profile["followers"]%}active{% end %}" id="follow-button">
+			    		{% if current_user and current_user["email"] in profile["followers"] %}
+			    			Followed
+			    		{% else %}
+			    			Follow
+			    		{% end %}
+			    	</button>
+				</div>
+			</div>
+	    </div>
+	    <div id="profile-metrics">
+	    	<div id="profile-metrics-wrapper">
+		    	<div class="profile-metrics-text">
+		    		<a href="/groups/{{ str(profile["name"]) }}/followers">
+		    			<div class="text-num">{{ len(profile["followers"]) }}</div>
+		    			<div class="text-str">followers</div>
+		    		</a>
+		    	</div>
+		    	<div class="profile-metrics-text">
+		    		<div class="text-num">{{ profile["posts"] }}</div>
+		    		<div class="text-str">Posts</div>
+		    	</div>
+		    </div>
+		</div>
+		<div id="background-dark"></div>
+		<div id="overlay">
+			<h1 id="overlay-title">Followers</h1>
+			<div id="overlay-content">
+			</div>
+		</div>
+		<div id="overlay-close">&times</div>
+		<section>
+			{% for question in questions %}
+        		{% set asker = users.find_one({"email": question["asker"]}) %}
+        		{% if current_user %}
+	        		{% set favorited = question["_id"] in current_user["favorites"] %}
+	        		{% set shared    = question["_id"] in current_user["shares"] %}
+	        		{% set commented = current_user["email"] in [comment[0] for comment in question["comments"]] %}
+	        		{% module Question(question, asker, None, favorited, shared, commented, False) %}
+	        	{% else %}
+	        		{% module Question(question, asker, None, None, None, None, False) %}
+	        	{% end %}
+       		{% end %}
+       	</section>
+        <footer role="contentinfo">
+        	<ul>
+                <li><a class="footer-links" href="">Blog</a></li>
+                <li><a class="footer-links" href="">Email Us</a></li>
+                <li><a class="footer-links" href="">Jobs</a></li>
+                <li><a class="footer-links" href="">Terms</a></li>
+                <li><a class="footer-links" href="">Privacy</a></li>
+                <li><a class="footer-links" href="">Cookie</a></li>
+                <li><a class="footer-links" href="">Copyright</a></li>
+                <li>&copy; 2016<br>Hive, Inc.</li>
+        	</ul>
+        </footer>
+        <script src="{{ static_url("js/jquery.min.js") }}"></script>
+    </body>
+</html>
