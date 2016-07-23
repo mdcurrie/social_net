@@ -25,22 +25,22 @@
 	    	</div>
 	    </header>
 	    <div id="profile-info">
-	    	<div id="profile-pic-and-text">
-		    	<div id="profile-pic">
-		    		<img src="{{ profile["profile_pic_link"] }}" alt="{{ profile["username"] }}'s avatar">
-		    	</div>
-		    	<div id="profile-text">
-			    	<div id="username">
-			    		<h1>{{ profile["username"] }}</h1>
+	    	<div id="profile-wrapper">
+		    	<div id="profile-pic-and-text">
+			    	<div id="profile-pic">
+			    		<img src="{{ profile["profile_pic_link"] }}" alt="{{ profile["username"] }}'s avatar">
 			    	</div>
-			    	<div id="profile-bio">
-			    		<h3>{{ profile["bio"] }}</h3>
-			    	</div>
-			    </div>
-			</div>
-		    <div id="profile-metrics">
-		    	{% if controlled == False %}
-		    		<div id="profile-buttons">
+			    	<div id="profile-text">
+				    	<div id="username">
+				    		<h1>{{ profile["username"] }}</h1>
+				    	</div>
+				    	<div id="profile-bio">
+				    		<h3>{{ profile["bio"] }}</h3>
+				    	</div>
+				    </div>
+				</div>
+			    <div id="profile-buttons">
+			    	{% if controlled == False %}
 				    	<button type="submit" class="profile-button {% if current_user and current_user["email"] in profile["followers"]%}active{% end %}" id="follow-button">
 				    		{% if current_user and current_user["email"] in profile["followers"] %}
 				    			Followed
@@ -55,41 +55,48 @@
 				    			Hate
 				    		{% end %}
 				    	</button>
-			    	</div>
-				{% end %}
-		    	<table>
-		    		<tr>
-		    			<td>
-					    	<div id="followers">
-					    		<h2>{{ len(profile["followers"]) }}</h2>
-					    		<h3>Followers</h3>
-					    	</div>
-				    	</td>
-				    	<td>
-					    	<div id="following">
-					    		<h2>{{ len(profile["following"]) }}</h2>
-					    		<h3>Following</h3>
-					    	</div>
-					    </td>
-					    <td>
-					    	<div id="haters">
-					    		<h2>{{ len(profile["haters"]) }}</h2>
-					    		<h3>Haters</h3>
-					    	</div>
-					    </td>
-				    </tr>
-			    </table>
-		    </div>
+					{% end %}
+				</div>
+			</div>
 	    </div>
-	    <div id="poll-metrics">
-		    <h2 id="questions">{{ profile["questions"] }} Questions</h2>
-		    <h2 id="answers">{{ profile["answers"] }} Answers</h2>
+	    <div id="profile-metrics">
+	    	<div id="profile-metrics-wrapper">
+		    	<div class="profile-metrics-text">
+		    		<a href="/users/{{ str(profile["_id"]) }}/followers">
+		    			<div class="text-num">{{ len(profile["followers"]) }}</div>
+		    			<div class="text-str">followers</div>
+		    		</a>
+		    	</div>
+		    	<div class="profile-metrics-text">
+		    		<a href="/users/{{ str(profile["_id"]) }}/following">
+			    		<div class="text-num">{{ len(profile["following"]) }}</div>
+			    		<div class="text-str">following</div>
+			    	</a>
+		    	</div>
+				<div class="profile-metrics-text">
+					<a href="/users/{{ str(profile["_id"]) }}/haters">
+			    		<div class="text-num">{{ len(profile["haters"]) }}</div>
+			    		<div class="text-str">haters</div>
+			    	</a>
+		    	</div>
+		    	<div class="profile-metrics-text">
+		    		<div class="text-num">{{ len(profile["votes"]) }}</div>
+		    		<div class="text-str">answers</div>
+		    	</div>
+		    </div>
 		</div>
+		<div id="background-dark"></div>
+		<div id="overlay">
+			<h1 id="overlay-title">Followers</h1>
+			<div id="overlay-content">
+			</div>
+		</div>
+		<div id="overlay-close">&times</div>
      	<section>
      		{% if controlled %}
 	     		<article id="ask-article">
 	     			<div id="close-button">
-	     				<img src="{{ static_url("images/cross.svg") }}">
+	     				&times
 	     			</div>
 	     			<div id="open-button">
 		     			<button>+</button>

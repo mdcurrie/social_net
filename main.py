@@ -26,6 +26,9 @@ class Application(tornado.web.Application):
 					(r"/users/(\w+)", ProfileHandler),
 					(r"/follow/(\w+)", FollowHandler),
 					(r"/hate/(\w+)", HateHandler),
+					(r"/users/(\w+)/followers", GetFollowersHandler),
+					(r"/users/(\w+)/following", GetFollowingHandler),
+					(r"/users/(\w+)/haters", GetHatersHandler),
 					(r"/questions/(\w+)", QuestionHandler),
 					(r"/comments/(\w+)", CommentHandler),
 					(r"/favorite/(\w+)", FavoriteHandler),
@@ -226,6 +229,27 @@ class HateHandler(BaseHandler):
 			self.application.db.users.update_one({"_id": target_id},                    {"$pop": {"haters": self.current_user["email"]}})
 			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$pop": {"hating": target_user["email"]}})
 			self.write({"haters": len(target_user["haters"]) - 1, "display_text": "Hate" })
+
+class GetFollowersHandler(BaseHandler):
+	def get(self, target_id):
+		target_id = ObjectId(target_id)
+		target_user = self.application.db.users.find_one({"_id": target_id}, {"_id": 0, "followers": 1})
+		followers = self.application.db.users.find({"email": {"$in": target_user["followers"]}}, {"_id": 0, "username": 1, "profile_pic_link": 1})
+		self.write(json.dumps(list(followers)))
+
+class GetFollowingHandler(BaseHandler):
+	def get(self, target_id):
+		target_id = ObjectId(target_id)
+		target_user = self.application.db.users.find_one({"_id": target_id}, {"_id": 0, "following": 1})
+		following = self.application.db.users.find({"email": {"$in": target_user["following"]}}, {"_id": 0, "username": 1, "profile_pic_link": 1})
+		self.write(json.dumps(list(following)))
+
+class GetHatersHandler(BaseHandler):
+	def get(self, target_id):
+		target_id = ObjectId(target_id)
+		target_user = self.application.db.users.find_one({"_id": target_id}, {"_id": 0, "haters": 1})
+		haters = self.application.db.users.find({"email": {"$in": target_user["haters"]}}, {"_id": 0, "username": 1, "profile_pic_link": 1})
+		self.write(json.dumps(list(haters)))
 
 class EmailHandler(BaseHandler):
 	def get(self):

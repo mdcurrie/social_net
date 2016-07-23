@@ -10,15 +10,15 @@
         {% raw xsrf_form_html() %}
         <div class="input-row">
             <p class="error-message">{{ username_error }}</p>
-            <input style="background-image: url({{ static_url("images/mask.svg") }})" type="text" id="full-name" name="username" autocomplete="off" required="required" placeholder="Username" maxlength="20" autofocus>
+            <input style="background-image: url({{ static_url("images/mask.svg") }})" type="text" id="full-name" name="username" autocomplete="off" placeholder="Username" maxlength="20" autofocus>
         </div>
         <div class="input-row">
             <p class="error-message">{{email_error }}</p>
-            <input style="background-image: url({{ static_url("images/mail.svg") }})" type="email" id="email" name="email" autocomplete="off" required="required" placeholder="Email">
+            <input style="background-image: url({{ static_url("images/mail.svg") }})" type="email" id="email" name="email" autocomplete="off" placeholder="Email">
         </div>
         <div class="input-row">
             <p class="error-message">{{ password_error }}</p>
-            <input style="background-image: url({{ static_url("images/lock.svg") }})" type="password" id="password" name="password" required="required" placeholder="Password">
+            <input style="background-image: url({{ static_url("images/lock.svg") }})" type="password" id="password" name="password" placeholder="Password">
         </div>
         <button type="submit">Sign Up<img src="{{ static_url("images/chevron-thin-right.svg") }}"></button>
     </form>
