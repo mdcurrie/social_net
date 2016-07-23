@@ -158,9 +158,6 @@ nav {
 #follow-button {
 	margin-right: 10px;
 }
-#hate-button {
-	margin-left: 10px;
-}
 #profile-metrics {
 	background-color: #eee04b;
 	font-size: 0.7em;
@@ -177,7 +174,7 @@ nav {
 	text-align: center;
 }
 .profile-metrics-text {
-	width: 25%;
+	width: 50%;
 	float: left;
 	cursor: pointer;
 }

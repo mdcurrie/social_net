@@ -125,20 +125,6 @@ $(function() {
 		})
 	});
 
-	$('#hate-button').on('click', function() {
-		var user_id = window.location.href.split("/").pop();
-		$.getJSON('/hate/' + user_id, function(data) {
-			$('.text-num').eq(2).text(data.haters);
-			$('#hate-button').text(data.display_text);
-			if (data.display_text == "Hated") {
-				$('#hate-button').addClass('active');
-			}
-			else {
-				$('#hate-button').removeClass('active');
-			}
-		})
-	});
-
 	$('#open-button').on('click', function() {
 		$(this).css({"display": "none"});
 		$('#close-button').css({"display": "block"});
@@ -178,5 +164,4 @@ $(function() {
 			$('#answer-5').css('display', 'none');
 		}
 	});
-
 });
