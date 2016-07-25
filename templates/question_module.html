@@ -37,7 +37,17 @@
             </table>
         </div>
         <div class="vote-count">
-            <h4>{{ sum([q["votes"] for q in question["data"]]) }} Votes</h4>
+            <h4>
+                {% set vote_count = sum([q["votes"] for q in question["data"]]) %}
+                {% if vote_count <= 1000 %}
+                    {{ vote_count }}
+                {% elif vote_count <= 999999 %}
+                    {{ round(vote_count/1000, 1) }}K
+                {% else %}
+                    {{ round(vote_count/1000000, 1) }}M
+                {% end %}
+                Votes
+            </h4>
         </div>
     </div>
     <div class="question-image" style="background-image: url({{ question["image_link"] }})"></div>

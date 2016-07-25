@@ -1,9 +1,9 @@
 <div class="comment-section" id="comments">
     <div class="all-comments">
-        {% if len(question["comments"]) != 0 %}
+        {% if question["comments"] %}
             {% set idx = 0 %}
             {% for comment in question["comments"] %}
-                {% while users[idx]["email"] != comment[0] %}
+                {% while users[idx]["email"] != comment["email"] %}
                     {% set idx = (idx + 1) % len(users) %}
                 {% end %}
                 <div class="comment">
@@ -15,7 +15,7 @@
                             <h3>{{ users[idx]["username"] }}</h3>
                         </a>
                         <h5>
-                            {% set total_seconds = (datetime.utcnow() - comment[1]).total_seconds() %}
+                            {% set total_seconds = (datetime.utcnow() - comment["date"]).total_seconds() %}
                             {% if total_seconds < 30 %}
                                 Just now
                             {% elif total_seconds < 60 %}
@@ -27,18 +27,18 @@
                             {% elif total_seconds < 172800 %}
                                 Yesterday
                             {% elif total_seconds < 15770000 %}
-                                {{ comment[1].strftime("%B %d") }}
+                                {{ comment["date"].strftime("%B %d") }}
                             {% else %}
-                                {{ comment[1].strftime("%B %d, %Y") }}
+                                {{ comment["date"].strftime("%B %d, %Y") }}
                             {% end %}
                         </h5>
-                        <h4>{{ comment[2] }}</h4>
+                        <h4>{{ comment["comment"] }}</h4>
                     </div>
                 </div>
             {% end %}
         {% end %}
     </div>
-    <form method="get" action={{ "/comments/" + str(question["_id"]) }}>
-        <input type="text" name="comment" autocomplete="off" required="required" placeholder="Share your thoughts...">
+    <form method="get" action={{ "/comments/" + str(question["_id"]) }} novalidate>
+        <input type="text" name="comment" autocomplete="off" placeholder="Share your thoughts...">
     </form>
 </div>

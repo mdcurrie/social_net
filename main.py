@@ -43,7 +43,7 @@ class Application(tornado.web.Application):
 			static_path=os.path.join(os.path.dirname(__file__), "static"),
 			cookie_secret="bZJc2sWbQLKos6GkHn/VB9oXwQt8S0R0kRvJ5/xJ89E=",
 			xsrf_cookies=True,
-			login_url="/",
+			login_url="/login",
 			ui_modules={"Question": QuestionModule, "Comment": CommentModule},
 			debug=True,
 		)
@@ -57,7 +57,6 @@ class Application(tornado.web.Application):
 								  "salt":			  b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
 								  "profile_pic_link": "http://i.imgur.com/MQam61S.jpg",
 								  "questions":        2,
-								  "answers":          58,
 								  "following":        ["m@e.com"],
 								  "followers":        ["m@e.com"],
 								  "haters":           [],
@@ -73,7 +72,6 @@ class Application(tornado.web.Application):
 								  "salt":			  b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
 								  "profile_pic_link": "http://i.imgur.com/pq88IQx.png",
 								  "questions":        2,
-								  "answers":          58,
 								  "following":        ["based@god.com"],
 								  "followers":        ["based@god.com"],
 								  "haters":           [],
@@ -190,16 +188,20 @@ class BaseHandler(tornado.web.RequestHandler):
 
 		return None
 
+# handler for the home page
 class IndexHandler(BaseHandler):
+	# redirect to /feed if already logged in
 	def get(self):
 		if self.current_user:
 			self.redirect("/feed")
 		else:
 			questions = self.application.db.questions.find().sort("_id", pymongo.DESCENDING).limit(10)
 			groups    = list(self.application.db.groups.find().limit(3))
-			self.render("index.html", questions=questions, users=self.application.db.users, groups=groups)
+			self.render("index.html", questions=questions, groups=groups, db=self.application.db)
 
+# handler for registering new users
 class SignupHandler(BaseHandler):
+	# redirect user to /feed if already logged in
 	def get(self):
 		if self.current_user:
 			self.redirect("/feed")
@@ -210,57 +212,242 @@ class SignupHandler(BaseHandler):
 		username = self.get_argument("username")
 		email    = self.get_argument("email")
 		password = self.get_argument("password")
-		users    = self.application.db.users
 
+		# basic checks on password/email
 		if len(username) < 6:
 			self.render("signup.html", username_error='Your username must be at least 6 characters long.', email_error='', password_error='')
 		elif re.compile("^[a-zA-Z0-9_ ]+$").match(username) == None:
 			self.render("signup.html", username_error='Letters, numbers, spaces, and underscores only.', email_error='', password_error='')
 		elif re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(email) == None:
 			self.render("signup.html", username_error='', email_error='Please enter a valid email address.', password_error='')
-		elif users.find_one({"email": email}) != None:
-			self.render("signup.html", username_error='', email_error='That email is already taken.', password_error='')
+		# redirect user to login if the email already exists. email field is filled in with data from previous form
+		elif self.application.db.users.find_one({"email": email}) != None:
+			self.render("login.html", email=email, email_error='That email is already in use. Want to login?', password_error='')
 		elif len(password) < 6:
 			self.render("signup.html", username_error='', email_error='', password_error='Your password must be at least 6 characters long.')
+		# all checks passed. create db entry for user and redirect to /feed
 		else:
-			salt = bcrypt.gensalt()
+			salt     = bcrypt.gensalt()
 			password = bcrypt.hashpw(password.encode('utf-8'), salt)
-			user = users.insert_one({"username": username, "email": email, "password": password, "salt": salt, "profile_pic_link": "http://i.imgur.com/pq88IQx.png",
-							         "questions": 0, "answers": 0, "following": [], "followers": [], "haters": [], "hating": [], "favorites": [], "shares":[], "votes":[],
-							         "bio": "I'm new here!"})
+			user     = self.application.db.users.insert_one({"username": username, "email": email, "password": password, "salt": salt, "bio": "I'm new here!",
+															 "profile_pic_link": "http://i.imgur.com/pq88IQx.png", "questions": 0, "following": [],
+															 "followers": [], "haters": [], "hating": [], "favorites": [], "shares": [], "votes": []})
+
 			self.set_secure_cookie("auth_id", email, httponly=True)
 			self.redirect("/feed")
 
+# handler for logging in registered users
 class LoginHandler(BaseHandler):
+	# redirect user to /feed if already logged in
 	def get(self):
 		if self.current_user:
 			self.redirect("/feed")
 		else:
-			self.render("login.html", email_error='', password_error='')
+			self.render("login.html", email=None, email_error='', password_error='')
 
 	def post(self):
 		email    = self.get_argument("email")
 		password = self.get_argument("password")
 
+		# check email/password combo
 		if re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(email) == None:
-			self.render("login.html", email_error='Please enter a valid email address.', password_error='')
+			self.render("login.html", email=None, email_error='Please enter a valid email address.', password_error='')
 		elif len(password) < 6:
-			self.render("login.html", email_error='', password_error='The password you entered is incorrect.')
+			self.render("login.html", email=None, email_error='', password_error='The password you entered is incorrect.')
 		else:
-			user = self.application.db.users.find_one({"email": email}, {"salt": 1, "password": 1})
+			user = self.application.db.users.find_one({"email": email}, {"_id": 0, "salt": 1, "password": 1})
 			if user == None:
-				self.render("login.html", email_error='The email you entered does not match any account.', password_error='')
+				self.render("login.html", email=None, email_error='The email you entered does not match any account.', password_error='')
 			elif bcrypt.hashpw(password.encode('utf-8'), user["salt"]) != user["password"]:
-				self.render("login.html", email_error='', password_error='The password you entered is incorrect.')
+				self.render("login.html", email=None, email_error='', password_error='The password you entered is incorrect.')
 			else:
 				self.set_secure_cookie("auth_id", email, httponly=True)
 				self.redirect("/feed")
 
+# handler for logging users out
 class LogoutHandler(BaseHandler):
 	@tornado.web.authenticated
 	def post(self):
 		self.clear_cookie("auth_id")
 		self.redirect("/")
+
+# handler to check if email from signup form is already in use
+class EmailHandler(tornado.web.RequestHandler):
+	def get(self):
+		email = self.get_argument("email")
+		if self.application.db.users.find_one({"email": email}) == None:
+			self.write({"email_taken": False})
+		else:
+			self.write({"email_taken": True})
+
+# handler for user to create a question
+class CreateQuestionHandler(BaseHandler):
+	@tornado.web.authenticated
+	def post(self):
+		question_title = self.get_argument("question-title")
+		if question_title == '':
+			return
+
+		image_link = self.get_argument("image-link")
+		answer_1   = self.get_argument("answer-1")
+		answer_2   = self.get_argument("answer-2")
+		answer_3   = self.get_argument("answer-3")
+		answer_4   = self.get_argument("answer-4")
+		answer_5   = self.get_argument("answer-5")
+
+		if answer_1 == '' or answer_2 == '':
+			return
+		if answer_1 == answer_2:
+			return
+		if answer_3 != '' and (answer_3 == answer_1 or answer_3 == answer_2):
+			return
+		if answer_4 != '' and (answer_4 == answer_1 or answer_4 == answer_2 or answer_4 == answer_3):
+			return
+		if answer_5 != '' and (answer_5 == answer_1 or answer_5 == answer_2 or answer_5 == answer_3 or answer_5 == answer_4):
+			return
+
+		labels = [answer for answer in [answer_1, answer_2, answer_3, answer_4, answer_5] if answer]
+		data   = [{'label': label, 'votes': 0} for label in labels]
+
+		self.application.db.questions.insert_one({"asker":      self.current_user["email"],
+												  "question":   question_title,
+												  "date":       datetime.utcnow(),
+										 		  "image_link": image_link,
+										          "data":       data,
+										          "favorites":	0,
+										          "shares":		0,
+										          "comments":	[],
+										         })
+
+		self.application.db.users.update_one({"email": self.current_user["email"]}, {"$inc": {"questions": 1}})
+		self.redirect("/feed")
+
+# handler to display individual question page
+class QuestionHandler(tornado.web.RequestHandler):
+	def get(self, question_id):
+		question = self.application.db.questions.find_one({"_id": ObjectId(question_id)})
+		if question == None:
+			pass #TODO
+		
+		self.render("question.html", question=question, db=self.application.db)
+
+# module to render a question card
+class QuestionModule(tornado.web.UIModule):
+	def render(self, question, db, show_comments=False):
+		asker = db.users.find_one({"email": question["asker"]}, {"username": 1, "profile_pic_link": 1})
+
+		# get user_ids for all comments on the question
+		users = None
+		if show_comments and question["comments"]:
+				user_ids = [{"email": comments["email"]} for comments in question["comments"]]
+				users    = list(db.users.find({"$or": user_ids}, {"username": 1, "email": 1, "profile_pic_link": 1}))
+
+		# find which choice the user voted for
+		vote = None
+		if self.current_user:
+			question_id = ObjectId(question["_id"])
+			for idx, x in enumerate(self.current_user["votes"]):
+				if question_id in self.current_user["votes"][idx].values():
+					vote = self.current_user["votes"][idx]['vote']
+					break
+
+			# determine if user favorited, shared, or commented
+			favorited = question_id in self.current_user["favorites"]
+			shared    = question_id in self.current_user["shares"]
+			commented = self.current_user["email"] in [comment["email"] for comment in question["comments"]]
+		else:
+			favorited = shared = commented = False
+
+		return self.render_string("question_module.html", question=question, asker=asker, users=users, favorited=favorited, shared=shared,
+			                                              commented=commented, show_comments=show_comments, datetime=datetime, json=json, vote=vote)
+
+	def css_files(self):
+		return self.handler.static_url("css/question_module.css")
+
+	def javascript_files(self):
+		return [self.handler.static_url("js/Chart.js"),
+				self.handler.static_url("js/chartmaker.js"),
+				self.handler.static_url("js/question_module.js")]
+
+# handler for voting on questions
+class VoteHandler(BaseHandler):
+	@tornado.web.authenticated
+	def get(self, question_id):
+		question_id = ObjectId(question_id)
+		vote_index  = self.get_argument("vote_index")
+
+		user = self.application.db.users.find_one_and_update({"email": self.current_user["email"], "votes.question_id": question_id}, {"$set": {"votes.$.vote": vote_index}})
+		# if user has already voted on this question
+		if user:
+			for idx, vote in enumerate(self.current_user["votes"]):
+				if vote["question_id"] == question_id:
+					old_vote = user["votes"][idx]["vote"]
+					if old_vote == vote_index:
+						question = self.application.db.questions.find_one({"_id": question_id}, {"_id": 0, "data": 1})["data"]
+					else:
+						question = self.application.db.questions.find_one_and_update({"_id": question_id}, {"$inc": {"data."+str(old_vote)+".votes": -1, "data."+str(vote_index)+".votes": 1}}, {"_id": 0, "data": 1}, return_document=pymongo.ReturnDocument.AFTER)["data"]
+					break
+		# if user has NOT voted on this question yet
+		else:
+			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$push": {"votes": {"question_id": question_id, "vote": vote_index}}})
+			question = self.application.db.questions.find_one_and_update({"_id": question_id}, {"$inc": {"data."+str(vote_index)+".votes": 1}}, {"_id": 0, "data": 1}, return_document=pymongo.ReturnDocument.AFTER)["data"]
+
+		vote_count = sum([q["votes"] for q in question])
+		if vote_count <= 1000:
+			pass
+		if 1000 < vote_count <= 999999:
+			vote_count = str(round(vote_count/1000, 1)) + 'K'
+		else:
+			vote_count = str(round(vote_count/1000000, 1)) + 'M'
+
+		self.write({"idx": vote_index, "votes": vote_count})
+
+# handler for adding comments to a question
+class CommentHandler(BaseHandler):
+	@tornado.web.authenticated
+	def get(self, question_id):
+		comment  = self.get_argument("comment")
+		question = self.application.db.questions.find_one_and_update({"_id": ObjectId(question_id)}, {"$push": {"comments": {"email": self.current_user["email"], "date": datetime.utcnow(), "comment": comment}}}, 
+					{"comments": 1}, return_document=pymongo.ReturnDocument.AFTER)
+		if question == None:
+			self.redirect("/feed")
+		else:
+			users = None
+			if question["comments"]:
+				user_ids = [{"email": comments["email"]} for comments in question["comments"]]
+				users    = list(self.application.db.users.find({"$or": user_ids}, {"username": 1, "email": 1, "profile_pic_link": 1}))
+			self.render("comment_module.html", question=question, users=users, datetime=datetime)
+
+# handler for rendering comments
+class CommentModule(tornado.web.UIModule):
+	def render(self, question, users):
+		return self.render_string("comment_module.html", question=question, users=users, datetime=datetime)
+
+	def css_files(self):
+		return self.handler.static_url("css/comment_module.css")
+
+	def javascript_files(self):
+		return self.handler.static_url("js/comment_module.js")
+
+# handler for displaying a user's profile page
+class ProfileHandler(BaseHandler):
+	def get(self, user_id):
+		if self.current_user and str(self.current_user["_id"]) == user_id:
+			self.redirect("/feed")
+		else:
+			target_user = self.application.db.users.find_one({"_id": ObjectId(user_id)}, {"password": 0, "salt": 0, "questions": 0, "favorites": 0, "shares": 0, "hating": 0})
+			if target_user == None:
+				self.redirect("/")
+			else:
+				questions = self.application.db.questions.find().sort("_id", pymongo.DESCENDING).limit(10)
+				self.render("newsfeed.html", profile=target_user, current_user=self.current_user, questions=questions, controlled=False, db=self.application.db)
+
+# handler for displaying a user's personalized newsfeed
+class FeedHandler(BaseHandler):
+	@tornado.web.authenticated
+	def get(self):
+		questions = self.application.db.questions.find().sort("_id", pymongo.DESCENDING).limit(10)
+		self.render("newsfeed.html", profile=self.current_user, current_user=self.current_user, questions=questions, controlled=True, db=self.application.db)
 
 class FollowHandler(BaseHandler):
 	@tornado.web.authenticated
@@ -356,81 +543,6 @@ class GetHatersHandler(BaseHandler):
 
 		self.write(json.dumps(list(haters)))
 
-class EmailHandler(BaseHandler):
-	def get(self):
-		email = self.get_argument("email")
-		if self.application.db.users.find_one({"email": email}) == None:
-			self.write({"email_taken": False})
-		else:
-			self.write({"email_taken": True})
-
-class QuestionHandler(BaseHandler):
-	def get(self, question_id):
-		question_id = ObjectId(question_id)
-		question    = self.application.db.questions.find_one({"_id": question_id})
-		asker       = self.application.db.users.find_one({"email": question["asker"]})
-		users       = None
-		if len(question["comments"]) != 0:
-			user_ids = [{"email": comments[0]} for comments in question["comments"]]
-			users = list(self.application.db.users.find({"$or": user_ids}, {"username": 1, "email": 1, "profile_pic_link": 1}))
-		if question == None:
-			pass
-		else:
-			if self.current_user:
-				favorited = question_id in self.current_user["favorites"]
-				shared    = question_id in self.current_user["shares"]
-				commented = self.current_user["email"] in [comment[0] for comment in question["comments"]]
-			else:
-				favorited = shared = commented = False
-			self.render("question.html", question=question, asker=asker, users=users, favorited=favorited, shared=shared, commented=commented)
-
-class QuestionModule(tornado.web.UIModule):
-	def render(self, question, asker, users, favorited, shared, commented, show_comments=False):
-		vote = None
-		if self.current_user:
-			if len(self.current_user["votes"]):
-				question_id = ObjectId(question["_id"])
-				for idx, x in enumerate(self.current_user["votes"]):
-					if question_id in self.current_user["votes"][idx].values():
-						vote = self.current_user["votes"][idx]['vote']
-						break
-
-		return self.render_string("question_module.html", question=question, asker=asker, users=users, favorited=favorited, shared=shared,
-													      commented=commented, show_comments=show_comments, datetime=datetime, json=json, vote=vote)
-
-	def css_files(self):
-		return self.handler.static_url("css/question_module.css")
-
-	def javascript_files(self):
-		return [self.handler.static_url("js/Chart.js"),
-				self.handler.static_url("js/chartmaker.js"),
-				self.handler.static_url("js/question_module.js")]
-
-class CommentHandler(BaseHandler):
-	@tornado.web.authenticated
-	def get(self, question_id):
-		comment = self.get_argument("comment")
-		question = self.application.db.questions.find_one_and_update({"_id": ObjectId(question_id)}, {"$push": {"comments": (self.current_user["email"], datetime.utcnow(), comment)}}, 
-					{"comments": 1}, return_document=pymongo.ReturnDocument.AFTER)
-		if question == None:
-			self.redirect("/feed")
-		else:
-			users = None
-			if len(question["comments"]) != 0:
-				user_ids = [{"email": comments[0]} for comments in question["comments"]]
-				users = list(self.application.db.users.find({"$or": user_ids}, {"username": 1, "email": 1, "profile_pic_link": 1}))
-			self.render("comment_module.html", question=question, users=users, datetime=datetime)
-
-class CommentModule(tornado.web.UIModule):
-	def render(self, question, users):
-		return self.render_string("comment_module.html", question=question, users=users, datetime=datetime)
-
-	def css_files(self):
-		return self.handler.static_url("css/comment_module.css")
-
-	def javascript_files(self):
-		return self.handler.static_url("js/comment_module.js")
-
 class FavoriteHandler(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, question_id):
@@ -457,81 +569,7 @@ class ShareHandler(BaseHandler):
 			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"shares": -1}})
 			self.write({"share": False})
 
-class VoteHandler(BaseHandler):
-	@tornado.web.authenticated
-	def get(self, question_id):
-		question_id = ObjectId(question_id)
-		vote_index  = self.get_argument("vote_index")
 
-		if self.application.db.users.find_one({"email": self.current_user["email"], "votes.question_id": question_id}) == None:
-			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$push": {"votes": {"question_id": question_id, "vote": vote_index}}})
-			question = self.application.db.questions.find_one_and_update({"_id": question_id}, {"$inc": {"data."+str(vote_index)+".votes": 1}}, return_document=pymongo.ReturnDocument.AFTER)
-		else:
-			for idx, vote in enumerate(self.current_user["votes"]):
-				if vote["question_id"] == question_id:
-					self.current_user["votes"][idx]["vote"] = vote_index
-					old_vote = self.application.db.users.find_one_and_replace({"email": self.current_user["email"]}, self.current_user)["votes"][idx]["vote"]
-					self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"data."+str(old_vote)+".votes": -1}})
-					question = self.application.db.questions.find_one_and_update({"_id": question_id}, {"$inc": {"data."+str(vote_index)+".votes": 1}}, return_document=pymongo.ReturnDocument.AFTER)
-
-		question = question["data"]
-		self.write({"idx": vote_index, "votes": sum([q["votes"] for q in question])})
-
-class CreateQuestionHandler(BaseHandler):
-	@tornado.web.authenticated
-	def post(self):
-		question_title = self.get_argument("question-title")
-		if question_title == '':
-			return
-
-		image_link     = self.get_argument("image-link")
-		answer_1       = self.get_argument("answer-1")
-		answer_2       = self.get_argument("answer-2")
-		answer_3       = self.get_argument("answer-3")
-		answer_4       = self.get_argument("answer-4")
-		answer_5       = self.get_argument("answer-5")
-
-		if answer_1 == '' or answer_2 == '':
-			return
-		if answer_1 == answer_2:
-			return
-		if answer_3 != '' and (answer_3 == answer_1 or answer_3 == answer_2):
-			return
-		if answer_4 != '' and (answer_4 == answer_1 or answer_4 == answer_2 or answer_4 == answer_3):
-			return
-		if answer_5 != '' and (answer_5 == answer_1 or answer_5 == answer_2 or answer_5 == answer_3 or answer_5 == answer_4):
-			return
-
-		labels = [answer for answer in [answer_1, answer_2, answer_3, answer_4, answer_5] if answer]
-		data   = [{'label': label, 'votes': 0} for label in labels]
-
-		self.application.db.questions.insert_one({"asker":      self.current_user["email"],
-												  "question":   question_title,
-												  "date":       datetime.now(),
-										 		  "image_link": image_link,
-										          "data":       data,
-										          "favorites":	0,
-										          "shares":		0,
-										          "comments":	[],
-										        })
-
-		self.application.db.users.update_one({"email": self.current_user["email"]}, {"$inc": {"questions": 1}})
-		self.redirect("/feed")
-
-class ProfileHandler(BaseHandler):
-	def get(self, user_id):
-		target_user = self.application.db.users.find_one({"_id": ObjectId(user_id)}, {"hating": 0})
-		if self.current_user and self.current_user["email"] == target_user["email"]:
-			self.redirect("/feed")
-		else:
-			questions = self.application.db.questions.find().sort("_id", pymongo.DESCENDING).limit(10)
-			self.render("newsfeed.html", profile=target_user, current_user=self.current_user, users=self.application.db.users, questions=questions, controlled=False, datetime=datetime)
-
-class FeedHandler(BaseHandler):
-	@tornado.web.authenticated
-	def get(self):
-		questions = self.application.db.questions.find().sort("_id", pymongo.DESCENDING).limit(10)
-		self.render("newsfeed.html", profile=self.current_user, current_user=self.current_user, users=self.application.db.users, questions=questions, controlled=True, datetime=datetime)
 
 class GroupHandler(BaseHandler):
 	def get(self, group_name):
@@ -542,5 +580,5 @@ class GroupHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()

@@ -91,8 +91,7 @@
                         </div>
                     </article>
                 {% end %}
-                {% set asker = users.find_one({"email": question["asker"]}) %}
-                {% module Question(question, asker, None, False, False, False, False) %}
+                {% module Question(question, db, False) %}
             {% end %}
         </section>
         <footer role="contentinfo">

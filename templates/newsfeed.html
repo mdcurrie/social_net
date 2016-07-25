@@ -81,7 +81,7 @@
 		    	</div>
 		    	<div class="profile-metrics-text">
 		    		<div class="text-num">{{ len(profile["votes"]) }}</div>
-		    		<div class="text-str">answers</div>
+		    		<div class="text-str">votes</div>
 		    	</div>
 		    </div>
 		</div>
@@ -135,15 +135,7 @@
 	     		</article>
 	     	{% end %}
         	{% for question in questions %}
-        		{% set asker = users.find_one({"email": question["asker"]}) %}
-        		{% if current_user %}
-	        		{% set favorited = question["_id"] in current_user["favorites"] %}
-	        		{% set shared    = question["_id"] in current_user["shares"] %}
-	        		{% set commented = current_user["email"] in [comment[0] for comment in question["comments"]] %}
-	        		{% module Question(question, asker, None, favorited, shared, commented, False) %}
-	        	{% else %}
-	        		{% module Question(question, asker, None, None, None, None, False) %}
-	        	{% end %}
+	        	{% module Question(question, db, False) %}
        		{% end %}
         </section>
         <footer role="contentinfo">
