@@ -3,14 +3,14 @@ var old_value2 = false;
 var old_value3 = false;
 
 $(function() {
-    $('.labels h4').on('click', function(e) {
+    $('.labels h4').on('click', function() {
         var question_id = $(this).parent().attr('class').split(' ')[1];
-        var vote_index = $(this).prevAll().length;
+        var vote_index  = $(this).prevAll().length;
         var q = $(this);
         $.getJSON('/vote/' + question_id, {vote_index: vote_index}, function(data) {
             q.siblings().removeClass('active');
             q.addClass('active');
-            $('.vote-count h4').text(data.votes + ' Votes');
+            q.parents('.chart').siblings('.asker-info').find('.vote-count h4').text(data.votes + ' Votes');
         });
     });
 
@@ -23,7 +23,7 @@ $(function() {
             $(this).find('path').css({"fill": old_value1});
         });
 
-    $('.favorite-count .svg-image').on('click', function(e) {
+    $('.favorite-count .svg-image').on('click', function() {
         var question_id = $(this).attr('class').split(' ')[1];
         var clicked = $(this);
         $.getJSON('/favorite/' + question_id, function(data) {
@@ -47,7 +47,7 @@ $(function() {
             $(this).find('path').css({"fill": old_value2});
         });
 
-    $('.share-count .svg-image').on('click', function(e) {
+    $('.share-count .svg-image').on('click', function() {
         var question_id = $(this).attr('class').split(' ')[1];
         var clicked = $(this);
         $.getJSON('/share/' + question_id, function(data) {

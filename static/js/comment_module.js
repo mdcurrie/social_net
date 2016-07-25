@@ -10,8 +10,7 @@ $(function() {
             $('input').val('');
             $('body').animate({scrollTop: $(document).height()}, 'slow');
             $('.comment-count-text').text($('.comment').size());
-            $('.chart-footer img').eq(5).removeClass('active');
-            $('.chart-footer img').eq(4).addClass('active');
+            $('.comment-count .svg-image').find('path').css({"fill": "#693ca1"});
         });
     });
 });

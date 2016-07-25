@@ -39,6 +39,9 @@ article:last-of-type {
 .asker-info a:hover {
 	color: #00a2d7;
 }
+.info table {
+	margin-top: 3px;
+}
 .vote-count {
 	float: right;
 	margin-top: 13px;
@@ -165,6 +168,9 @@ img.active {
 	}
 	.vote-count h4 {
 		font-size: 1em;
+	}
+	.info table {
+		margin-top: 0;
 	}
 	.question-image {
 		max-height: 340px;

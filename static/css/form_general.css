@@ -8,7 +8,7 @@ a {
 	text-decoration: none;
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 500px) {
 	html {
 		background-color: #f1f1f1;
 	}
@@ -109,10 +109,10 @@ h3 {
 	font-size: 0.75em;
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 500px) {
 	section {
 		width: 25%;
-		max-width: 900px;
+		max-width: 550px;
 		min-width: 350px;
 		margin-top: 80px;
 		padding: 20px 20px 30px 20px;
