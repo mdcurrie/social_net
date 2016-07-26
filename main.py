@@ -583,7 +583,7 @@ class GroupHandler(BaseHandler):
 	def get(self, group_name):
 		target_group = self.application.db.groups.find_one({"name": group_name})
 		questions = self.application.db.questions.find({"group": group_name}).sort("_id", pymongo.DESCENDING).limit(10)
-		self.render("group.html", profile=target_group, current_user=self.current_user, questions=questions, db=self)
+		self.render("group.html", profile=target_group, current_user=self.current_user, questions=questions, db=self.application.db)
 
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
