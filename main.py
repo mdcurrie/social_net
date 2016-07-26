@@ -98,11 +98,11 @@ class Application(tornado.web.Application):
 						   "followers":		  [],
 						   "bio":		      "The official sports group of Hive. Discuss your favorite sports team. Remember to keep it civil."})
 
-		groups.insert_one({"name":			  "Videogames",
-						   "pic_link":		  "http://i.imgur.com/9ZJyqmH.png",
+		groups.insert_one({"name":			  "Anime",
+						   "pic_link":		  "http://i.imgur.com/dNWrYKa.png",
 						   "posts":			  0,
 						   "followers":		  [],
-						   "bio":		      "The official videogames group of Hive. Discuss your favorite videogames and try not to start any console wars."})
+						   "bio":		      "The official anime group of Hive. Discuss your favorite anime and try not to start any wars."})
 
 		questions = self.db.questions
 		questions.insert_one({"asker":      "based@god.com",
@@ -588,5 +588,5 @@ class GroupHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
