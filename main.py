@@ -51,35 +51,39 @@ class Application(tornado.web.Application):
 		client.drop_database("hive")
 		self.db = client.hive
 		users = self.db.users
-		user  = users.insert_one({"username":         "BasedGod", 
-								  "email":            "based@god.com",
-								  "password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
-								  "salt":			  b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
-								  "profile_pic_link": "http://i.imgur.com/MQam61S.jpg",
-								  "questions":        2,
-								  "following":        ["m@e.com"],
-								  "followers":        ["m@e.com"],
-								  "haters":           [],
-								  "hating":			  [],
-								  "favorites":		  [],
-								  "shares":			  [],
-								  "votes":			  [],
-								  "bio":              "Mogul, First Rapper Ever To Write And Publish A Book at 19, Film Score, Composer, Producer, Director #BASED"})
-
-		user  = users.insert_one({"username":         "marcus", 
-								  "email":            "m@e.com",
-								  "password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
-								  "salt":			  b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
-								  "profile_pic_link": "http://i.imgur.com/pq88IQx.png",
-								  "questions":        2,
-								  "following":        ["based@god.com"],
-								  "followers":        ["based@god.com"],
-								  "haters":           [],
-								  "hating":			  [],
-								  "favorites":		  [],
-								  "shares":			  [],
-								  "votes":			  [],
-								  "bio":              "I'm new here!"})
+		user  = users.insert_many(
+								[{
+									"username":         "BasedGod", 
+									"email":            "based@god.com",
+									"password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
+									"salt":			    b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
+									"profile_pic_link": "http://i.imgur.com/MQam61S.jpg",
+									"questions":        2,
+									"following":        ["m@e.com"],
+									"followers":        ["m@e.com"],
+									"haters":           [],
+									"hating":			[],
+									"favorites":		[],
+									"shares":			[],
+									"votes":			[],
+									"bio":              "Mogul, First Rapper Ever To Write And Publish A Book at 19, Film Score, Composer, Producer, Director #BASED"
+								},
+								{
+									"username":         "marcus", 
+									"email":            "m@e.com",
+									"password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
+									"salt":			    b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
+									"profile_pic_link": "http://i.imgur.com/pq88IQx.png",
+									"questions":        2,
+									"following":        ["based@god.com"],
+									"followers":        ["based@god.com"],
+									"haters":           [],
+									"hating":			[],
+									"favorites":		[],
+									"shares":			[],
+									"votes":			[],
+									"bio":              "I'm new here!"
+								}])
 
 		groups = self.db.groups
 		groups.insert_one({"name":			  "Music",
@@ -429,6 +433,36 @@ class CommentModule(tornado.web.UIModule):
 	def javascript_files(self):
 		return self.handler.static_url("js/comment_module.js")
 
+# handler for favoriting a question
+class FavoriteHandler(BaseHandler):
+	@tornado.web.authenticated
+	def get(self, question_id):
+		question_id = ObjectId(question_id)
+		user = self.application.db.users.find_one({"_id": self.current_user["_id"], "favorites": question_id})
+		if user == None:
+			self.application.db.users.update_one({"_id": self.current_user["_id"]}, {"$push": {"favorites": question_id}})
+			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"favorites": 1}})
+			self.write({"favorite": True})
+		else:
+			self.application.db.users.update_one({"_id": self.current_user["_id"]}, {"$pull": {"favorites": question_id}})
+			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"favorites": -1}})
+			self.write({"favorite": False})
+
+# handler for sharing a question
+class ShareHandler(BaseHandler):
+	@tornado.web.authenticated
+	def get(self, question_id):
+		question_id = ObjectId(question_id)
+		user = self.application.db.users.find_one({"_id": self.current_user["_id"], "shares": question_id})
+		if user == None:
+			self.application.db.users.update_one({"_id": self.current_user["_id"]}, {"$push": {"shares": question_id}})
+			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"shares": 1}})
+			self.write({"share": True})
+		else:
+			self.application.db.users.update_one({"_id": self.current_user["_id"]}, {"$pull": {"shares": question_id}})
+			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"shares": -1}})
+			self.write({"share": False})
+
 # handler for displaying a user's profile page
 class ProfileHandler(BaseHandler):
 	def get(self, user_id):
@@ -449,6 +483,7 @@ class FeedHandler(BaseHandler):
 		questions = self.application.db.questions.find().sort("_id", pymongo.DESCENDING).limit(10)
 		self.render("newsfeed.html", profile=self.current_user, current_user=self.current_user, questions=questions, controlled=True, db=self.application.db)
 
+# handler to follow a user
 class FollowHandler(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, target_id):
@@ -463,6 +498,7 @@ class FollowHandler(BaseHandler):
 			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$pop": {"following": target_user["email"]}})
 			self.write({"followers": len(target_user["followers"]) - 1, "display_text": "Follow" })
 
+# handler to hate a user
 class HateHandler(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, target_id):
@@ -543,39 +579,11 @@ class GetHatersHandler(BaseHandler):
 
 		self.write(json.dumps(list(haters)))
 
-class FavoriteHandler(BaseHandler):
-	@tornado.web.authenticated
-	def get(self, question_id):
-		question_id = ObjectId(question_id)
-		if ObjectId(question_id) not in self.current_user["favorites"]:
-			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$push": {"favorites": question_id}})
-			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"favorites": 1}})
-			self.write({"favorite": True})
-		else:
-			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$pop": {"favorites": question_id}})
-			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"favorites": -1}})
-			self.write({"favorite": False})
-
-class ShareHandler(BaseHandler):
-	@tornado.web.authenticated
-	def get(self, question_id):
-		question_id = ObjectId(question_id)
-		if ObjectId(question_id) not in self.current_user["shares"]:
-			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$push": {"shares": question_id}})
-			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"shares": 1}})
-			self.write({"share": True})
-		else:
-			self.application.db.users.update_one({"email": self.current_user["email"]}, {"$pop": {"shares": question_id}})
-			self.application.db.questions.update_one({"_id": question_id}, {"$inc": {"shares": -1}})
-			self.write({"share": False})
-
-
-
 class GroupHandler(BaseHandler):
 	def get(self, group_name):
 		target_group = self.application.db.groups.find_one({"name": group_name})
 		questions = self.application.db.questions.find({"group": group_name}).sort("_id", pymongo.DESCENDING).limit(10)
-		self.render("group.html", profile=target_group, current_user=self.current_user, questions=questions, users=self.application.db.users)
+		self.render("group.html", profile=target_group, current_user=self.current_user, questions=questions, db=self)
 
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
