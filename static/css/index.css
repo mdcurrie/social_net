@@ -189,6 +189,7 @@ section {
 	height: 90px;
 	border-radius: 50%;
 	margin-bottom: 5px;
+	box-shadow: 0 0 0 2px white;
 }
 .group-text {
 	color: white;
