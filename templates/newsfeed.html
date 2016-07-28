@@ -41,15 +41,15 @@
 				</div>
 			    <div id="profile-buttons">
 			    	{% if controlled == False %}
-				    	<button type="submit" class="profile-button {% if current_user and current_user["email"] in profile["followers"]%}active{% end %}" id="follow-button">
-				    		{% if current_user and current_user["email"] in profile["followers"] %}
+				    	<button type="submit" class="profile-button {% if follower %}active{% end %}" id="follow-button">
+				    		{% if follower %}
 				    			Followed
 				    		{% else %}
 				    			Follow
 				    		{% end %}
 				    	</button>
-				    	<button type="submit" class="profile-button {% if current_user and current_user["email"] in profile["haters"]%}active{% end %}" id="hate-button">
-				    		{% if current_user and current_user["email"] in profile["haters"] %}
+				    	<button type="submit" class="profile-button {% if hater %}active{% end %}" id="hate-button">
+				    		{% if hater %}
 				    			Hated
 				    		{% else %}
 				    			Hate
@@ -63,24 +63,24 @@
 	    	<div id="profile-metrics-wrapper">
 		    	<div class="profile-metrics-text">
 		    		<a href="/users/{{ str(profile["_id"]) }}/followers">
-		    			<div class="text-num">{{ len(profile["followers"]) }}</div>
+		    			<div class="text-num">{% if followers_count %}{{ followers_count["count"] }}{% else %}0{% end %}</div>
 		    			<div class="text-str">followers</div>
 		    		</a>
 		    	</div>
 		    	<div class="profile-metrics-text">
 		    		<a href="/users/{{ str(profile["_id"]) }}/following">
-			    		<div class="text-num">{{ len(profile["following"]) }}</div>
+			    		<div class="text-num">{% if following_count %}{{ following_count["count"] }}{% else %}0{% end %}</div>
 			    		<div class="text-str">following</div>
 			    	</a>
 		    	</div>
 				<div class="profile-metrics-text">
 					<a href="/users/{{ str(profile["_id"]) }}/haters">
-			    		<div class="text-num">{{ len(profile["haters"]) }}</div>
+			    		<div class="text-num">{% if hater_count %}{{ hater_count["count"] }}{% else %}0{% end %}</div>
 			    		<div class="text-str">haters</div>
 			    	</a>
 		    	</div>
 		    	<div class="profile-metrics-text">
-		    		<div class="text-num">{{ len(profile["votes"]) }}</div>
+		    		<div class="text-num">0</div>
 		    		<div class="text-str">votes</div>
 		    	</div>
 		    </div>

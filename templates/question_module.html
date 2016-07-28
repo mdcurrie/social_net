@@ -71,14 +71,19 @@
         </canvas>
         <div class="chart-footer">
             <h4 class="favorite-count">
-                {% set favorites = question["favorites"] %}
-                {% if favorites <= 1000 %}
-                    {{ favorites }}
-                {% elif favorites <= 999999 %}
-                    {{ round(favorites/1000, 1) }}K
-                {% else %}
-                    {{ round(favorites/1000000, 1) }}M
-                {% end %}
+                <span>
+                    {% if favorites %}
+                        {% if len(favorites["user_ids"]) <= 1000 %}
+                            {{ len(favorites["user_ids"]) }}
+                        {% elif len(favorites["user_ids"]) <= 999999 %}
+                            {{ round(len(favorites["user_ids"])/1000, 1) }}K
+                        {% else %}
+                            {{ round(len(favorites["user_ids"])/1000000, 1) }}M
+                        {% end %}
+                    {% else %}
+                        0
+                    {% end %}
+                </span>
                 <div title="Add to Favorites" class="svg-image {{ str(question["_id"]) }}">
                     {% if favorited %}
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Heart" x="0px" y="0px" viewBox="0 0 20 20" xml:space="preserve" enable-background="new 0 0 20 20">
@@ -92,14 +97,19 @@
                 </div>
             </h4>
             <h4 class="share-count">
-                {% set shares = question["shares"] %}
-                {% if shares <= 1000 %}
-                    {{ shares }}
-                {% elif shares <= 999999 %}
-                    {{ round(shares/1000, 1) }}K
-                {% else %}
-                    {{ round(shares/1000000, 1) }}M
-                {% end %}
+                <span>
+                    {% if shares %}
+                        {% if len(shares["user_ids"]) <= 1000 %}
+                            {{ len(shares["user_ids"]) }}
+                        {% elif len(shares["user_ids"]) <= 999999 %}
+                            {{ round(len(shares["user_ids"])/1000, 1) }}K
+                        {% else %}
+                            {{ round(len(shares["user_ids"])/1000000, 1) }}M
+                        {% end %}
+                    {% else %}
+                        0
+                    {% end %}
+                </span>
                 <div title="Share" class="svg-image {{ str(question["_id"]) }}">
                     {% if shared %}
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Forward" x="0px" y="0px" viewBox="0 0 20 20" xml:space="preserve" enable-background="new 0 0 20 20">
@@ -114,13 +124,16 @@
             </h4>
             <h4 class="comment-count">
                 <div class="comment-count-text">
-                    {% set comments = len(question["comments"]) %}
-                    {% if comments <= 1000 %}
-                        {{ comments }}
-                    {% elif comments <= 999999 %}
-                        {{ round(comments/1000, 1) }}K
+                    {% if comments %}
+                        {% if len(comments["comments"]) <= 1000 %}
+                            {{ len(comments["comments"]) }}
+                        {% elif len(comments["comments"]) <= 999999 %}
+                            {{ round(len(comments["comments"])/1000, 1) }}K
+                        {% else %}
+                            {{ round(len(comments["comments"])/1000000, 1) }}M
+                        {% end %}
                     {% else %}
-                        {{ round(comments/1000000, 1) }}M
+                        0
                     {% end %}
                 </div>
                 <a href="/questions/{{ str(question["_id"]) }}#comments"><div title="See Comments" class="svg-image">
@@ -137,7 +150,7 @@
             </h4>
         </div>
         {% if show_comments %}
-            {% module Comment(question, users) %}
+            {% module Comment(str(question["_id"]), comments, users) %}
         {% end %}
     </div>
 </article>

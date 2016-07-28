@@ -1,9 +1,9 @@
 <div class="comment-section" id="comments">
     <div class="all-comments">
-        {% if question["comments"] %}
+        {% if comments %}
             {% set idx = 0 %}
-            {% for comment in question["comments"] %}
-                {% while users[idx]["email"] != comment["email"] %}
+            {% for comment in comments["comments"] %}
+                {% while users[idx]["_id"] != comment["user_id"] %}
                     {% set idx = (idx + 1) % len(users) %}
                 {% end %}
                 <div class="comment">
@@ -38,7 +38,7 @@
             {% end %}
         {% end %}
     </div>
-    <form method="get" action={{ "/comments/" + str(question["_id"]) }} novalidate>
+    <form method="get" action={{ "/comments/" + question_id }} novalidate>
         <input type="text" name="comment" autocomplete="off" placeholder="Share your thoughts...">
     </form>
 </div>
