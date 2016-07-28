@@ -123,6 +123,9 @@ canvas {
 	width: 33.3%;
 	float: left;
 }
+.chart-footer span {
+	color: #8d8d8d;
+}
 .svg-image {
 	width: 20px;
 	height: 20px;

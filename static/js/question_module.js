@@ -35,6 +35,7 @@ $(function() {
                 old_value1 = "#8d8d8d";
                 clicked.find('path').css({"fill": "#8d8d8d"});
             }
+            clicked.parents('.favorite-count').children('span').text(data.count);
         });
     });
 
@@ -59,6 +60,7 @@ $(function() {
                 old_value2 = "#8d8d8d";
                 clicked.find('path').css({"fill": "#8d8d8d"});
             }
+            clicked.parents('.share-count').children('span').text(data.count);
         });
     });
 

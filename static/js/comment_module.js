@@ -1,7 +1,7 @@
 $(function() { 
     $('form').on('submit', function(e) {
         e.preventDefault();
-        var question_id = window.location.href.split("/").pop();
+        var question_id  = window.location.href.split("/").pop();
         var comment_val = $('input').eq(0).val();
         $.get('/comments/' + question_id, {comment: comment_val}, function(data) {
             data = data.slice(43, -7)
