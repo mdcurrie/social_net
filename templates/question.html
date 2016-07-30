@@ -19,7 +19,7 @@
             <h1><a href="/">Hive</a></h1>
         </header>
         <section>
-            {% module Question(question, db, True) %}
+            {% module Question(asker, question, vote, favorites, shares, comments, commenters, show_comments=True) %}
         </section>
         <footer role="contentinfo">
             <ul>

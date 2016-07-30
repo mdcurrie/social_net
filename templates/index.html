@@ -91,7 +91,7 @@
                         </div>
                     </article>
                 {% end %}
-                {% module Question(question, db, False) %}
+                {% module Question(askers[idx], question, vote, favorites[idx], shares[idx], comments[idx], False) %}
             {% end %}
         </section>
         <footer role="contentinfo">

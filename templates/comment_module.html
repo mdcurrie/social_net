@@ -1,18 +1,14 @@
 <div class="comment-section" id="comments">
     <div class="all-comments">
         {% if comments %}
-            {% set idx = 0 %}
-            {% for comment in comments["comments"] %}
-                {% while users[idx]["_id"] != comment["user_id"] %}
-                    {% set idx = (idx + 1) % len(users) %}
-                {% end %}
+            {% for idx, comment in enumerate(comments) %}
                 <div class="comment">
-                    <a href="/users/{{ str(users[idx]["_id"]) }}">
-                        <img class="profile-pic" src="{{ users[idx]["profile_pic_link"] }}">
+                    <a href="/users/{{ str(comment["user_id"]) }}">
+                        <img class="profile-pic" src="{{ commenters[idx]["profile_pic_link"] }}">
                     </a>
                     <div class="comment-text">
-                        <a href="/users/{{ str(users[idx]["_id"]) }}">
-                            <h3>{{ users[idx]["username"] }}</h3>
+                        <a href="/users/{{ str(comment["user_id"]) }}">
+                            <h3>{{ commenters[idx]["username"] }}</h3>
                         </a>
                         <h5>
                             {% set total_seconds = (datetime.utcnow() - comment["date"]).total_seconds() %}
