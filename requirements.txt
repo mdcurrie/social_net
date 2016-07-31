@@ -1,3 +1,4 @@
-tornado==4.3
-pymongo==3.2.2
+tornado==4.2
+pymongo==2.8.0
+motor==0.6.2
 bcrypt==2.0.0
