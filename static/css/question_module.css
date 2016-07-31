@@ -53,8 +53,7 @@ article:last-of-type {
 .question-image {
 	background-repeat: no-repeat;
 	background-size: cover;
-	background-position-y: 40%;
-	background-position-x: 50%;
+	background-position: 50% 40%;
 	max-height: 280px;
 }
 .question {

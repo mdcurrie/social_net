@@ -26,7 +26,7 @@ $(function() {
     $('.favorite-count .svg-image').on('click', function() {
         var question_id = $(this).attr('class').split(' ')[1];
         var clicked = $(this);
-        $.getJSON('/favorite/' + question_id, function(data) {
+        $.getJSON('/favorite_or_share/' + question_id, {action: "favorite"}, function(data) {
             if (data.favorite) {
                 old_value1 = "#693ca1";
                 clicked.find('path').css({"fill": "#693ca1"});
@@ -51,7 +51,7 @@ $(function() {
     $('.share-count .svg-image').on('click', function() {
         var question_id = $(this).attr('class').split(' ')[1];
         var clicked = $(this);
-        $.getJSON('/share/' + question_id, function(data) {
+        $.getJSON('/favorite_or_share/' + question_id, {action: "share"}, function(data) {
             if (data.share) {
                 old_value2 = "#693ca1";
                 clicked.find('path').css({"fill": "#693ca1"});

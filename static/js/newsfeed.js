@@ -113,10 +113,10 @@ $(function() {
 
     $('#follow-button').on('click', function() {
 		var user_id = window.location.href.split("/").pop();
-		$.getJSON('/follow/' + user_id, function(data) {
+		$.getJSON('/follow_or_hate/' + user_id, {action: "follow"}, function(data) {
 			$('.text-num').eq(0).text(data.followers);
 			$('#follow-button').text(data.display_text);
-			if (data.display_text == "Followed") {
+			if (data.display_text == "Following") {
 				$('#follow-button').addClass('active');
 			}
 			else {
@@ -127,10 +127,10 @@ $(function() {
 
 	$('#hate-button').on('click', function() {
 		var user_id = window.location.href.split("/").pop();
-		$.getJSON('/hate/' + user_id, function(data) {
+		$.getJSON('/follow_or_hate/' + user_id, {action: "hate"}, function(data) {
 			$('.text-num').eq(2).text(data.haters);
 			$('#hate-button').text(data.display_text);
-			if (data.display_text == "Hated") {
+			if (data.display_text == "Hating") {
 				$('#hate-button').addClass('active');
 			}
 			else {
