@@ -43,14 +43,14 @@
 			    	{% if controlled == False %}
 				    	<button type="submit" class="profile-button {% if follower %}active{% end %}" id="follow-button">
 				    		{% if follower %}
-				    			Followed
+				    			Following
 				    		{% else %}
 				    			Follow
 				    		{% end %}
 				    	</button>
 				    	<button type="submit" class="profile-button {% if hater %}active{% end %}" id="hate-button">
 				    		{% if hater %}
-				    			Hated
+				    			Hating
 				    		{% else %}
 				    			Hate
 				    		{% end %}
@@ -62,19 +62,19 @@
 	    <div id="profile-metrics">
 	    	<div id="profile-metrics-wrapper">
 		    	<div class="profile-metrics-text">
-		    		<a href="/users/{{ str(profile["_id"]) }}/followers">
+		    		<a href="/users/{{ str(profile["_id"]) }}/get_relationships?relationship=follower">
 		    			<div class="text-num">{% if followers_count %}{{ followers_count["count"] }}{% else %}0{% end %}</div>
 		    			<div class="text-str">followers</div>
 		    		</a>
 		    	</div>
 		    	<div class="profile-metrics-text">
-		    		<a href="/users/{{ str(profile["_id"]) }}/following">
+		    		<a href="/users/{{ str(profile["_id"]) }}/get_relationships?relationship=following">
 			    		<div class="text-num">{% if following_count %}{{ following_count["count"] }}{% else %}0{% end %}</div>
 			    		<div class="text-str">following</div>
 			    	</a>
 		    	</div>
 				<div class="profile-metrics-text">
-					<a href="/users/{{ str(profile["_id"]) }}/haters">
+					<a href="/users/{{ str(profile["_id"]) }}/get_relationships?relationship=hater">
 			    		<div class="text-num">{% if hater_count %}{{ hater_count["count"] }}{% else %}0{% end %}</div>
 			    		<div class="text-str">haters</div>
 			    	</a>

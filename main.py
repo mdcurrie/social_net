@@ -24,16 +24,12 @@ class Application(tornado.web.Application):
 					(r"/signup", SignupHandler),
 					(r"/email_lookup", EmailHandler),
 					(r"/users/(\w+)", ProfileHandler),
-					(r"/follow/(\w+)", FollowHandler),
-					(r"/hate/(\w+)", HateHandler),
-					(r"/users/(\w+)/followers", GetFollowersHandler),
-					(r"/users/(\w+)/following", GetFollowingHandler),
-					(r"/users/(\w+)/haters", GetHatersHandler),
+					(r"/follow_or_hate/(\w+)", FollowHateHandler),
+					(r"/users/(\w+)/get_relationships", GetRelationshipsHandler),
 					(r"/groups/(\w+)", GroupHandler),
 					(r"/questions/(\w+)", QuestionHandler),
 					(r"/comments/(\w+)", CommentHandler),
-					(r"/favorite/(\w+)", FavoriteHandler),
-					(r"/share/(\w+)", ShareHandler),
+					(r"/favorite_or_share/(\w+)", FavoriteShareHandler),
 					(r"/vote/(\w+)", VoteHandler),
 					(r"/create_question", CreateQuestionHandler),
 		]
@@ -54,117 +50,117 @@ class Application(tornado.web.Application):
 		def insert_questions(result, error):
 			if result:
 				questions.insert(
-									[{
-										"asker":      result[0],
-										"group":	  "Music",
-										"question":   "Rate Beyonces new album!",
-										"date":       datetime.utcnow(),
-										"image_link": "http://i.imgur.com/SX3tMDg.jpg",
-										"data":     [
-														{
-															"label": "it was LIT",
-															"votes": 12,
-														},
-														{
-															"label": "shes done better",
-															"votes": 19,
-														},
-														{
-															"label": "worse than Miley",
-															"votes": 3,
-														},
-													]
-									},
-									{
-										"asker":      result[0],
-										"question":   "Whos gonna become president? no trolls pls",
-										"date":	      datetime.utcnow(),
-										"image_link": "http://i.imgur.com/l4PPTGC.jpg",
-										"data":		[
-														{
-															"label": "hillary",
-															"votes": 63,
-														},
-														{
-															"label": "trump",
-															"votes": 13,
-														},
-														{
-															"label": "can obama get another term",
-															"votes": 300,
-														},
-														{
-															"label": "i hate them both",
-															"votes": 120,
-														},
-													]
-									},
-									{
-										"asker":       result[1],
-										"group":	   "Music",
-										"question":    "Best album of 2016?",
-										"date":        datetime.utcnow(),
-										"image_link":  "http://i.imgur.com/BpXMFZw.jpg",
-										"data":		[
-														{
-															"label": "views by drake",
-															"votes": 560,
-														},
-														{
-															"label": "tlop by kanye",
-															"votes": 940,
-														},
-														{
-															"label": "lemonade by beyonce",
-															"votes": 20400,
-														},
-													]
-									}]
-								)
+						[{
+							"asker":      result[0],
+							"group":	  "Music",
+							"question":   "Rate Beyonces new album!",
+							"date":       datetime.utcnow(),
+							"image_link": "http://i.imgur.com/SX3tMDg.jpg",
+							"data":     [
+											{
+												"label": "it was LIT",
+												"votes": 12,
+											},
+											{
+												"label": "shes done better",
+												"votes": 19,
+											},
+											{
+												"label": "worse than Miley",
+												"votes": 3,
+											},
+										]
+						},
+						{
+							"asker":      result[0],
+							"question":   "Whos gonna become president? no trolls pls",
+							"date":	      datetime.utcnow(),
+							"image_link": "http://i.imgur.com/l4PPTGC.jpg",
+							"data":		[
+											{
+												"label": "hillary",
+												"votes": 63,
+											},
+											{
+												"label": "trump",
+												"votes": 13,
+											},
+											{
+												"label": "can obama get another term",
+												"votes": 300,
+											},
+											{
+												"label": "i hate them both",
+												"votes": 120,
+											},
+										]
+						},
+						{
+							"asker":       result[1],
+							"group":	   "Music",
+							"question":    "Best album of 2016?",
+							"date":        datetime.utcnow(),
+							"image_link":  "http://i.imgur.com/BpXMFZw.jpg",
+							"data":		[
+											{
+												"label": "views by drake",
+												"votes": 560,
+											},
+											{
+												"label": "tlop by kanye",
+												"votes": 940,
+											},
+											{
+												"label": "lemonade by beyonce",
+												"votes": 20400,
+											},
+										]
+						}]
+					)
 
 		self.db.users.insert(
-								[{
-									"username":         "BasedGod", 
-									"email":            "based@god.com",
-									"password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
-									"salt":			    b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
-									"profile_pic_link": "http://i.imgur.com/MQam61S.jpg",
-									"bio":              "Mogul, First Rapper Ever To Write And Publish A Book at 19, Film Score, Composer, Producer, Director #BASED"
-								},
-								{
-									"username":         "marcus", 
-									"email":            "m@e.com",
-									"password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
-									"salt":			    b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
-									"profile_pic_link": "http://i.imgur.com/pq88IQx.png",
-									"bio": "I'm new here!"
-								}],
-								callback=insert_questions
-							)
+				[{
+					"username":         "BasedGod", 
+					"email":            "based@god.com",
+					"password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
+					"salt":			    b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
+					"profile_pic_link": "http://i.imgur.com/MQam61S.jpg",
+					"bio":              "Mogul, First Rapper Ever To Write And Publish A Book at 19, Film Score, Composer, Producer, Director #BASED"
+				},
+				{
+					"username":         "marcus", 
+					"email":            "m@e.com",
+					"password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
+					"salt":			    b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
+					"profile_pic_link": "http://i.imgur.com/pq88IQx.png",
+					"bio": "I'm new here!"
+				}],
+				callback=insert_questions
+			)
 
 		self.db.groups.insert(
-								[{
-									"name":			  "Music",
-									"pic_link":		  "http://i.imgur.com/2RrtWCM.jpg",
-									"posts":		  2,
-									"followers":      [],
-									"bio":		      "The official music group of Hive. Discuss your favorite music and discover new sounds."
-								},
-								{
-									"name":			  "Sports",
-									"pic_link":		  "http://i.imgur.com/Lky0iUM.png",
-									"posts":		  0,
-									"followers":	  [],
-									"bio":		      "The official sports group of Hive. Discuss your favorite sports team. Remember to keep it civil."
-								},
-								{
-									"name":			  "Anime",
-									"pic_link":		  "http://i.imgur.com/dNWrYKa.png",
-									"posts":		  0,
-									"followers":	  [],
-									"bio":		      "The official anime group of Hive. Discuss your favorite anime and try not to start any wars."
-								}]
-							)
+				[{
+					"name":			  "Music",
+					"pic_link":		  "http://i.imgur.com/2RrtWCM.jpg",
+					"posts":		  2,
+					"followers":      [],
+					"bio":		      "The official music group of Hive. Discuss your favorite music and discover new sounds."
+				},
+				{
+					"name":			  "Sports",
+					"pic_link":		  "http://i.imgur.com/Lky0iUM.png",
+					"posts":		  0,
+					"followers":	  [],
+					"bio":		      "The official sports group of Hive. Discuss your favorite sports team. Remember to keep it civil."
+				},
+				{
+					"name":			  "Anime",
+					"pic_link":		  "http://i.imgur.com/dNWrYKa.png",
+					"posts":		  0,
+					"followers":	  [],
+					"bio":		      "The official anime group of Hive. Discuss your favorite anime and try not to start any wars."
+				}]
+			)
 
 		self.db.comments.ensure_index("question_id", unique=True)
 		self.db.shares.ensure_index("question_id", unique=True)
@@ -272,14 +268,15 @@ class IndexHandler(BaseHandler):
 
 # handler for registering new users
 class SignupHandler(BaseHandler):
-	# redirect user to /feed if already logged in
-	@tornado.gen.coroutine
 	def get(self):
+		# redirect user to /feed if already logged in
 		if self.current_user:
 			self.redirect("/feed")
 		else:
 			self.render("signup.html", username_error='', email_error='', password_error='')
 
+	# get info from signup form and register new user
+	@tornado.gen.coroutine
 	def post(self):
 		username = self.get_argument("username")
 		email    = self.get_argument("email")
@@ -294,7 +291,7 @@ class SignupHandler(BaseHandler):
 			self.render("signup.html", username_error='', email_error='Please enter a valid email address.', password_error='')
 
 		# redirect user to login if the email already exists. email field is filled in with data from previous form
-		elif (yield self.application.db.users.find_one({"email": email}, {"_id": 1}) != None):
+		elif (yield self.application.db.users.find_one({"email": email}, {"_id": 1})):
 			self.render("login.html", email=email, email_error='That email is already in use. Want to login?', password_error='')
 		elif len(password) < 6:
 			self.render("signup.html", username_error='', email_error='', password_error='Your password must be at least 6 characters long.')
@@ -303,14 +300,13 @@ class SignupHandler(BaseHandler):
 		else:
 			salt     = bcrypt.gensalt()
 			password = bcrypt.hashpw(password.encode('utf-8'), salt)
-			user     = yield self.application.db.users.insert_one({
-				"username":         username,
-				"email":            email, 
-				"password":         password,
-				"salt":             salt,
-				"bio":              "I'm new here!",
-				"profile_pic_link": "http://i.imgur.com/pq88IQx.png", "questions": 0,
-			})
+			user     = yield self.application.db.users.insert({
+					"username":         username,
+					"email":            email, 
+					"password":         password,
+					"salt":             salt,
+					"bio":              "I'm new here!",
+					"profile_pic_link": "http://i.imgur.com/pq88IQx.png", "questions": 0})
 
 			self.set_secure_cookie("auth_id", email, httponly=True)
 			self.redirect("/feed")
@@ -355,11 +351,11 @@ class EmailHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self):
 		email = self.get_argument("email")
-		if (yield self.application.db.users.find_one({"email": email}, {"_id": 1}) == None):
-			self.write({"email_taken": False})
-		else:
+		if (yield self.application.db.users.find_one({"email": email}, {"_id": 1})):
 			self.write({"email_taken": True})
-
+		else:
+			self.write({"email_taken": False})
+			
 # handler for user to create a question
 class CreateQuestionHandler(BaseHandler):
 	@tornado.gen.coroutine
@@ -374,22 +370,20 @@ class CreateQuestionHandler(BaseHandler):
 			answer_5       = self.get_argument("answer-5")
 
 			# check question
-			if ((question_title == '') or (answer_1 == '' or answer_2 == '') or
-	        	(answer_1 == answer_2) or
-	        	(answer_3 != '' and answer_3 in {answer_1, answer_2}) or
-	        	(answer_4 != '' and answer_4 in {answer_1, answer_2, answer_3}) or
-	        	(answer_5 != '' and answer_5 in {answer_1, answer_2, answer_3, answer_4})): return
+			if ((question_title == '') or (answer_1 == '' or answer_2 == '') or (answer_1 == answer_2) or (answer_3 != '' and answer_3 in {answer_1, answer_2}) or
+	        	(answer_4 != '' and answer_4 in {answer_1, answer_2, answer_3}) or (answer_5 != '' and answer_5 in {answer_1, answer_2, answer_3, answer_4})): return
 
+			# initialize all options to 0 votes
 			labels = [answer for answer in [answer_1, answer_2, answer_3, answer_4, answer_5] if answer]
 			data   = [{'label': label, 'votes': 0} for label in labels]
 
 			question = yield self.application.db.questions.insert_one({
-				"asker":      self.current_user["_id"],
-				"question":   question_title,
-				"date":       datetime.utcnow(),
-				"image_link": image_link,
-				"data":       data,
-			})
+					"asker":      self.current_user["_id"],
+					"question":   question_title,
+					"date":       datetime.utcnow(),
+					"image_link": image_link,
+					"data":       data,
+				})
 
 			self.redirect("/feed")
 
@@ -455,8 +449,8 @@ class QuestionHandler(BaseHandler):
 # module to render a question card
 class QuestionModule(tornado.web.UIModule):
 	def render(self, asker, question, vote, favorites, shares, comments, commenters, show_comments=False):
-		return self.render_string("question_module.html", question=question, asker=asker, vote=vote, favorites=favorites, shares=shares, 
-														  comments=comments, commenters=commenters, show_comments=show_comments, datetime=datetime, json=json)
+		return self.render_string("question_module.html", question=question, asker=asker, vote=vote, favorites=favorites, shares=shares, comments=comments,
+														  commenters=commenters, show_comments=show_comments, datetime=datetime, json=json)
 
 	def css_files(self):
 		return self.handler.static_url("css/question_module.css")
@@ -471,18 +465,18 @@ class CommentHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, question_id):
 		comment  = self.get_argument("comment")
-		comments = yield self.application.db.comments.find_and_modify({"question_id": ObjectId(question_id)}, {"$inc": {"count": 1}, "$push": {"comments": {"user_id": self.current_user["_id"], "date": datetime.utcnow(), "comment": comment}}},
-					fields={"comments": 1}, upsert=True, new=True)
+		comments = yield self.application.db.comments.find_and_modify(
+				{"question_id": ObjectId(question_id)},
+				{"$inc": {"count": 1}, "$push": {"comments": {"user_id": self.current_user["_id"], "date": datetime.utcnow(), "comment": comment}}},
+				fields={"_id": 0, "comments": 1},
+				upsert=True,
+				new=True
+			)
 
-		commenters = []
-		x = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in comments["comments"]]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)
-		for q in comments["comments"]:
-			for y in x:
-				if y["_id"] == q["user_id"]:
-					commenters.append(y)
-					break
-
-		comments = comments["comments"]
+		# get list of all users that have left a comment
+		comments   = comments["comments"]
+		user_list  = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in comments]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)	
+		commenters = [user for comment in comments for user in user_list if user["_id"] == comment["user_id"]]
 
 		self.render("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime)
 
@@ -505,100 +499,96 @@ class VoteHandler(BaseHandler):
 			self.redirect("/signup")
 		else:
 			question_id = ObjectId(question_id)
-			vote_index  = self.get_argument("vote_index")
+			vote_index  = int(self.get_argument("vote_index"))
 
-			p = yield self.application.db.votes.find_one({"user_id": self.current_user["_id"], "votes.question_id": question_id})
-			if p:
-				l = yield self.application.db.votes.find_and_modify({"user_id": self.current_user["_id"], "votes.question_id": question_id}, {"$set": {"votes.$.vote_index": int(vote_index)}}, {"_id": 0, "votes": 1})
-			else:
-				l = None
-			if l:
-				for idx, x in enumerate(l["votes"]):
-					if x["question_id"] == question_id:
-						old_vote = x["vote_index"]
+			# user has already voted on this question
+			if (yield self.application.db.votes.find_one({"user_id": self.current_user["_id"], "votes.question_id": question_id})):
+				user_vote = yield self.application.db.votes.find_and_modify(
+						{"user_id": self.current_user["_id"], "votes.question_id": question_id},
+						{"$set": {"votes.$.vote_index": vote_index}},
+						fields={"_id": 0, "votes": 1})
+
+				for vote_entry in user_vote["votes"]:
+					if vote_entry["question_id"] == question_id:
+						old_vote = vote_entry["vote_index"]
 						break
 				
 				if old_vote == vote_index:
-					question = (yield self.application.db.questions.find_one({"_id": question_id}, {"_id": 0, "data": 1}))["data"]
+					question_data = (yield self.application.db.questions.find_one({"_id": question_id}, fields={"_id": 0, "data": 1}))["data"]
 				else:
-					question = (yield self.application.db.questions.find_and_modify({"_id": question_id}, {"$inc": {"data."+str(old_vote)+".votes": -1, "data."+str(vote_index)+".votes": 1}}, {"_id": 0, "data": 1}, new=True))["data"]
+					question_data = (yield self.application.db.questions.find_and_modify(
+							{"_id": question_id},
+							{"$inc": {"data."+str(old_vote)+".votes": -1, "data."+str(vote_index)+".votes": 1}},
+							fields={"_id": 0, "data": 1},
+							new=True))["data"]
+			
+			# user has not voted on this question
 			else:
-				yield self.application.db.votes.update({"user_id": self.current_user["_id"]}, {"$push": {"votes": {"question_id": ObjectId(question_id), "vote_index": int(vote_index)}}}, upsert=True)
-				question = (yield self.application.db.questions.find_and_modify({"_id": question_id}, {"$inc": {"data."+str(vote_index)+".votes": 1}}, {"_id": 0, "data": 1}, new=True))["data"]
+				ret = yield [self.application.db.votes.update({"user_id": self.current_user["_id"]}, {"$push": {"votes": {"question_id": ObjectId(question_id), "vote_index": vote_index}}}, upsert=True),
+						     self.application.db.questions.find_and_modify({"_id": question_id}, {"$inc": {"data."+str(vote_index)+".votes": 1}}, fields={"_id": 0, "data": 1}, new=True)]
 
-			vote_count = sum([q["votes"] for q in question])
-			if vote_count <= 1000:
-				pass
-			elif 1000 < vote_count <= 999999:
+				question_data = ret[1]["data"]
+
+			vote_count = sum([data["votes"] for data in question_data])
+			if 1000 <= vote_count <= 999999:
 				vote_count = str(round(vote_count/1000, 1)) + 'K'
-			else:
+			elif 1000000 < vote_count:
 				vote_count = str(round(vote_count/1000000, 1)) + 'M'
 
 			self.write({"idx": vote_index, "votes": vote_count})
 
-# handler for favoriting a question
-class FavoriteHandler(BaseHandler):
+# handler for favoriting or sharing a question
+class FavoriteShareHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, question_id):
 		if not self.current_user:
 			self.redirect("/signup")
 		else:
 			question_id = ObjectId(question_id)
-			favorites   = yield self.application.db.favorites.find_one({"question_id": question_id}, {"user_ids": 1})
-			if favorites == None:
-				yield self.application.db.favorites.update({"question_id": question_id}, {"$inc": {"count": 1}, "$push": {"user_ids": self.current_user["_id"]}}, upsert=True)
-				self.write({"favorite": True, "count": 1})
+			action      = self.get_argument("action")
+			if action == "favorite":
+				action_list = yield self.application.db.favorites.find_one({"question_id": question_id}, fields={"user_ids": 1})
+				action_db   = self.application.db.favorites
 			else:
-				if self.current_user["_id"] in favorites["user_ids"]:
-					favorites = yield self.application.db.favorites.find_and_modify({"question_id": question_id}, {"$inc": {"count": -1}, "$pull": {"user_ids": self.current_user["_id"]}}, new=True)
-					if favorites["count"] <= 1000:
-						q = favorites["count"]
-					elif favorites["count"] <= 999999:
-						q = str(round(favorites["count"])/1000, 1) + 'K'
-					else:
-						q = str(round(favorites["count"])/1000000, 1) + 'M'
-					self.write({"favorite": False, "count": q})
-				else:
-					favorites = yield self.application.db.favorites.find_and_modify({"question_id": question_id}, {"$inc": {"count": 1}, "$push": {"user_ids": self.current_user["_id"]}}, new=True)
-					if favorites["count"] <= 1000:
-						q = favorites["count"]
-					elif favorites["count"] <= 999999:
-						q = str(round(favorites["count"])/1000, 1) + 'K'
-					else:
-						q = str(round(favorites["count"])/1000000, 1) + 'M'
-					self.write({"favorite": True, "count": q})
+				action_list = yield self.application.db.shares.find_one({"question_id": question_id}, fields={"user_ids": 1})
+				action_db   = self.application.db.shares
 
-# handler for sharing a question
-class ShareHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get(self, question_id):
-		if not self.current_user:
-			self.redirect("/signup")
-		else:
-			question_id = ObjectId(question_id)
-			shares      = yield self.application.db.shares.find_one({"question_id": question_id}, {"user_ids": 1})
-			if shares == None:
-				yield self.application.db.shares.update({"question_id": question_id}, {"$inc": {"count": 1}, "$push": {"user_ids": self.current_user["_id"]}}, upsert=True)
-				self.write({"share": True, "count": 1})
+			# first user to favorite or share this question
+			if not action_list:
+				yield action_db.update({"question_id": question_id}, {"$inc": {"count": 1}, "$addToSet": {"user_ids": self.current_user["_id"]}}, upsert=True)
+				self.write({action: True, "count": 1})
+			# not the first
 			else:
-				if self.current_user["_id"] in shares["user_ids"]:
-					shares = yield self.application.db.shares.find_and_modify({"question_id": question_id}, {"$inc": {"count": -1}, "$pull": {"user_ids": self.current_user["_id"]}}, new=True)
-					if shares["count"] <= 1000:
-						q = shares["count"]
-					elif shares["count"] <= 999999:
-						q = str(round(shares["count"])/1000, 1) + 'K'
+				if self.current_user["_id"] in action_list["user_ids"]:
+					action_list = yield action_db.find_and_modify(
+							{"question_id": question_id},
+							{"$inc": {"count": -1}, "$pull": {"user_ids": self.current_user["_id"]}},
+							fields={"count": 1},
+							new=True)
+
+					if action_list["count"] < 1000:
+						count = action_list["count"]
+					elif action_list["count"] <= 999999:
+						count = str(round(action_list["count"])/1000, 1) + 'K'
 					else:
-						q = str(round(shares["count"])/1000000, 1) + 'M'
-					self.write({"share": False, "count": q})
+						count = str(round(action_list["count"])/1000000, 1) + 'M'
+
+					self.write({action: False, "count": count})
+
 				else:
-					shares = yield self.application.db.shares.find_and_modify({"question_id": question_id}, {"$inc": {"count": 1}, "$push": {"user_ids": self.current_user["_id"]}}, new=True)
-					if shares["count"] <= 1000:
-						q = shares["count"]
-					elif shares["count"] <= 999999:
-						q = str(round(shares["count"])/1000, 1) + 'K'
+					action_list = yield action_db.find_and_modify(
+							{"question_id": question_id},
+							{"$inc": {"count": 1}, "$push": {"user_ids": self.current_user["_id"]}},
+							fields={"count": 1},
+							new=True)
+
+					if action_list["count"] <= 1000:
+						count = action_list["count"]
+					elif action_list["count"] <= 999999:
+						count = str(round(action_list["count"])/1000, 1) + 'K'
 					else:
-						q = str(round(shares["count"])/1000000, 1) + 'M'
-					self.write({"share": True, "count": q})
+						count = str(round(action_list["count"])/1000000, 1) + 'M'
+					self.write({action: True, "count": count})
 
 # handler for displaying a user's profile page
 class ProfileHandler(BaseHandler):
@@ -786,129 +776,75 @@ class FeedHandler(BaseHandler):
 			self.render("newsfeed.html", profile=self.current_user, current_user=self.current_user, follower=None, followers_count=followers_count, following_count=following_count,
 										 hater=None, hater_count=hater_count, askers=askers, questions=questions, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True,)
 
-# handler to follow a user
-class FollowHandler(BaseHandler):
+# handler to follow or hate a user
+class FollowHateHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, target_id):
 		if not self.current_user:
 			self.redirect("/")
 		else:
 			target_id = ObjectId(target_id)
-			if (yield self.application.db.followers.find_one({"user_id": target_id, "followers": self.current_user["_id"]})):
-				q = yield [self.application.db.followers.find_and_modify({"user_id": target_id}, {"$inc": {"count": -1}, "$pull": {"followers": self.current_user["_id"]}}, {"_id": 0, "count": 1}, new=True),
-						   self.application.db.following.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": -1}, "$pull": {"following": target_id}})]
-				self.write({"followers": q[0]["count"], "display_text": "Follow"})
+			if self.get_argument("action") == "follow":
+				if (yield self.application.db.followers.find_one({"user_id": target_id, "followers": self.current_user["_id"]}, fields={"_id": 1})):
+					ret = yield [self.application.db.followers.find_and_modify({"user_id": target_id}, {"$inc": {"count": -1}, "$pull": {"followers": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, new=True),
+							     self.application.db.following.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": -1}, "$pull": {"following": target_id}})]
+					self.write({"followers": ret[0]["count"], "display_text": "Follow"})
+				else:
+					ret = yield [self.application.db.followers.find_and_modify({"user_id": target_id}, {"$inc": {"count": 1}, "$addToSet": {"followers": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, upsert=True, new=True),
+							     self.application.db.following.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": 1}, "$addToSet": {"following": target_id}}, upsert=True)]
+					self.write({"followers": ret[0]["count"], "display_text": "Following"})
 			else:
-				q = yield [self.application.db.followers.find_and_modify({"user_id": target_id}, {"$inc": {"count": 1}, "$push": {"followers": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, upsert=True, new=True),
-						   self.application.db.following.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": 1}, "$push": {"following": target_id}}, upsert=True)]
-				self.write({"followers": q[0]["count"], "display_text": "Followed"})
+				if (yield self.application.db.haters.find_one({"user_id": target_id, "haters": self.current_user["_id"]}, fields={"_id": 1})):
+					ret = yield [self.application.db.haters.find_and_modify({"user_id": target_id}, {"$inc": {"count": -1}, "$pull": {"haters": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, new=True),
+					             self.application.db.hating.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": -1}, "$pull": {"hating": target_id}})]
+					self.write({"haters": ret[0]["count"], "display_text": "Hate"})
+				else:
+					ret = yield [self.application.db.haters.find_and_modify({"user_id": target_id}, {"$inc": {"count": 1}, "$addToSet": {"haters": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, upsert=True, new=True),
+					             self.application.db.hating.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": 1}, "$addToSet": {"hating": target_id}}, upsert=True)]
+					self.write({"haters": ret[0]["count"], "display_text": "Hating"})
 
-# handler to hate a user
-class HateHandler(BaseHandler):
+# handler to display a user's followers
+class GetRelationshipsHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, target_id):
-		if not self.current_user:
-			self.redirect("/")
+		target_id = ObjectId(target_id)
+		relation  = self.get_argument("relationship")
+		if relation == "follower":
+			relation_list = yield self.application.db.followers.find_one({"user_id": target_id}, {"_id": 0, "followers": 1})
+			if relation_list:
+				relation_list = yield self.application.db.users.find({"_id": {"$in": relation_list["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
+		elif relation == "following":
+			relation_list = yield self.application.db.following.find_one({"user_id": target_id}, {"_id": 0, "following": 1})
+			if relation_list:
+				relation_list = yield self.application.db.users.find({"_id": {"$in": relation_list["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
 		else:
-			target_id   = ObjectId(target_id)
-			if (yield self.application.db.haters.find_one({"user_id": target_id, "haters": self.current_user["_id"]})):
-				q = yield [self.application.db.haters.find_and_modify({"user_id": target_id}, {"$inc": {"count": -1}, "$pull": {"haters": self.current_user["_id"]}}, {"_id": 0, "count": 1}, new=True),
-				           self.application.db.hating.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": -1}, "$pull": {"hating": target_id}})]
-				self.write({"haters": q[0]["count"], "display_text": "Hate"})
-			else:
-				q = yield [self.application.db.haters.find_and_modify({"user_id": target_id}, {"$inc": {"count": 1}, "$push": {"haters": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, upsert=True, new=True),
-				           self.application.db.hating.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": 1}, "$push": {"hating": target_id}}, upsert=True)]
-				self.write({"haters": q[0]["count"], "display_text": "Hated"})
+			relation_list = yield self.application.db.haters.find_one({"user_id": target_id}, {"_id": 0, "haters": 1})
+			if relation_list:
+				relation_list = yield self.application.db.users.find({"_id": {"$in": relation_list["haters"]}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
 
-class GetFollowersHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get(self, target_id):
-		target_id = ObjectId(target_id)
-		followers = yield self.application.db.followers.find_one({"user_id": target_id}, {"_id": 0, "followers": 1})
-		if followers:
-			followers = yield self.application.db.users.find({"_id": {"$in": followers["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
+		if relation_list:
 			if self.current_user:
-				x, y = yield [self.application.db.following.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "following": 1}),
-								   self.application.db.hating.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "hating": 1})]
+				curr_user_following, curr_user_hating = yield [self.application.db.following.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "following": 1}),
+							  								   self.application.db.hating.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "hating": 1})]
 			else:
-				x = y = None
+				curr_user_following = curr_user_hating = None
 
-			for follower in followers:
-				follower["_id"] = str(follower["_id"])
-				if self.current_user and follower["_id"] == str(self.current_user["_id"]):
-					follower["follow_text"] = False
-					follower["hate_text"]   = False
+			for user in relation_list:
+				user["_id"] = str(user["_id"])
+				if self.current_user and user["_id"] == str(self.current_user["_id"]):
+					user["follow_text"] = False
+					user["hate_text"]   = False
 					continue
-				if self.current_user and x and ObjectId(follower["_id"]) in x["following"]:
-					follower["follow_text"] = "Following"
+				if self.current_user and curr_user_following and ObjectId(user["_id"]) in curr_user_following["following"]:
+					user["follow_text"] = "Following"
 				else:
-					follower["follow_text"] = "Follow"
-				if self.current_user and y and ObjectId(follower["_id"]) in y["hating"]:
-					follower["hate_text"] = "Hating"
+					user["follow_text"] = "Follow"
+				if self.current_user and curr_user_hating and ObjectId(user["_id"]) in curr_user_hating["hating"]:
+					user["hate_text"] = "Hating"
 				else:
-					follower["hate_text"] = "Hate"
+					user["hate_text"] = "Hate"
 
-			self.write(json.dumps(list(followers)))
-
-class GetFollowingHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get(self, target_id):
-		target_id = ObjectId(target_id)
-		following = yield self.application.db.following.find_one({"user_id": target_id}, {"_id": 0, "following": 1})
-		if following:
-			following = yield self.application.db.users.find({"_id": {"$in": following["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
-			if self.current_user:
-				x, y = yield [self.application.db.following.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "following": 1}),
-								   self.application.db.hating.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "hating": 1})]
-			else:
-				x = y = None
-
-			for follower in following:
-				follower["_id"] = str(follower["_id"])
-				if self.current_user and follower["_id"] == str(self.current_user["_id"]):
-					follower["follow_text"] = False
-					follower["hate_text"]   = False
-					continue
-				if self.current_user and x and ObjectId(follower["_id"]) in x["following"]:
-					follower["follow_text"] = "Following"
-				else:
-					follower["follow_text"] = "Follow"
-				if self.current_user and y and ObjectId(follower["_id"]) in y["hating"]:
-					follower["hate_text"] = "Hating"
-				else:
-					follower["hate_text"] = "Hate"
-
-			self.write(json.dumps(list(following)))
-
-class GetHatersHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get(self, target_id):
-		target_id = ObjectId(target_id)
-		haters    = yield self.application.db.haters.find_one({"user_id": target_id}, {"_id": 0, "haters": 1})
-		if haters:
-			haters = yield self.application.db.users.find({"_id": {"$in": haters["haters"]}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
-			if self.current_user:
-				x, y = yield [self.application.db.following.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "following": 1}),
-				                self.application.db.hating.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "hating": 1})]
-			else:
-				x = y = None
-
-			for follower in haters:
-				follower["_id"] = str(follower["_id"])
-				if self.current_user and follower["_id"] == str(self.current_user["_id"]):
-					follower["follow_text"] = False
-					follower["hate_text"]   = False
-					continue
-				if self.current_user and x and ObjectId(follower["_id"]) in x["following"]:
-					follower["follow_text"] = "Following"
-				else:
-					follower["follow_text"] = "Follow"
-				if self.current_user and y and ObjectId(follower["_id"]) in y["hating"]:
-					follower["hate_text"] = "Hating"
-				else:
-					follower["hate_text"] = "Hate"
-
-			self.write(json.dumps(list(haters)))
+			self.write(json.dumps(list(relation_list)))
 
 class GroupHandler(BaseHandler):
 	def get(self, group_name):
@@ -919,5 +855,5 @@ class GroupHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
