@@ -50,18 +50,51 @@
             </h4>
         </div>
     </div>
-    <div class="question-image" style="background-image: url({{ question["image_link"] }})"></div>
-    <div class="chart">
+    <div class="question-image" style="background-image: url({{ question["image_link"] }})">
+        <div class="question-image-gradient"></div>
         <h1 class="question"><a href="{{ "/questions/" + str(question["_id"]) }}">{{ question["question"] }}</a></h1>
+    </div>
+    <div class="chart">
         <div class="labels {{ str(question["_id"]) }}">
+            {% set total_votes = sum([x["votes"] for x in question["data"]]) %}
             {% for idx, q in enumerate(question["data"]) %}
                 {% if vote == None %}
-                    <h4><div class="label-box"></div>{{ q["label"] }}</h4>
+                    <div class="poll-answer">
+                        <h4 class="active">{{ q["label"] }}</h4>
+                        <div class="percent-and-bar">
+                            <div class="poll-percentage">{{ int(q["votes"]*100/total_votes) }}%</div>
+                            <div class="bar-wrapper1">
+                                <div class="bar-wrapper2" style="width: {{ q["votes"]*100/total_votes }}%">
+                                    <div class="poll-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% else %}
                     {% if idx == vote %}
-                        <h4 class="active"><div class="label-box"></div>{{ q["label"] }}</h4>
+                        <div class="poll-answer">
+                            <h4 class="active">{{ q["label"] }}</h4>
+                            <div class="percent-and-bar">
+                                <div class="poll-percentage">{{ int(q["votes"]*100/total_votes) }}%</div>
+                                <div class="bar-wrapper1">
+                                    <div class="bar-wrapper2" style="width: {{ q["votes"]*100/total_votes }}%">
+                                        <div class="poll-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     {% else %}
-                        <h4><div class="label-box"></div>{{ q["label"] }}</h4>
+                        <div class="poll-answer">
+                            <h4>{{ q["label"] }}</h4>
+                            <div class="percent-and-bar">
+                                <div class="poll-percentage">{{ int(q["votes"]*100/total_votes) }}%</div>
+                                <div class="bar-wrapper1">
+                                    <div class="bar-wrapper2" style="width: {{ q["votes"]*100/total_votes }}%">
+                                        <div class="poll-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     {% end %}
                 {% end %}
             {% end %}

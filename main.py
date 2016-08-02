@@ -448,17 +448,9 @@ class QuestionHandler(BaseHandler):
 
 # module to render a question card
 class QuestionModule(tornado.web.UIModule):
-	def render(self, asker, question, vote, favorites, shares, comments, commenters, show_comments=False):
+	def render(self, asker, question, vote, favorites, shares, comments, commenters, show_comments=False, multi=True):
 		return self.render_string("question_module.html", question=question, asker=asker, vote=vote, favorites=favorites, shares=shares, comments=comments,
-														  commenters=commenters, show_comments=show_comments, datetime=datetime, json=json)
-
-	def css_files(self):
-		return self.handler.static_url("css/question_module.css")
-
-	def javascript_files(self):
-		return [self.handler.static_url("js/Chart.js"),
-				self.handler.static_url("js/chartmaker.js"),
-				self.handler.static_url("js/question_module.js")]
+														  commenters=commenters, show_comments=show_comments, multi=multi, datetime=datetime, json=json)
 
 # handler for adding comments to a question
 class CommentHandler(BaseHandler):
@@ -703,16 +695,20 @@ class FeedHandler(BaseHandler):
 		if not self.current_user:
 			self.redirect("/")
 		else:
-			questions, followers_count, following_count, hater_count = yield [self.application.db.questions.find().sort("_id", 1).to_list(10),
-																		      self.application.db.followers.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "count": 1}),
-																	          self.application.db.following.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "count": 1}),
-																	          self.application.db.haters.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "count": 1}),]
+			ret = yield [self.application.db.questions.find().sort("_id", 1).to_list(10),
+					     self.application.db.followers.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "count": 1}),
+				         self.application.db.following.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "count": 1}),
+				         self.application.db.haters.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "count": 1})]
 
-			temp1, temp2, temp3, askers_temp, votes_temp = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-													  self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-													  self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-													  self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10),
-													  self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
+			questions, followers_count, following_count, hater_count = ret
+
+			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+						 self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10),
+						 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
+
+			temp1, temp2, temp3, askers_temp, votes_temp = ret
 			
 			favorites = []
 			shares    = []
@@ -855,5 +851,5 @@ class GroupHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
