@@ -75,39 +75,8 @@ article:last-of-type {
 .question a:hover {
 	color: #00a2d7;
 }
-.labels div {
-	width: 30px;
-	height: 15px;
-	float: left;
-	margin-right: 10px;
-}
-.labels h4:nth-child(1) div {
-	background-color: #eee04b;
-}
-.labels h4:nth-child(2) div {
-	background-color: #693ca1;
-}
-.labels h4:nth-child(3) div {
-	background-color: #6a041d;
-}
-.labels h4:nth-child(4) div {
-	background-color: #19ac9d;
-}
-.labels h4:nth-child(5) div {
-	background-color: #3772ff;
-}
-.labels h4 {
-	padding: 10px;
-	border-radius: 10px;
-	clear: left;
-	transition: background-color 0.3s;
-}
 .labels h4:hover {
-	background-color: #f1f1f1;
 	cursor: pointer;
-}
-.labels .active {
-	background-color: #f1f1f1;
 }
 canvas {
 	margin: 10px 0;
@@ -202,5 +171,114 @@ img.active {
 	.chart-footer svg {
 		height: 30px;
 		width: 30px;
+	}
+}
+
+@media only screen and (min-width: 1200px) {
+	body {
+		background-color: white;
+	}
+	footer {
+		display: none;
+	}
+	.question-image {
+		max-height: none;
+		height: 50% !important;
+		width: 50%;
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+	.asker-info {
+		position: absolute;
+		width: 50%;
+		top: 50%;
+		left: 0;
+		padding: 15px 30px 0px 30px;
+		box-sizing: border-box;
+	}
+	.asker-info a:hover {
+		color: #693ca1;
+	}
+	.labels {
+		position: absolute;
+		width: 50%;
+		left: 0;
+		top: calc(50% + 60px);
+		height: calc(50% - 103px);
+		padding: 20px 30px;
+		background-color: white;
+		box-sizing: border-box;
+	}
+	.labels .active {
+		background-color: transparent;
+	}
+	.poll-percentage {
+		float: left;
+		width: 40px;
+		position: relative;
+		top: 7px;
+	}
+	.bar-wrapper1 {
+		margin-left: 40px;
+		width: calc(100% - 40px);
+	}
+	.bar-wrapper2 {
+		width: 100%;
+	}
+	.poll-bar {
+		border-radius: 10px;
+		height: 30px;
+		margin: 5px 0 15px 0;
+		background-color: #693ca1;
+		width: 100%;
+	}
+	.chart-footer {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 50%;
+		padding: 10px 30px;
+		box-sizing: border-box;
+		border: none;
+	}
+	.comment-section {
+		position: absolute;
+		right: 0;
+		top: 0;
+		background-color: #333;
+		width: 50%;
+		height: 100%;
+		margin: 0 !important;
+		padding: 10px 30px;
+		box-sizing: border-box;
+	}
+	.all-comments {
+		height: calc(100% - 50px);
+		overflow: auto;
+	}
+	.comment {
+		margin-right: 10px;
+	}
+	::-webkit-scrollbar {
+	    width: 12px;
+	    position: relative;
+	    right: 4px;
+	} 
+	::-webkit-scrollbar-track {
+	    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+	    -webkit-border-radius: 10px;
+	    border-radius: 10px;
+	}
+	::-webkit-scrollbar-thumb {
+	    -webkit-border-radius: 10px;
+	    border-radius: 10px;
+	    background: rgba(105, 60, 161,0.8); 
+	    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+	}
+	form {
+		position: absolute;
+		bottom: 10px;
+		width: calc(100% - 60px);
 	}
 }

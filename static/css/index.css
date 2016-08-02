@@ -17,6 +17,9 @@ body {
 
 /*=================== HEADER STYLING START ===================*/
 
+header {
+	z-index: 20;
+}
 #large-display-nav {
 	display: none;
 }

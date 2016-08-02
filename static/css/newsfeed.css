@@ -215,8 +215,6 @@ nav {
 	#profile-pic > img {
 		height: 100%;
 		width: 100%;
-		box-shadow: 0 0 0 2px white;
-		border-radius: 50%;
 	}
 	#profile-text {
 		float: left;
