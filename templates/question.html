@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ question["question"] }}</title>
         <link href='https://fonts.googleapis.com/css?family=Karla' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Merriweather:900' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
         <link rel="stylesheet" href="{{ static_url("css/question.css") }}">
-        <link rel="stylesheet" href="{{ static_url("css/question_module_big.css") }}"> 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
           <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -16,28 +16,230 @@
         <![endif]-->
     </head>
     <body>
-       <!-- <header role="banner">
-            <h1><a href="/">Hive</a></h1>
-        </header> -->
+        <header>
+            <div id="logo">
+                <a href="/">Hive</a>
+            </div>
+            <div id="header-context">
+                {% if current_user %}
+                    <a href="/feed">
+                        <img src="{{ current_user["profile_pic_link"] }}">
+                    </a>
+                {% end %}
+            </div>
+        </header>
+        <nav>
+            {% if current_user %}
+                <div id="user-bio">
+                    {{ current_user["bio"] }}
+                </div>
+                <div id="nav-links">
+                    <ul>
+                        <li>Feed</li>
+                        <li>Followers</li>
+                        <li>Following</li>
+                        <li>Haters</li>
+                        <li>Settings</li>
+                        <li>Search</li>
+                    </ul>
+                </div>
+            {% else %}
+                <div id="account-button">
+                    <a href="/signup">
+                        <button>Sign Up / Log In</button>
+                    </a>
+                </div>
+                <div id="nav-links">
+                    <ul>
+                        <li>Home</li>
+                        <li>Featured</li>
+                        <li>Sports</li>
+                        <li>Entertainment</li>
+                        <li>Music</li>
+                        <li>Technology</li>
+                        <li>Search</li>
+                    </ul>
+                </div>
+            {% end %}
+        </nav>
         <section>
-            {% module Question(asker, question, vote, favorites, shares, comments, commenters, True, False) %}
+            <article id="large-display">
+                <div class="asker-info">
+                    <div class="info">
+                        <div id="asker-profile-pic">
+                            <a href="/users/{{ str(asker["_id"]) }}">
+                                <img src="{{ asker["profile_pic_link"] }}">
+                            </a>
+                        </div>
+                        <div id="asker-text">
+                            <div id="asker-username">
+                                <a href="/users/{{ str(asker["_id"]) }}"> by {{ asker["username"] }}</a>
+                            </div>
+                            <div id="middot">
+                                &middot;
+                            </div>
+                            <div id="question-date">
+                                {% set total_seconds = (datetime.utcnow() - question["date"]).total_seconds() %}
+                                {% if total_seconds < 30 %}
+                                    Just now
+                                {% elif total_seconds < 60 %}
+                                    {{ int(total_seconds) }}s ago
+                                {% elif total_seconds < 3600 %}
+                                    {{ int(total_seconds * 0.0166667) }}m ago
+                                {% elif total_seconds < 86400 %}
+                                    {{ int(total_seconds * 0.000277778) }}h ago
+                                {% elif total_seconds < 172800 %}
+                                    Yesterday
+                                {% elif total_seconds < 15770000 %}
+                                    {{ question["date"].strftime("%B %d") }}
+                                {% else %}
+                                    {{ question["date"].strftime("%B %d, %Y") }}
+                                {% end %}
+                            </div>
+                            <div class="vote-count">
+                                {% set vote_count = sum([q["votes"] for q in question["data"]]) %}
+                                {% if vote_count <= 1000 %}
+                                    {{ vote_count }}
+                                {% elif vote_count <= 999999 %}
+                                    {{ round(vote_count/1000, 1) }}K
+                                {% else %}
+                                    {{ round(vote_count/1000000, 1) }}M
+                                {% end %}
+                                Votes
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="question-image" style="background-image: url({{ question["image_link"] }})">
+                    <div class="question-image-overlay">
+                        <!-- intentionally empty -->
+                    </div>
+                </div>
+                <div class="chart">
+                    <div class="question-title">
+                        <a href="{{ "/questions/" + str(question["_id"]) }}">
+                            {{ question["question"] }}
+                        </a>
+                    </div>
+                    <div class="labels {{ str(question["_id"]) }}">
+                        {% set total_votes = sum([x["votes"] for x in question["data"]]) %}
+                        {% for idx, q in enumerate(question["data"]) %}
+                            {% if vote == None %}
+                                <div class="poll-answer">
+                                    <h4>{{ q["label"] }}</h4>
+                                    <div class="percent-and-bar">
+                                        <div class="poll-percentage">{{ int(q["votes"]*100/total_votes) }}%</div>
+                                        <div class="bar-wrapper1">
+                                            <div class="bar-wrapper2" style="width: {{ q["votes"]*100/total_votes }}%">
+                                                <div class="poll-bar"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                {% if idx == vote %}
+                                    <div class="poll-answer">
+                                        <h4 class="active">{{ q["label"] }}</h4>
+                                        <div class="percent-and-bar">
+                                            <div class="poll-percentage">{{ int(q["votes"]*100/total_votes) }}%</div>
+                                            <div class="bar-wrapper1">
+                                                <div class="bar-wrapper2" style="width: {{ q["votes"]*100/total_votes }}%">
+                                                    <div class="poll-bar"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="poll-answer">
+                                        <h4>{{ q["label"] }}</h4>
+                                        <div class="percent-and-bar">
+                                            <div class="poll-percentage">{{ int(q["votes"]*100/total_votes) }}%</div>
+                                            <div class="bar-wrapper1">
+                                                <div class="bar-wrapper2" style="width: {{ q["votes"]*100/total_votes }}%">
+                                                    <div class="poll-bar"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% end %}
+                            {% end %}
+                        {% end %}
+                    </div>   
+                </div>
+                <div class="chart-footer">
+                        <div class="favorite-count">
+                            <span>
+                                {% if favorites[1] <= 1000 %}
+                                    {{ favorites[1] }}
+                                {% elif favorites[1] <= 999999 %}
+                                    {{ round(favorites[1]/1000, 1) }}K
+                                {% else %}
+                                    {{ round(favorites[1]/1000000, 1) }}M
+                                {% end %}
+                            </span>
+                            <div title="Add to Favorites" class="svg-image {{ str(question["_id"]) }}">
+                                {% if favorites[0] %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Heart" x="0px" y="0px" viewBox="0 0 20 20" xml:space="preserve" enable-background="new 0 0 20 20">
+                                        <path d="M17.19 4.155c-1.672-1.534-4.383-1.534-6.055 0L10 5.197 8.864 4.155c-1.672-1.534-4.382-1.534-6.054 0-1.881 1.727-1.881 4.52 0 6.246L10 17l7.19-6.599C19.07 8.675 19.07 5.881 17.19 4.155z" fill="#693CA1"/>
+                                    </svg>
+                                {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Heart" x="0px" y="0px" viewBox="0 0 20 20" xml:space="preserve" enable-background="new 0 0 20 20">
+                                        <path d="M17.19 4.155c-1.672-1.534-4.383-1.534-6.055 0L10 5.197 8.864 4.155c-1.672-1.534-4.382-1.534-6.054 0-1.881 1.727-1.881 4.52 0 6.246L10 17l7.19-6.599C19.07 8.675 19.07 5.881 17.19 4.155z" fill="#8d8d8d"/>
+                                    </svg>
+                                {% end %}
+                            </div>
+                        </div>
+                        <div class="share-count">
+                            <span>
+                                {% if shares[1] <= 1000 %}
+                                    {{ shares[1] }}
+                                {% elif shares[1] <= 999999 %}
+                                    {{ round(shares[1]/1000, 1) }}K
+                                {% else %}
+                                    {{ round(shares[1]/1000000, 1) }}M
+                                {% end %}
+                            </span>
+                            <div title="Share" class="svg-image {{ str(question["_id"]) }}">
+                                {% if shares[0] %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Forward" x="0px" y="0px" viewBox="0 0 20 20" xml:space="preserve" enable-background="new 0 0 20 20">
+                                        <path d="M12 11.874v4.357l7-6.69-7-6.572v3.983c-8.775 0-11 9.732-11 9.732C3.484 12.296 7.237 11.874 12 11.874z" fill="#693ca1"/>
+                                    </svg>
+                                {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Forward" x="0px" y="0px" viewBox="0 0 20 20" xml:space="preserve" enable-background="new 0 0 20 20">
+                                        <path d="M12 11.874v4.357l7-6.69-7-6.572v3.983c-8.775 0-11 9.732-11 9.732C3.484 12.296 7.237 11.874 12 11.874z" fill="#8d8d8d"/>
+                                    </svg>
+                                {% end %}
+                            </div>
+                        </div>
+                        <div class="comment-count">
+                            <div class="comment-count-text">
+                                {% if comments[1] <= 1000 %}
+                                    {{ comments[1] }}
+                                {% elif comments[1] <= 999999 %}
+                                    {{ round(comments[1]/1000, 1) }}K
+                                {% else %}
+                                    {{ round(comments[1]/1000000, 1) }}M
+                                {% end %}
+                            </div>
+                            <a href="/questions/{{ str(question["_id"]) }}#comments">
+                                <div title="See Comments" class="svg-image">
+                                    {% if comments[0] %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Chat" x="0px" y="0px" viewBox="0 0 20 20" xml:space="preserve" enable-background="new 0 0 20 20">
+                                            <path d="M5.8 12.2V6H2C0.9 6 0 6.9 0 8v6c0 1.1 0.9 2 2 2h1v3l3-3h5c1.1 0 2-0.9 2-2v-1.82c-0.064 0.014-0.132 0.021-0.2 0.021h-7V12.2zM18 1H9C7.9 1 7 1.9 7 3v8h7l3 3v-3h1c1.1 0 2-0.899 2-2V3C20 1.9 19.1 1 18 1z" fill="#693ca1"/>
+                                        </svg>
+                                    {% else %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Chat" x="0px" y="0px" viewBox="0 0 20 20" xml:space="preserve" enable-background="new 0 0 20 20">
+                                            <path d="M5.8 12.2V6H2C0.9 6 0 6.9 0 8v6c0 1.1 0.9 2 2 2h1v3l3-3h5c1.1 0 2-0.9 2-2v-1.82c-0.064 0.014-0.132 0.021-0.2 0.021h-7V12.2zM18 1H9C7.9 1 7 1.9 7 3v8h7l3 3v-3h1c1.1 0 2-0.899 2-2V3C20 1.9 19.1 1 18 1z" fill="#8d8d8d"/>
+                                        </svg>
+                                    {% end %}
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    {% module Comment(str(question["_id"]), comments[2], commenters) %}
+            </article>
         </section>
-        <footer role="contentinfo">
-            <ul>
-                <li><a class="footer-links" href="">Blog</a></li>
-                <li><a class="footer-links" href="">Email Us</a></li>
-                <li><a class="footer-links" href="">Jobs</a></li>
-                <li><a class="footer-links" href="">Terms</a></li>
-                <li><a class="footer-links" href="">Privacy</a></li>
-                <li><a class="footer-links" href="">Cookie</a></li>
-                <li><a class="footer-links" href="">Copyright</a></li>
-                <li>&copy; 2016<br>Hive, Inc.</li>
-            </ul>
-        </footer>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
         <script src="{{ static_url("js/question.js") }}"></script>
-        <script src="{{ static_url("js/Chart.js") }}"></script>
-        <script src="{{ static_url("js/chartmaker.js") }}"></script>
-        <script src="{{ static_url("js/question_module.js") }}"></script>
     </body>
 </html>

@@ -444,7 +444,7 @@ class QuestionHandler(BaseHandler):
 			if vote:
 				vote = vote["votes"][0]['vote_index']
 
-			self.render("question.html", asker=asker, question=question, vote=vote, favorites=favorites, shares=shares, comments=comments, commenters=commenters)
+			self.render("question.html", asker=asker, current_user=self.current_user, question=question, vote=vote, favorites=favorites, shares=shares, comments=comments, commenters=commenters, datetime=datetime)
 
 # module to render a question card
 class QuestionModule(tornado.web.UIModule):
