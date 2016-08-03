@@ -452,6 +452,12 @@ class QuestionModule(tornado.web.UIModule):
 		return self.render_string("question_module.html", question=question, asker=asker, vote=vote, favorites=favorites, shares=shares, comments=comments,
 														  commenters=commenters, show_comments=show_comments, multi=multi, datetime=datetime, json=json)
 
+	def css_files(self):
+		return self.handler.static_url("css/question_module.css")
+
+	def javascript_files(self):
+		return self.handler.static_url("js/question_module.js")
+
 # handler for adding comments to a question
 class CommentHandler(BaseHandler):
 	@tornado.gen.coroutine

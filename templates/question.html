@@ -66,19 +66,19 @@
             <article id="large-display">
                 <div class="asker-info">
                     <div class="info">
-                        <div id="asker-profile-pic">
+                        <div class="asker-profile-pic">
                             <a href="/users/{{ str(asker["_id"]) }}">
                                 <img src="{{ asker["profile_pic_link"] }}">
                             </a>
                         </div>
-                        <div id="asker-text">
-                            <div id="asker-username">
+                        <div class="asker-text">
+                            <div class="asker-username">
                                 <a href="/users/{{ str(asker["_id"]) }}"> by {{ asker["username"] }}</a>
                             </div>
-                            <div id="middot">
+                            <div class="middot">
                                 &middot;
                             </div>
-                            <div id="question-date">
+                            <div class="question-date">
                                 {% set total_seconds = (datetime.utcnow() - question["date"]).total_seconds() %}
                                 {% if total_seconds < 30 %}
                                     Just now
@@ -112,7 +112,6 @@
                 </div>
                 <div class="question-image" style="background-image: url({{ question["image_link"] }})">
                     <div class="question-image-overlay">
-                        <!-- intentionally empty -->
                     </div>
                 </div>
                 <div class="chart">

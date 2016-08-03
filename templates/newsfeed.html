@@ -8,7 +8,6 @@
         <link href='https://fonts.googleapis.com/css?family=Karla' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
         <link rel="stylesheet" href="{{ static_url("css/newsfeed.css") }}">
-        <link rel="stylesheet" href="{{ static_url("css/question_module.css") }}">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
           <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -16,15 +15,58 @@
         <![endif]-->
     </head>
     <body>
-	    <header role="banner">
-	    	<div id="logo"><a href="/">Hive</a></div>
-	    	<div class="header-wrapper">
-	    		<nav role="navigation">
-	    			<img id="mag-glass" src="{{ static_url("images/magnifying-glass-white.svg") }}">
-	    			<input type="text" placeholder="Search" autocomplete="off" id="search">
-	    		</nav>
-	    	</div>
-	    </header>
+	    <header>
+            <div id="logo">
+                <a href="/">Hive</a>
+            </div>
+            <div id="header-context">
+                {% if current_user %}
+                    <a href="/feed">
+                        <img src="{{ current_user["profile_pic_link"] }}">
+                    </a>
+                {% end %}
+            </div>
+        </header>
+        <nav>
+            {% if current_user %}
+                <div id="user-bio">
+                    {{ current_user["bio"] }}
+                </div>
+                <div id="nav-links">
+                    <ul>
+                        <li>Feed</li>
+                        <li>Followers</li>
+                        <li>Following</li>
+                        <li>Haters</li>
+                        <li>Settings</li>
+                        <li>Search</li>
+                    </ul>
+                </div>
+            {% else %}
+                <div id="account-button">
+                    <a href="/signup">
+                        <button>Sign Up / Log In</button>
+                    </a>
+                </div>
+                <div id="nav-links">
+                    <ul>
+                        <li>Home</li>
+                        <li>Featured</li>
+                        <li>Sports</li>
+                        <li>Entertainment</li>
+                        <li>Music</li>
+                        <li>Technology</li>
+                        <li>Search</li>
+                    </ul>
+                </div>
+            {% end %}
+        </nav>
+        <div id="questions">
+	        {% for idx, question in enumerate(questions) %}
+		        {% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx], False) %}
+	       	{% end %}
+	    </div>
+        <!--
 	    <div id="profile-info">
 	    	<div id="profile-wrapper">
 		    	<div id="profile-pic-and-text">
@@ -139,28 +181,14 @@
 	        	{% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx], False) %}
        		{% end %}
         </section>
-        <footer role="contentinfo">
-        	<ul>
-                <li><a class="footer-links" href="">Blog</a></li>
-                <li><a class="footer-links" href="">Email Us</a></li>
-                <li><a class="footer-links" href="">Jobs</a></li>
-                <li><a class="footer-links" href="">Terms</a></li>
-                <li><a class="footer-links" href="">Privacy</a></li>
-                <li><a class="footer-links" href="">Cookie</a></li>
-                <li><a class="footer-links" href="">Copyright</a></li>
-                <li>&copy; 2016<br>Hive, Inc.</li>
-        	</ul>
-        </footer>
         {% if controlled %}
 	        <form method="post" action="logout">
 	            {% raw xsrf_form_html() %}
 	            <input type="submit" value="Log Out">
 	        </form>
-	    {% end %}
+	    {% end %} -->
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
         <script src="{{ static_url("js/newsfeed.js") }}"></script>
-        <script src="{{ static_url("js/Chart.js") }}"></script>
-        <script src="{{ static_url("js/chartmaker.js") }}"></script>
         <script src="{{ static_url("js/question_module.js") }}"></script>
     </body>
 </html>
