@@ -7,287 +7,114 @@ html {
 a {
 	text-decoration: none;
 }
-body {
-	background-color: #f1f1f1;
-}
-body.no-scroll {
-	position: fixed;
-	width: 100%;
-	overflow-y: scroll;
-}
-button {
-	-webkit-appearance: none;
-}
 
 /*=================== GENERAL STYLING END ====================*/
 
-/*=================== HEADER STYLING START ===================*/
+/*=================== LARGE-DISP STYLING START ===============*/
 
-header {
-	position: fixed;
-	width: 100%;
-	box-shadow: 0 1px 2px rgba(0,0,0,.1);
-	z-index: 10;
-}
-.header-wrapper {
-	height: 46px;
-	background-color: #333;
-	transition: background-color 0.3s;
-}
-nav {
-	width: 90%;
-	max-width: 950px;
-	margin: 0 auto;
-	overflow: auto;
-}
-#logo {
-	font-size: 2em;
-	top: 7px;
-	position: fixed;
-	left: 50%;
-	transform: translateX(-50%);
-	transition: color 0.3s;
-}
-#logo > a {
-	color: white;
-}
-#mag-glass {
-	padding: 10px 0 10px 10px;
-	height: 20px;
-	width: 20px;
-	display: block;
-	float: right;
-	margin-top: 3px;
-}
-#search {
-	display: none;
-}
-
-@media only screen and (min-width: 768px) {
-	#mag-glass {
-		display: none;
+@media only screen and (min-width: 1200px) {
+	html, body, section, article {
+		height: 100%;
 	}
-	#search {
-		display: block;
-		font-size: 125%;
-		padding: 4px 0px 4px 15px;
-		width: 170px;
-		font-family: Karla;
-		border-radius: 16px;
-		margin-top: 7px;
+	header {
+		position: absolute;
+		width: 240px;
+		height: 100px;
+		z-index: 100;
+		padding: 20px;
+		box-sizing: border-box;
+	}
+	#logo {
+		float: left;
+		font-size: 2em;
+		margin-top: 12px;
+	}
+	#logo a {
+		color: #f1f1f1;
+	}
+	#header-context img {
+		width: 60px;
+		height: 60px;
 		float: right;
+		border-radius: 50%;
+	}
+	nav {
+		position: absolute;
+		left: 0;
+		width: 240px;
+		height: 100%;
+		padding: 20px;
+		padding-top: 130px;
+		z-index: 30;
+		box-sizing: border-box;
+		background-color: #333;
+		background-image: url(http://img.wallpaper.sc/iphone5s/images/iphone5s-744x1392-wallpaper_03204.jpg);
+		background-repeat: no-repeat;
+		background-position: 15% 0%;
+		background-size: cover;
+	}
+	#user-bio {
+		line-height: 1.3em;
+		color: #f1f1f1;
+		padding: 15px 0;
+		margin-bottom: 100px;
+		border-top: 1px solid rgba(255,255,255,.3);
+		border-bottom: 1px solid rgba(255,255,255,.3);
+	}
+	#account-button {
+		color: #f1f1f1;
+		padding: 15px 0;
+		margin-bottom: 100px;
+		border-top: 1px solid rgba(255,255,255,.3);
+		border-bottom: 1px solid rgba(255,255,255,.3);
+	}
+	#account-button button {
+		background: transparent;
 		border: none;
-		box-shadow: none;
-		background-color: #f1f1f1;
+		color: #f1f1f1;
+		font-size: 1.5em;
 		outline: none;
 	}
-}
-
-/*=================== HEADER STYLING END =====================*/
-
-#profile-info {
-	color: #333;
-	letter-spacing: 0.08em;
-	background-color: #eee04b;
-	padding: 30px 15px;
-	padding-top: 70px;
-	padding-bottom: 10px;
-	box-sizing: border-box;
-}
-#profile-wrapper {
-	max-width: 950px;
-	width: 100%;
-	margin: 0 auto;
-	overflow: auto;
-}
-#profile-pic-and-text {
-	width: 100%;
-	margin-bottom: 10px;
-	padding: 3px 0;
-	overflow: auto;
-}
-#profile-pic {
-	display: block;
-	padding: 3px;
-	float: left;
-	margin-right: 15px;
-}
-#profile-pic > img {
-	height: 80px;
-	width: 80px;
-	box-shadow: 0 0 0 2px white;
-	border-radius: 50%;
-}
-#profile-text {
-	float: left;
-	width: calc(100% - 101px);
-	margin-top: 10px;
-	display: block;
-}
-#username {
-	font-weight: bold;
-	margin-bottom: 5px;
-	font-size: 1.25em;
-}
-#profile-bio {
-	font-size: 0.8em;
-	padding: 5px 0;
-}
-#profile-buttons {
-	text-align: center;
-}
-.profile-button {
-	font-family: Karla;
-	background-color: transparent;
-	color: white;
-	border: 3px solid white;
-	font-size: 1em;
-	width: 40%;
-	max-width: 150px;
-	min-width: 100px;
-	padding: 5px 0;
-	border-radius: 26px;
-	outline: none;
-}
-.profile-button.active {
-	background-color: white;
-	color: #eee04b;
-}
-.profile-button:hover {
-	background-color: white;
-	color: #eee04b;
-	cursor: pointer;
-}
-#follow-button {
-	margin-right: 10px;
-}
-#hate-button {
-	margin-left: 10px;
-}
-#profile-metrics {
-	background-color: #eee04b;
-	font-size: 0.7em;
-	padding: 7px 0;
-	box-shadow: 0 1px 2px rgba(0,0,0,.1);
-}
-#profile-metrics-wrapper {
-	width: 100%;
-	max-width: 950px;
-	margin: 0 auto;
-	overflow: auto;
-	padding: 9px 0 2px 0;
-	border-top: 2px solid rgba(255,255,255,.4);
-	text-align: center;
-}
-.profile-metrics-text {
-	width: 25%;
-	float: left;
-	cursor: pointer;
-}
-.text-num {
-	display: inline;
-	font-weight: bold;
-	color: #333;
-}
-.text-str {
-	display: inline;
-	color: #333;
-}
-
-@media only screen and (min-width: 768px) {
-	#profile-info {
-		padding: 90px 40px 22px 40px;
-		box-sizing: border-box;
+	#account-button button:hover {
+		cursor: pointer;
+	}
+	#nav-links li {
+		color: #f1f1f1;
+		font-size: 1.2em;
+		margin: 10px 0;
+		padding-top: 10px;
+		border-top: 1px solid rgba(255,255,255,.3);
+	}
+	#nav-links li:first-of-type {
+		border-top: none;
+	}
+	#questions {
+		position: absolute;
+		left: 240px;
+		top: 0;
+		height: 100%;
+		width: calc(50% - 240px);
+		background-color: #f1f1f1;
 		overflow: auto;
 	}
-	#profile-pic-and-text {
-		width: 60%;
-		float: left;
-		margin-bottom: 0;
+	#questions::-webkit-scrollbar {
+	    width: 5px;
+	} 
+	#questions::-webkit-scrollbar-track {
+	    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+	    -webkit-border-radius: 10px;
+	    border-radius: 10px;
 	}
-	#profile-pic {
-		height: 100px;
-		width: 100px;
-		margin-top: 11px;
-		margin-right: 30px;
-		float: left;
-	}
-	#profile-pic > img {
-		height: 100%;
-		width: 100%;
-	}
-	#profile-text {
-		float: left;
-		margin-top: 10px;
-		width: calc(100% - 180px);
-	}
-	#username {
-		margin-bottom: 20px;
-		font-size: 1.5em;
-	}
-	#profile-bio {
-		font-size: 1em;
-	}
-	#profile-metrics {
-		font-size: 1em;
-	}
-	#profile-buttons {
-		display: block;
-		width: 40%;
-		margin-top: 46px;
-		float: right;
-	}
-	.profile-button {
-		font-size: 1.25em;
-		width: 40%;
-		min-width: 100px;
-		max-width: 150px;
-		margin: 0;
+	#questions::-webkit-scrollbar-thumb {
+	    -webkit-border-radius: 10px;
+	    border-radius: 10px;
+	    background: rgba(51, 51, 51,0.4); 
+	    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
 	}
 }
 
-@media only screen and (min-width: 900px) {
-	#profile-info {
-		padding: 100px 40px 22px 40px;
-	}
-	#profile-pic {
-		height: 150px;
-		width: 150px;
-		margin-top: 0;
-		margin-right: 40px;
-	}
-	#profile-text {
-		margin-top: 20px;
-		width: calc(100% - 196px);
-	}
-	#username {
-		font-size: 2em;
-	}
-	#profile-buttons {
-		margin-top: 60px;
-		text-align: right;
-	}
-	.profile-button {
-		width: 40%;
-		min-width: 100px;
-		max-width: 150px;
-		margin: 0;
-	}
-}
+/*=================== LARGE-DISP STYLING END =================*/
 
-/*=================== SECTION STYLING START ==================*/
-
-section {
-	padding-top: 30px;
-}
-
-@media only screen and (min-width: 768px) {
-	section {
-		padding-top: 60px;
-	}
-}
-
-/*=================== SECTION STYLING END ====================*/
 
 /*=================== OVERLAY STYLING START ==================*/
 
@@ -560,41 +387,3 @@ button img {
 }
 
 /*=================== MODAL STYLING END ======================*/
-
-/*=================== FOOTER STYLING START ===================*/
-
-footer {
-	display: none;
-}
-
-@media only screen and (min-width: 900px) {
-	footer {
-		display: block;
-		position: absolute;
-		right: 50px;
-		top: 450px;
-		width: auto;
-		height: auto;
-		text-align: right;
-	}
-	footer ul {
-		width: 100px;
-		list-style-type: none;
-		letter-spacing: 0.02em;
-	}
-	footer ul li {
-		line-height: 1.2;
-	}
-	.footer-links {
-		color: #8d8d8d;
-		font-size: 90%;
-	}
-	footer ul li:last-of-type {
-		margin-top: 15px;
-		color: #8d8d8d;
-		opacity: 0.65;
-		font-size: 90%;
-	}
-}
-
-/*=================== FOOTER STYLING END =====================*/

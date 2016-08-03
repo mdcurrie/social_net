@@ -118,26 +118,26 @@ a {
 		top: -58px;
 		z-index: 20;
 	}
-	#asker-profile-pic {
+	.asker-profile-pic {
 		float: left;
 		margin-right: 20px;
 	}
-	#asker-profile-pic img {
+	.asker-profile-pic img {
 		width: 80px;
 		height: 80px;
 		border-radius: 50%;
 	}
-	#asker-text {
+	.asker-text {
 		float: left;
 		margin-top: 21px;
 	}
-	#asker-username {
+	.asker-username {
 		float: left;
 	}
-	#asker-username a {
+	.asker-username a {
 		color: white;
 	}
-	#middot {
+	.middot {
 		float: left;
 		color: #8d8d8d;
 		font-size: 2em;
@@ -145,7 +145,7 @@ a {
 		position: relative;
 		top: -8px;
 	}
-	#question-date {
+	.question-date {
 		float: left;
 		color: #8d8d8d;
 	}
