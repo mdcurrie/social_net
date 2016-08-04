@@ -2,10 +2,18 @@
 
 html {
 	font-family: Karla, sans-serif;
-	color: #333;
 }
 a {
 	text-decoration: none;
+}
+* {
+	color: #353436;
+}
+
+@media only screen and (min-width: 1200px) {
+	html, body, section, article {
+		height: 100%;
+	}
 }
 
 /*=================== GENERAL STYLING END ====================*/
@@ -13,92 +21,17 @@ a {
 /*=================== LARGE-DISP STYLING START ===============*/
 
 @media only screen and (min-width: 1200px) {
-	html, body, section, article {
-		height: 100%;
-	}
-	header {
-		position: absolute;
-		width: 240px;
-		height: 100px;
-		z-index: 100;
-		padding: 20px;
-		box-sizing: border-box;
-	}
-	#logo {
-		float: left;
-		font-size: 2em;
-		margin-top: 12px;
-	}
-	#logo a {
-		color: #f1f1f1;
-	}
-	#header-context img {
-		width: 60px;
-		height: 60px;
-		float: right;
-		border-radius: 50%;
-	}
-	nav {
-		position: absolute;
-		left: 0;
-		width: 240px;
-		height: 100%;
-		padding: 20px;
-		padding-top: 130px;
-		z-index: 30;
-		box-sizing: border-box;
-		background-color: #333;
-		background-image: url(http://img.wallpaper.sc/iphone5s/images/iphone5s-744x1392-wallpaper_03204.jpg);
-		background-repeat: no-repeat;
-		background-position: 15% 0%;
-		background-size: cover;
-	}
-	#user-bio {
-		line-height: 1.3em;
-		color: #f1f1f1;
-		padding: 15px 0;
-		margin-bottom: 100px;
-		border-top: 1px solid rgba(255,255,255,.3);
-		border-bottom: 1px solid rgba(255,255,255,.3);
-	}
-	#account-button {
-		color: #f1f1f1;
-		padding: 15px 0;
-		margin-bottom: 100px;
-		border-top: 1px solid rgba(255,255,255,.3);
-		border-bottom: 1px solid rgba(255,255,255,.3);
-	}
-	#account-button button {
-		background: transparent;
-		border: none;
-		color: #f1f1f1;
-		font-size: 1.5em;
-		outline: none;
-	}
-	#account-button button:hover {
-		cursor: pointer;
-	}
-	#nav-links li {
-		color: #f1f1f1;
-		font-size: 1.2em;
-		margin: 10px 0;
-		padding-top: 10px;
-		border-top: 1px solid rgba(255,255,255,.3);
-	}
-	#nav-links li:first-of-type {
-		border-top: none;
-	}
 	#questions {
 		position: absolute;
 		left: 240px;
 		top: 0;
-		height: 100%;
+		height: calc(100% - 100px);
 		width: calc(50% - 240px);
 		background-color: #f1f1f1;
 		overflow: auto;
 	}
 	#questions::-webkit-scrollbar {
-	    width: 5px;
+	    width: 10px;
 	} 
 	#questions::-webkit-scrollbar-track {
 	    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
@@ -110,6 +43,146 @@ a {
 	    border-radius: 10px;
 	    background: rgba(51, 51, 51,0.4); 
 	    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+	}
+	article {
+		width: 80%;
+		margin: 0 auto;
+		margin-top: 30px;
+		margin-bottom: 30px;
+	}
+	.mini-question-wrapper {
+		position: relative;
+		margin: 35px 0;
+	}
+	.mini-question-wrapper:last-of-type {
+		margin-bottom: 10px;
+	}
+	.mini-question {
+		width: 80%;
+		height: 250px;
+		margin: 0 auto;
+		background-color: white;
+		padding: 10px;
+		box-sizing: border-box;
+		position: relative;
+	}
+	.mini-asker-info {
+		overflow: auto;
+		margin-bottom: 15px;
+	}
+	.mini-asker-profile-pic {
+		float: left;
+		margin-right: 10px;
+	}
+	.mini-asker-profile-pic img {
+		height: 40px;
+		width: 40px;
+		border-radius: 50%;
+	}
+	.mini-asker-text {
+		float: left;
+		margin-top: 5px;
+	}
+	.mini-asker-username {
+		font-weight: bold;
+		margin-bottom: 5px;
+	}
+	.mini-asker-username a {
+		color: #333;
+	}
+	.mini-question-date {
+		font-size: 0.8em;
+		color: #8d8d8d;
+	}
+	.mini-question-image {
+		background-repeat: no-repeat;
+	    background-size: cover;
+	    background-position: 50% 40%;
+	    position: absolute;
+	    right: 0;
+	    top: 0;
+	    height: 100%;
+	    width: 37%;
+	}
+	.mini-chart {
+		clear: left;
+		width: calc(63% - 10px);
+	}
+	.mini-question-title {
+		font-size: 1.75em;
+		font-weight: bold;
+		margin-bottom: 20px;
+	}
+	.mini-question-title a {
+		color: #333;
+	}
+	.mini-backer1 {
+		position: absolute;
+		width: 75%;
+		height: 7px;
+		background-color: #d4d2d5;
+		left: 50%;
+		transform: translateX(-50%);
+		top: -7px;
+	}
+	.mini-backer2 {
+		position: absolute;
+		width: 70%;
+		height: 7px;
+		background-color: #95909a;
+		left: 50%;
+		transform: translateX(-50%);
+		top: -14px;
+	}
+	.mini-chart-footer {
+		position: absolute;
+		top: 20px;
+		right: 0;
+		padding: 0 60px;
+		box-sizing: border-box;
+		width: 25%;
+	}
+	.mini-chart-footer > div {
+		display: block;
+		width: 33.3%;
+		float: left;
+	}
+	.chart-footer span {
+		color: white;
+	}
+	.mini-svg-image {
+		width: 22px;
+		height: 22px;
+		display: inline-block;
+		box-shadow: 0 0 0 2px white;
+		border-radius: 50%;
+		padding: 10px;
+		margin-left: 10px;
+	}
+	.mini-svg-image:hover {
+		background-color: #e4c82e;
+	}
+	.mini-svg-active {
+		background-color: #e4c82e;
+	}
+	.mini-chart-footer svg {
+		height: 22px;
+		width: 22px;
+		vertical-align: middle;
+	}
+	.mini-favorite-count {
+		float: left;
+		width: 33.3%;
+	}
+	.mini-share-count {
+		width: 33.3%;
+		float: left;
+		text-align: center;
+	}
+	.mini-comment-count {
+		text-align: right;
+		float: left;
+		width: 33.4%;
 	}
 }
 

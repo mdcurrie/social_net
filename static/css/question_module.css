@@ -1,89 +1,162 @@
+/*=================== LARGE-DISP STYLING START ===============*/
+
 @media only screen and (min-width: 1200px) {
-	article {
+	.question-image {
+		height: 34%;
+		width: 50%;
 		position: absolute;
-		left: 240px;
 		top: 0;
-		height: 100%;
-		width: calc(50% - 240px);
-		background-color: #f1f1f1;
+		right: 0;
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: 50% 40%;
 	}
-	.question {
-		width: 80%;
-		height: 400px;
-		margin: 0 auto;
-		margin-top: 30px;
-		margin-bottom: 30px;
-		background-color: white;
-		padding: 10px;
-		box-sizing: border-box;
-		position: relative;
+	.question-image-overlay {
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(180deg, rgba(0,0,0,.4), rgba(0,0,0,0), rgba(0,0,0,0), rgba(0,0,0,.4));
 	}
 	.asker-info {
+		width: 50%;
+		position: absolute;
+		top: 34%;
+		right: 0;
+	}
+	.info {
+		padding: 10px 60px;
 		overflow: auto;
-		margin-bottom: 15px;
+		position: relative;
+		top: -58px;
+		z-index: 20;
 	}
 	.asker-profile-pic {
 		float: left;
-		margin-right: 10px;
+		margin-right: 20px;
 	}
 	.asker-profile-pic img {
-		height: 40px;
-		width: 40px;
+		width: 80px;
+		height: 80px;
 		border-radius: 50%;
+		box-shadow: 0 0 0 2px white;
 	}
 	.asker-text {
 		float: left;
-		margin-top: 5px;
+		margin-top: 21px;
 	}
 	.asker-username {
-		font-weight: bold;
-		margin-bottom: 5px;
+		float: left;
 	}
 	.asker-username a {
-		color: #333;
+		color: white;
+	}
+	.middot {
+		float: left;
+		color: #95909a;
+		font-size: 2em;
+		margin: 0 9px;
+		position: relative;
+		top: -8px;
 	}
 	.question-date {
-		font-size: 0.8em;
-		color: #8d8d8d;
+		float: left;
+		color: #95909a;
 	}
-	.question-image {
-		background-repeat: no-repeat;
-	    background-size: cover;
-	    background-position: 50% 40%;
-	    position: absolute;
-	    right: 0;
-	    top: 0;
-	    height: 100%;
-	    width: 37%;
+	.vote-count {
+		clear: left;
+		padding-top: 5px;
 	}
 	.chart {
-		clear: left;
-		width: calc(63% - 10px);
-	}
-	.question-title {
-		font-size: 1.75em;
-		font-weight: bold;
-		margin-bottom: 20px;
+		width: 50%;
+		position: absolute;
+		top: calc(34% + 75px);
+		right: 0;
+		padding: 0 60px;
+		box-sizing: border-box;
 	}
 	.question-title a {
-		color: #333;
+		font-size: 3.25em;
+		font-family: 'Merriweather', serif;
 	}
-	.backer1 {
-		position: absolute;
-		width: 90%;
-		height: 10px;
-		background-color: rgb(228, 228, 228);
-		left: 50%;
-		transform: translateX(-50%);
-		top: -10px;
+	.labels {
+		padding-top: 50px;
 	}
-	.backer2 {
+	.labels h4 {
+		font-size: 1.25em;
+		padding-left: 48px;
+	}
+	.poll-percentage {
+		float: left;
+		font-size: 1.25em;
+		width: 40px;
+		position: relative;
+		top: 4px;
+	}
+	.bar-wrapper1 {
+		margin-left: 48px;
+		width: calc(100% - 48px);
+	}
+	.bar-wrapper2 {
+		width: 100%;
+	}
+	.poll-bar {
+		height: 30px;
+		margin: 5px 0 25px 0;
+		background-color: #bd65ff;
+		width: 100%;
+	}
+	.chart-footer {
 		position: absolute;
-		width: 80%;
-		height: 10px;
-		background-color: rgb(235, 235, 237);
-		left: 50%;
-		transform: translateX(-50%);
-		top: -20px;
+		top: 20px;
+		right: 0;
+		padding: 0 60px;
+		box-sizing: border-box;
+		width: 25%;
+	}
+	.chart-footer > div {
+		display: block;
+		width: 33.3%;
+		float: left;
+	}
+	.chart-footer span {
+		color: white;
+	}
+	.svg-image {
+		width: 22px;
+		height: 22px;
+		display: inline-block;
+		box-shadow: 0 0 0 2px white;
+		border-radius: 50%;
+		padding: 10px;
+		margin-left: 10px;
+	}
+	.svg-image:hover {
+		background-color: #e4c82e;
+	}
+	.svg-active {
+		background-color: #e4c82e;
+	}
+	.chart-footer svg {
+		height: 22px;
+		width: 22px;
+		vertical-align: middle;
+	}
+	img.active {
+		display: initial;
+	}
+	.favorite-count {
+		float: left;
+		width: 33.3%;
+	}
+	.share-count {
+		width: 33.3%;
+		float: left;
+		text-align: center;
+	}
+	.comment-count {
+		text-align: right;
+		float: left;
+		width: 33.4%;
 	}
 }
+
+/*=================== LARGE-DISP STYLING END =================*/

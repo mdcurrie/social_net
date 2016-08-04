@@ -1,4 +1,5 @@
 $(function() {
+
 	$('#modal form').on('submit', function(e) {
 		e.preventDefault();
 		if ($('#question-title').val() == '') {
@@ -178,5 +179,4 @@ $(function() {
 			$('#answer-5').css('display', 'none');
 		}
 	});
-
 });
