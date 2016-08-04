@@ -1,0 +1,46 @@
+<header>
+    <div id="logo">
+        <a href="/">Hive</a>
+    </div>
+    <div id="header-context">
+        {% if current_user %}
+            <a href="/feed">
+                <img src="{{ current_user["profile_pic_link"] }}">
+            </a>
+        {% end %}
+    </div>
+</header>
+<nav>
+    {% if current_user %}
+        <div id="user-bio">
+            {{ current_user["bio"] }}
+        </div>
+        <div id="nav-links">
+            <ul>
+                <li>Feed</li>
+                <li>Followers</li>
+                <li>Following</li>
+                <li>Haters</li>
+                <li>Settings</li>
+                <li>Search</li>
+            </ul>
+        </div>
+    {% else %}
+        <div id="account-button">
+            <a href="/signup">
+                <button>Sign Up / Log In</button>
+            </a>
+        </div>
+        <div id="nav-links">
+            <ul>
+                <li>Home</li>
+                <li>Featured</li>
+                <li>Sports</li>
+                <li>Entertainment</li>
+                <li>Music</li>
+                <li>Technology</li>
+                <li>Search</li>
+            </ul>
+        </div>
+    {% end %}
+</nav>

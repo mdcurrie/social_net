@@ -34,17 +34,13 @@
                         <div class="comment-bot-text">{{ comment["comment"] }}</div>
                     </div>
                 </div>
-                <div class="backer1">
-                    <!-- intentionally empty -->
-                </div>
-                <div class="backer2">
-                    <!-- intentionally empty -->
-                </div>
+                <div class="backer1"></div>
+                <div class="backer2"></div>
             </div>
             {% end %}
         {% end %}
     </div>
     <form method="get" action={{ "/comments/" + question_id }} novalidate>
-        <input type="text" name="comment" autocomplete="off" placeholder="Share your thoughts...">
+        <input style="background-image: url({{ static_url("images/paper-plane.svg") }})" type="text" name="comment" autocomplete="off" placeholder="Share your thoughts...">
     </form>
 </div>

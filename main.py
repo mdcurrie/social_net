@@ -39,7 +39,7 @@ class Application(tornado.web.Application):
 			cookie_secret="bZJc2sWbQLKos6GkHn/VB9oXwQt8S0R0kRvJ5/xJ89E=",
 			xsrf_cookies=True,
 			login_url="/login",
-			ui_modules={"Question": QuestionModule, "Comment": CommentModule},
+			ui_modules={"Question": QuestionModule, "Comment": CommentModule, "Header": HeaderModule},
 			debug=True,
 		)
 		client = motor.motor_tornado.MotorClient("mongodb://mcurrie:practice@ds021884.mlab.com:21884/hive")
@@ -186,6 +186,14 @@ class BaseHandler(tornado.web.RequestHandler):
 				self.clear_cookie("auth_id")
 			else:
 				self.current_user = current_user
+
+#module to render the page header
+class HeaderModule(tornado.web.UIModule):
+	def render(self):
+		return self.render_string("header_module.html", current_user=self.current_user)
+
+	def css_files(self):
+		return self.handler.static_url("css/header_module.css")
 
 # handler for the home page
 class IndexHandler(BaseHandler):
@@ -448,9 +456,8 @@ class QuestionHandler(BaseHandler):
 
 # module to render a question card
 class QuestionModule(tornado.web.UIModule):
-	def render(self, asker, question, vote, favorites, shares, comments, commenters, show_comments=False, multi=True):
-		return self.render_string("question_module.html", question=question, asker=asker, vote=vote, favorites=favorites, shares=shares, comments=comments,
-														  commenters=commenters, show_comments=show_comments, multi=multi, datetime=datetime, json=json)
+	def render(self, asker, question, vote, favorites, shares, comments):
+		return self.render_string("question_module.html", question=question, asker=asker, vote=vote, favorites=favorites, shares=shares, comments=comments, datetime=datetime, json=json)
 
 	def css_files(self):
 		return self.handler.static_url("css/question_module.css")
@@ -462,21 +469,24 @@ class QuestionModule(tornado.web.UIModule):
 class CommentHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, question_id):
-		comment  = self.get_argument("comment")
-		comments = yield self.application.db.comments.find_and_modify(
-				{"question_id": ObjectId(question_id)},
-				{"$inc": {"count": 1}, "$push": {"comments": {"user_id": self.current_user["_id"], "date": datetime.utcnow(), "comment": comment}}},
-				fields={"_id": 0, "comments": 1},
-				upsert=True,
-				new=True
-			)
+		if not self.current_user:
+			self.redirect("/signup")
+		else:
+			comment  = self.get_argument("comment")
+			comments = yield self.application.db.comments.find_and_modify(
+					{"question_id": ObjectId(question_id)},
+					{"$inc": {"count": 1}, "$push": {"comments": {"user_id": self.current_user["_id"], "date": datetime.utcnow(), "comment": comment}}},
+					fields={"_id": 0, "comments": 1},
+					upsert=True,
+					new=True
+				)
 
-		# get list of all users that have left a comment
-		comments   = comments["comments"]
-		user_list  = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in comments]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)	
-		commenters = [user for comment in comments for user in user_list if user["_id"] == comment["user_id"]]
+			# get list of all users that have left a comment
+			comments   = comments["comments"]
+			user_list  = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in comments]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)	
+			commenters = [user for comment in comments for user in user_list if user["_id"] == comment["user_id"]]
 
-		self.render("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime)
+			self.render("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime)
 
 # handler for rendering comments
 class CommentModule(tornado.web.UIModule):
@@ -776,7 +786,7 @@ class FeedHandler(BaseHandler):
 						askers.append(y)
 
 			self.render("newsfeed.html", profile=self.current_user, current_user=self.current_user, follower=None, followers_count=followers_count, following_count=following_count,
-										 hater=None, hater_count=hater_count, askers=askers, questions=questions, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True,)
+										 hater=None, hater_count=hater_count, askers=askers, questions=questions, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True, datetime=datetime)
 
 # handler to follow or hate a user
 class FollowHateHandler(BaseHandler):

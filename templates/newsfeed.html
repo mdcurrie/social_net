@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Hive</title>
         <link href='https://fonts.googleapis.com/css?family=Karla' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Merriweather:900' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
         <link rel="stylesheet" href="{{ static_url("css/newsfeed.css") }}">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -15,56 +16,77 @@
         <![endif]-->
     </head>
     <body>
-	    <header>
-            <div id="logo">
-                <a href="/">Hive</a>
-            </div>
-            <div id="header-context">
-                {% if current_user %}
-                    <a href="/feed">
-                        <img src="{{ current_user["profile_pic_link"] }}">
-                    </a>
-                {% end %}
-            </div>
-        </header>
-        <nav>
-            {% if current_user %}
-                <div id="user-bio">
-                    {{ current_user["bio"] }}
-                </div>
-                <div id="nav-links">
-                    <ul>
-                        <li>Feed</li>
-                        <li>Followers</li>
-                        <li>Following</li>
-                        <li>Haters</li>
-                        <li>Settings</li>
-                        <li>Search</li>
-                    </ul>
-                </div>
-            {% else %}
-                <div id="account-button">
-                    <a href="/signup">
-                        <button>Sign Up / Log In</button>
-                    </a>
-                </div>
-                <div id="nav-links">
-                    <ul>
-                        <li>Home</li>
-                        <li>Featured</li>
-                        <li>Sports</li>
-                        <li>Entertainment</li>
-                        <li>Music</li>
-                        <li>Technology</li>
-                        <li>Search</li>
-                    </ul>
-                </div>
-            {% end %}
-        </nav>
+	    {% module Header() %}
         <div id="questions">
-	        {% for idx, question in enumerate(questions) %}
-		        {% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx], False) %}
-	       	{% end %}
+        	{% for idx, question in enumerate(questions) %}
+        		<div class="mini-question-wrapper">
+					<div class="mini-question {{ question["_id"] }}">
+					    <div class="mini-asker-info">
+					        <div class="mini-info">
+					            <div class="mini-asker-profile-pic">
+					                <a href="/users/{{ str(askers[idx]["_id"]) }}">
+					                    <img src="{{ askers[idx]["profile_pic_link"] }}">
+					                </a>
+					            </div>
+					            <div class="mini-asker-text">
+					                <div class="mini-asker-username">
+					                    <a href="/users/{{ str(askers[idx]["_id"]) }}"> by {{ askers[idx]["username"] }}</a>
+					                </div>
+					                <div class="mini-question-date">
+					                    {% set total_seconds = (datetime.utcnow() - question["date"]).total_seconds() %}
+					                    {% if total_seconds < 30 %}
+					                        Just now
+					                    {% elif total_seconds < 60 %}
+					                        {{ int(total_seconds) }}s ago
+					                    {% elif total_seconds < 3600 %}
+					                        {{ int(total_seconds * 0.0166667) }}m ago
+					                    {% elif total_seconds < 86400 %}
+					                        {{ int(total_seconds * 0.000277778) }}h ago
+					                    {% elif total_seconds < 172800 %}
+					                        Yesterday
+					                    {% elif total_seconds < 15770000 %}
+					                        {{ question["date"].strftime("%B %d") }}
+					                    {% else %}
+					                        {{ question["date"].strftime("%B %d, %Y") }}
+					                    {% end %}
+					                </div>
+					                <div class="mini-vote-count">
+					                    {% set vote_count = sum([q["votes"] for q in question["data"]]) %}
+					                    {% if vote_count <= 1000 %}
+					                        {{ vote_count }}
+					                    {% elif vote_count <= 999999 %}
+					                        {{ round(vote_count/1000, 1) }}K
+					                    {% else %}
+					                        {{ round(vote_count/1000000, 1) }}M
+					                    {% end %}
+					                    Votes
+					                </div>
+					            </div>
+					        </div>
+					    </div>
+					    <div class="mini-question-image" style="background-image: url({{ question["image_link"] }})">
+					        <div class="mini-question-image-overlay">
+					        </div>
+					    </div>
+					    <div class="mini-chart">
+					        <div class="mini-question-title">
+					            <a href="{{ "/questions/" + str(question["_id"]) }}">
+					                {{ question["question"] }}
+					            </a>
+					        </div>
+					        <div class="mini-labels {{ str(question["_id"]) }}">
+					            {% set total_votes = sum([x["votes"] for x in question["data"]]) %}
+
+					        </div>   
+					    </div>
+					</div>
+					<div class="mini-backer1"></div>
+                	<div class="mini-backer2"></div>
+				</div>
+			{% end %}
+	    </div>
+	    <div id="main-content-pane">
+	    	{% module Question(askers[0], questions[0], None, favorites[0], shares[0], comments[0]) %} 
 	    </div>
         <!--
 	    <div id="profile-info">
@@ -177,9 +199,6 @@
 					</div>
 	     		</article>
 	     	{% end %}
-        	{% for idx, question in enumerate(questions) %}
-	        	{% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx], False) %}
-       		{% end %}
         </section>
         {% if controlled %}
 	        <form method="post" action="logout">
