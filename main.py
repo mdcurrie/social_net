@@ -402,6 +402,7 @@ class CreateQuestionHandler(BaseHandler):
 class QuestionHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, question_id):
+		
 		question_id = ObjectId(question_id)
 		question = yield self.application.db.questions.find_one({"_id": question_id})
 		if not question:

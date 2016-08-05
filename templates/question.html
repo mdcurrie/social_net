@@ -17,12 +17,12 @@
     </head>
     <body>
         {% module Header() %}
-        <div id="question-content">
-            {% module Question(asker, question, vote, favorites, shares, comments) %}  
-        </div>
-        <div id="question-comments">
+        <section id="question-comments">
             {% module Comment(str(question["_id"]), comments[2], commenters) %}
-        </div>
+        </section>
+        <section id="question-content">
+            {% module Question(asker, question, vote, favorites, shares, comments) %}  
+        </section>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
     </body>
 </html>
