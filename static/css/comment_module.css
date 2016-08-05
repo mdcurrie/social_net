@@ -1,18 +1,17 @@
 @media only screen and (min-width: 1200px) {
 	.comment-section {
-		position: absolute;
-		left: 240px;
-		top: 0;
 		height: 100%;
-		width: calc(50% - 240px);
 		background-color: #f1f1f1;
+		position: relative;
+	}
+	.comment-section * {
+		box-sizing: border-box;
 	}
 	.all-comments {
 		overflow: auto;
 		height: calc(100% - 100px);
 		animation-timing-function: ease-out;
 		padding-top: 10px;
-		box-sizing: border-box;
 	}
 	.comment-wrapper {
 		position: relative;
@@ -24,7 +23,6 @@
 	.comment {
 		overflow: auto;
 		padding: 10px;
-		box-sizing: border-box;
 		background-color: white;
 		width: 80%;
 		margin: 0 auto;
@@ -33,7 +31,7 @@
 		position: absolute;
 		width: 75%;
 		height: 7px;
-		background-color: #d4d2d5;
+		background-color: #e0e0e0;
 		left: 50%;
 		transform: translateX(-50%);
 		top: -7px;
@@ -42,7 +40,7 @@
 		position: absolute;
 		width: 70%;
 		height: 7px;
-		background-color: #95909a;
+		background-color: #d4d4d4;
 		left: 50%;
 		transform: translateX(-50%);
 		top: -14px;
@@ -79,19 +77,24 @@
 		transform: translateX(-50%);
 		bottom: 30px;
 	}
-	input[name="comment"] {
-		width: 100%;
+	form input[name="comment"] {
+		width: calc(100% - 40px);
 		font-size: 1.05em;
 		letter-spacing: 0.08em;
-		padding: 10px 40px 10px 20px;
-		box-sizing: border-box;
+		padding: 10px 20px;
+		float: left;
 		background-color: white;
 		font-family: Karla;
 		border: none;
 		outline: none;
-		background-repeat: no-repeat;
-		background-size: 30px;
-		background-position: calc(100% - 10px);
+	}
+	form img {
+		width: 40px;
+		height: 40px;
+		padding: 5px;
+		box-sizing: content-box;
+		float: left;
+		background: white;
 	}
 	.all-comments::-webkit-scrollbar {
 	    width: 10px;

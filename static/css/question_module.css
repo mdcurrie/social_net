@@ -1,12 +1,16 @@
-/*=================== LARGE-DISP STYLING START ===============*/
+/*=================== QUESTION STYLING START ===============*/
 
 @media only screen and (min-width: 1200px) {
+	#question-wrapper {
+		width: 100%;
+		height: 100%;
+	}
+	#question-wrapper * {
+		box-sizing: border-box;
+	}
 	.question-image {
 		height: 34%;
-		width: 50%;
-		position: absolute;
-		top: 0;
-		right: 0;
+		width: 100%;
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 50% 40%;
@@ -18,16 +22,9 @@
 	}
 	.asker-info {
 		width: 50%;
+		padding: 0 60px;
 		position: absolute;
-		top: 34%;
-		right: 0;
-	}
-	.info {
-		padding: 10px 60px;
-		overflow: auto;
-		position: relative;
-		top: -58px;
-		z-index: 20;
+		top: calc(34% - 48px);
 	}
 	.asker-profile-pic {
 		float: left;
@@ -54,8 +51,7 @@
 		color: #95909a;
 		font-size: 2em;
 		margin: 0 9px;
-		position: relative;
-		top: -8px;
+		transform: translateY(-8px);
 	}
 	.question-date {
 		float: left;
@@ -63,17 +59,17 @@
 	}
 	.vote-count {
 		clear: left;
-		padding-top: 5px;
+		max-width: 20%;
+		transform: translate(100px, -25px);
 	}
-	.chart {
-		width: 50%;
-		position: absolute;
-		top: calc(34% + 75px);
-		right: 0;
-		padding: 0 60px;
-		box-sizing: border-box;
+	.question-content {
+		width: 100%;
+		height: 66%;
+		padding: 60px 60px 20px 60px;
 	}
 	.question-title a {
+		word-wrap: break-word;
+		line-height: 1.4em;
 		font-size: 3.25em;
 		font-family: 'Merriweather', serif;
 	}
@@ -104,20 +100,19 @@
 		background-color: #bd65ff;
 		width: 100%;
 	}
-	.chart-footer {
+	.action-buttons {
 		position: absolute;
 		top: 20px;
 		right: 0;
 		padding: 0 60px;
-		box-sizing: border-box;
 		width: 25%;
 	}
-	.chart-footer > div {
+	.action-buttons > div {
 		display: block;
 		width: 33.3%;
 		float: left;
 	}
-	.chart-footer span {
+	.action-buttons span {
 		color: white;
 	}
 	.svg-image {
@@ -127,7 +122,9 @@
 		box-shadow: 0 0 0 2px white;
 		border-radius: 50%;
 		padding: 10px;
+		box-sizing: content-box !important;
 		margin-left: 10px;
+		vertical-align: middle;
 	}
 	.svg-image:hover {
 		background-color: #e4c82e;
@@ -159,4 +156,4 @@
 	}
 }
 
-/*=================== LARGE-DISP STYLING END =================*/
+/*=================== QUESTION STYLING END =================*/
