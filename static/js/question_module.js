@@ -1,12 +1,16 @@
 $(function() {
-    $('.labels h4').on('click', function() {
+    $('.poll-answer').on('click', function() {
         var question_id = $(this).parent().attr('class').split(' ')[1];
         var vote_index  = $(this).prevAll().length;
         var q = $(this);
         $.getJSON('/vote/' + question_id, {vote_index: vote_index}, function(data) {
-            q.siblings().removeClass('active');
-            q.addClass('active');
-            q.parents('.chart').siblings('.asker-info').find('.vote-count h4').text(data.votes + ' Votes');
+            q.parent().find('.poll-percentage-wrapper').removeClass('active');
+            q.find('.poll-percentage-wrapper').addClass('active');
+            q.parents('#question-wrapper').find('.vote-count').text(data.votes + ' Votes');
+            for (var i=0; i < data.percentages.length; i++) {
+                $('#question-wrapper').find('.poll-percentage').eq(i).text(parseInt(data.percentages[i]) + '%');
+                $('#question-wrapper').find('.bar-wrapper2').eq(i).css('width', data.percentages[i] + '%');
+            }
         });
     });
 
