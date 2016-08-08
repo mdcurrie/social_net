@@ -402,7 +402,7 @@ class CreateQuestionHandler(BaseHandler):
 class QuestionHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, question_id):
-		
+
 		question_id = ObjectId(question_id)
 		question = yield self.application.db.questions.find_one({"_id": question_id})
 		if not question:
@@ -538,13 +538,14 @@ class VoteHandler(BaseHandler):
 
 				question_data = ret[1]["data"]
 
-			vote_count = sum([data["votes"] for data in question_data])
+			vote_count       = sum([data["votes"] for data in question_data])
+			vote_percentages = [data["votes"] * 100/vote_count for data in question_data]
 			if 1000 <= vote_count <= 999999:
 				vote_count = str(round(vote_count/1000, 1)) + 'K'
 			elif 1000000 < vote_count:
 				vote_count = str(round(vote_count/1000000, 1)) + 'M'
 
-			self.write({"idx": vote_index, "votes": vote_count})
+			self.write({"idx": vote_index, "votes": vote_count, "percentages": vote_percentages})
 
 # handler for favoriting or sharing a question
 class FavoriteShareHandler(BaseHandler):

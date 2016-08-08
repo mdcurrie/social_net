@@ -1,4 +1,7 @@
 <div class="comment-section" id="comments">
+    <div class="comment-section-title">
+        <div>Comments</div>
+    </div>
     <div class="all-comments">
         {% if comments %}
             {% for idx, comment in enumerate(comments) %}
@@ -40,8 +43,10 @@
             {% end %}
         {% end %}
     </div>
-    <form method="get" action={{ "/comments/" + question_id }} novalidate>
-        <input type="text" name="comment" autocomplete="off" placeholder="Share your thoughts...">
-        <img src="{{ static_url("images/paper-plane.svg") }}">
-    </form>
+    <div class="comment-form">
+        <form method="get" action={{ "/comments/" + question_id }} novalidate>
+            <input type="text" name="comment" autocomplete="off" placeholder="Share your thoughts...">
+            <img src="{{ static_url("images/paper-plane.svg") }}">
+        </form>
+    </div>
 </div>

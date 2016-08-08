@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Hive</title>
         <link href='https://fonts.googleapis.com/css?family=Karla' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Merriweather:900' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
         <link rel="stylesheet" href="{{ static_url("css/newsfeed.css") }}">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -19,7 +19,7 @@
 	    {% module Header() %}
         <section id="side-content">
         	{% for idx, question in enumerate(questions) %}
-        		<div class="mini-question-wrapper">
+        		<article class="mini-question-wrapper">
 					<div class="mini-question {{ question["_id"] }}">
 					    <div class="mini-asker-info">
 				            <div class="mini-asker-profile-pic">
@@ -71,14 +71,116 @@
 		                    {% end %}
 		                    Votes
 				        </div>
+				        <div class="mini-action-buttons">
+					        <div class="favorite-count">
+					            <span>
+					                {% if favorites[idx][1] <= 1000 %}
+					                    {{ favorites[idx][1] }}
+					                {% elif favorites[idx][1] <= 999999 %}
+					                    {{ round(favorites[idx][1]/1000, 1) }}K
+					                {% else %}
+					                    {{ round(favorites[idx][1]/1000000, 1) }}M
+					                {% end %}
+					            </span>
+					            <div title="Add to Favorites" class="svg-image {{ str(question["_id"]) }} {% if favorites[idx][0] %}svg-active{% end %}">
+					                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Heart" x="0px" y="0px" viewBox="0 0 20 20" xml:space="preserve" enable-background="new 0 0 20 20">
+					                    <path d="M17.19 4.155c-1.672-1.534-4.383-1.534-6.055 0L10 5.197 8.864 4.155c-1.672-1.534-4.382-1.534-6.054 0-1.881 1.727-1.881 4.52 0 6.246L10 17l7.19-6.599C19.07 8.675 19.07 5.881 17.19 4.155z" fill="white"/>
+					                </svg>
+					            </div>
+					        </div>
+					        <div class="share-count">
+					            <span>
+					                {% if shares[idx][1] <= 1000 %}
+					                    {{ shares[idx][1] }}
+					                {% elif shares[idx][1] <= 999999 %}
+					                    {{ round(shares[idx][1]/1000, 1) }}K
+					                {% else %}
+					                    {{ round(shares[idx][1]/1000000, 1) }}M
+					                {% end %}
+					            </span>
+					            <div title="Share" class="svg-image {{ str(question["_id"]) }} {% if shares[idx][0] %}svg-active{% end %}">
+					                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Forward" x="0px" y="0px" viewBox="0 0 20 20" xml:space="preserve" enable-background="new 0 0 20 20">
+					                    <path d="M12 11.874v4.357l7-6.69-7-6.572v3.983c-8.775 0-11 9.732-11 9.732C3.484 12.296 7.237 11.874 12 11.874z" fill="white"/>
+					                </svg>
+					            </div>
+					        </div>
+					        <div class="comment-count">
+					            <span>
+					                {% if comments[idx][1] <= 1000 %}
+					                    {{ comments[idx][1] }}
+					                {% elif comments[idx][1] <= 999999 %}
+					                    {{ round(comments[idx][1]/1000, 1) }}K
+					                {% else %}
+					                    {{ round(comments[idx][1]/1000000, 1) }}M
+					                {% end %}
+					            </span>
+					            <a href="/questions/{{ str(question["_id"]) }}#comments">
+					                <div title="See Comments" class="svg-image {% if comments[idx][0] %}svg-active{% end %}">
+					                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Chat" x="0px" y="0px" viewBox="0 0 20 20" xml:space="preserve" enable-background="new 0 0 20 20">
+					                        <path d="M5.8 12.2V6H2C0.9 6 0 6.9 0 8v6c0 1.1 0.9 2 2 2h1v3l3-3h5c1.1 0 2-0.9 2-2v-1.82c-0.064 0.014-0.132 0.021-0.2 0.021h-7V12.2zM18 1H9C7.9 1 7 1.9 7 3v8h7l3 3v-3h1c1.1 0 2-0.899 2-2V3C20 1.9 19.1 1 18 1z" fill="white"/>
+					                    </svg>
+					                </div>
+					            </a>
+					        </div>
+					    </div>
+					    <div class="mini-labels {{ str(question["_id"]) }}">
+				            {% set total_votes = sum([x["votes"] for x in question["data"]]) %}
+				            {% for idx2, q in enumerate(question["data"]) %}
+				                {% if votes[idx] == None %}
+				                    <div class="poll-answer">
+				                        <h4>{{ q["label"] }}</h4>
+				                        <div class="percent-and-bar">
+				                        	<div class="poll-percentage-wrapper">
+				                            	<div class="poll-percentage">{{ int(q["votes"]*100/total_votes) }}%</div>
+				                            </div>
+				                            <div class="bar-wrapper1">
+				                                <div class="bar-wrapper2" style="width: {{ q["votes"]*100/total_votes }}%">
+				                                    <div class="poll-bar"></div>
+				                                </div>
+				                            </div>
+				                        </div>
+				                    </div>
+				                {% else %}
+				                    {% if idx2 == votes[idx] %}
+				                        <div class="poll-answer">
+				                            <h4 class="active">{{ q["label"] }}</h4>
+				                            <div class="percent-and-bar">
+				                            	<div class="poll-percentage-wrapper active">
+				                                	<div class="poll-percentage">{{ int(q["votes"]*100/total_votes) }}%</div>
+				                                </div>
+				                                <div class="bar-wrapper1">
+				                                    <div class="bar-wrapper2" style="width: {{ q["votes"]*100/total_votes }}%">
+				                                        <div class="poll-bar"></div>
+				                                    </div>
+				                                </div>
+				                            </div>
+				                        </div>
+				                    {% else %}
+				                        <div class="poll-answer">
+				                            <h4>{{ q["label"] }}</h4>
+				                            <div class="percent-and-bar">
+				                            	<div class="poll-percentage-wrapper">
+				                                	<div class="poll-percentage">{{ int(q["votes"]*100/total_votes) }}%</div>
+				                                </div>
+				                                <div class="bar-wrapper1">
+				                                    <div class="bar-wrapper2" style="width: {{ q["votes"]*100/total_votes }}%">
+				                                        <div class="poll-bar"></div>
+				                                    </div>
+				                                </div>
+				                            </div>
+				                        </div>
+				                    {% end %}
+				                {% end %}
+				            {% end %}
+				        </div>
 					</div>
 					<div class="mini-backer1"></div>
                 	<div class="mini-backer2"></div>
-				</div>
+				</article>
 			{% end %}
 	    </section>
 	    <section id="main-content">
-	    	{% module Question(askers[0], questions[0], None, favorites[0], shares[0], comments[0]) %} 
+	    	{% module Question(askers[0], questions[0], votes[0], favorites[0], shares[0], comments[0]) %} 
 	    </section>
         <!--
 	    <div id="profile-info">
@@ -200,6 +302,5 @@
 	    {% end %} -->
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
         <script src="{{ static_url("js/newsfeed.js") }}"></script>
-        <script src="{{ static_url("js/question_module.js") }}"></script>
     </body>
 </html>
