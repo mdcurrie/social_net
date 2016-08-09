@@ -55,11 +55,6 @@ $(function() {
 	    });
 	});
 
-
-
-
-
-
 	$('#modal form').on('submit', function(e) {
 		e.preventDefault();
 		if ($('#question-title').val() == '') {

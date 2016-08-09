@@ -3,12 +3,15 @@
 		float: left;
 		width: 240px;
 		height: 100%;
-		padding: 20px;
 		background: #353436;
 		box-sizing: border-box;
 	}
 	header * {
 		box-sizing: border-box;
+	}
+	#logo-and-context {
+		padding: 20px;
+		overflow: auto;
 	}
 	#logo {
 		float: left;
@@ -29,15 +32,24 @@
 	}
 	nav {
 		width: 100%;
-		padding-top: 130px;
+		padding-left: 25px;
 	}
-	#user-bio {
-		line-height: 1.3em;
-		color: white;
-		padding: 15px 0;
-		margin-bottom: 100px;
-		border-top: 1px solid rgba(255,255,255,.3);
-		border-bottom: 1px solid rgba(255,255,255,.3);
+	nav > div:nth-of-type(2) {
+		margin-top: 30px;
+	}
+	.nav-links-header-text {
+		font-size: 0.75em;
+		padding: 20px 0 20px 20px;
+		color: #777777;
+	}
+	.nav-links li {
+		color: #777777;
+		padding: 10px 20px 10px 15px;
+	}
+	.nav-links.top li:nth-of-type(2) {
+		background: #f1f1f1;
+		border-left: 4px solid #bd65ff;
+		color: #353436;
 	}
 	#account-button {
 		padding: 15px 0;
@@ -54,15 +66,5 @@
 	}
 	#account-button button:hover {
 		cursor: pointer;
-	}
-	#nav-links li {
-		color: white;
-		font-size: 1.2em;
-		margin: 10px 0;
-		padding-top: 10px;
-		border-top: 1px solid rgba(255,255,255,.3);
-	}
-	#nav-links li:first-of-type {
-		border-top: none;
 	}
 }
