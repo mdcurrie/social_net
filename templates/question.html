@@ -5,8 +5,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ question["question"] }}</title>
-        <link href='https://fonts.googleapis.com/css?family=Karla' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
         <link rel="stylesheet" href="{{ static_url("css/question.css") }}">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -17,12 +15,15 @@
     </head>
     <body>
         {% module Header() %}
-        <section id="question-comments">
-            {% module Comment(str(question["_id"]), comments[2], commenters) %}
-        </section>
-        <section id="question-content">
-            {% module Question(asker, question, vote, favorites, shares, comments) %}  
-        </section>
+        <main>
+            {% module SideColumn() %}
+            <section id="question-content">
+                {% module Question(asker, question, vote, favorites, shares, comments) %}  
+            </section>
+            <section id="question-comments">
+                {% module Comment(str(question["_id"]), comments[2], commenters) %}
+            </section>
+        </main>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
     </body>
 </html>

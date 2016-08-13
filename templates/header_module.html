@@ -1,58 +1,29 @@
 <header role="banner">
-    <div id="logo-and-context">
+    <div id="header-wrapper">
         <div id="logo">
-            <a href="/">Hive</a>
+            <a href={% if current_user %}"/feed"{% else %}"/"{% end %}>
+                &middot;HIVE&middot;
+            </a>
         </div>
-        <div id="header-context">
-            {% if current_user %}
-                <a href="/feed">
-                    <img src="{{ current_user["profile_pic_link"] }}">
-                </a>
-            {% end %}
+        <div id="search-form">
+            <form>
+                <input placeholder="Search all..." style="background-image: url({{ static_url("images/magnifying-glass.svg") }})">
+            </form>
         </div>
-    </div>
-    <nav role="navigation">
         {% if current_user %}
-            <div>
-                <div class="nav-links-header-text">MAIN</div>
-                <div class="nav-links top">
-                    <ul>
-                        <li>Overview</li>
-                        <li>Feed</li>
-                        <li>Followers</li>
-                        <li>Following</li>
-                        <li>Haters</li>
-                    </ul>
+            <div id="header-icon-area">
+                <div id="create-question-icon">
+                    <img src="{{ static_url("images/pencil.svg") }}" alt="icon for a user to create a question">
                 </div>
-            </div>
-            <div>
-                <div class="nav-links-header-text">TAGS</div>
-                <div class="nav-links">
-                    <ul>
-                        <li>#anime</li>
-                        <li>#drake-is-bad</li>
-                        <li>#videogames</li>
-                        <li>#travel</li>
-                    </ul>
+                <div id="notification-icon">
+                    <a href="/notifications">
+                        <img src="{{ static_url("images/bell.svg") }}" alt="icon for user notifications">
+                    </a>
                 </div>
-            </div>
-        {% else %}
-            <div id="account-button">
-                <a href="/signup">
-                    <button>Sign Up / Log In</button>
-                </a>
-            </div>
-            <div id="main-links">
-                <ul>
-                    <li>Home</li>
-                    <li>Featured</li>
-                    <li>Sports</li>
-                    <li>Entertainment</li>
-                    <li>Music</li>
-                    <li>Technology</li>
-                    <li>Search</li>
-                </ul>
+                <div id="current-user-profile-pic">
+                    <img src="{{ current_user["profile_pic_link"] }}" alt="{{ current_user["username"] }}'s profile picture">
+                </div>
             </div>
         {% end %}
-    </nav>
+    </div>
 </header>

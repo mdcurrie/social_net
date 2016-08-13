@@ -22,6 +22,7 @@ class Application(tornado.web.Application):
 					(r"/login", LoginHandler),
 					(r"/logout", LogoutHandler),
 					(r"/signup", SignupHandler),
+					(r"/settings", SettingsHandler),
 					(r"/email_lookup", EmailHandler),
 					(r"/users/(\w+)", ProfileHandler),
 					(r"/follow_or_hate/(\w+)", FollowHateHandler),
@@ -39,7 +40,7 @@ class Application(tornado.web.Application):
 			cookie_secret="bZJc2sWbQLKos6GkHn/VB9oXwQt8S0R0kRvJ5/xJ89E=",
 			xsrf_cookies=True,
 			login_url="/login",
-			ui_modules={"Question": QuestionModule, "Comment": CommentModule, "Header": HeaderModule},
+			ui_modules={"Question": QuestionModule, "Comment": CommentModule, "Header": HeaderModule, "SideColumn": SideColumnModule},
 			debug=True,
 		)
 		client = motor.motor_tornado.MotorClient("mongodb://mcurrie:practice@ds021884.mlab.com:21884/hive")
@@ -195,6 +196,13 @@ class HeaderModule(tornado.web.UIModule):
 	def css_files(self):
 		return self.handler.static_url("css/header_module.css")
 
+class SideColumnModule(tornado.web.UIModule):
+	def render(self):
+		return self.render_string("sidecolumn_module.html", current_user=self.current_user)
+
+	def css_files(self):
+		return self.handler.static_url("css/sidecolumn_module.css")
+
 # handler for the home page
 class IndexHandler(BaseHandler):
 	# redirect to /feed if already logged in
@@ -318,6 +326,14 @@ class SignupHandler(BaseHandler):
 
 			self.set_secure_cookie("auth_id", email, httponly=True)
 			self.redirect("/feed")
+
+class SettingsHandler(BaseHandler):
+	def get(self):
+		# redirect user to index page if not logged in
+		if not self.current_user:
+			self.redirect("/")
+		else:
+			self.render("settings.html")
 
 # handler for logging in registered users
 class LoginHandler(BaseHandler):
@@ -469,7 +485,15 @@ class QuestionModule(tornado.web.UIModule):
 # handler for adding comments to a question
 class CommentHandler(BaseHandler):
 	@tornado.gen.coroutine
-	def get(self, question_id):
+	def get (self, question_id):
+		comments = yield self.application.db.comments.find_one({"question_id": ObjectId(question_id)}, fields={"_id": 0, "comments": 1})
+		user_list  = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in comments]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)	
+		commenters = [user for comment in comments for user in user_list if user["_id"] == comment["user_id"]]
+
+		self.render("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime)
+
+	@tornado.gen.coroutine
+	def post(self, question_id):
 		if not self.current_user:
 			self.redirect("/signup")
 		else:

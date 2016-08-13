@@ -1,0 +1,43 @@
+<section id="side-column">
+    <nav role="navigation">
+        {% if current_user %}
+            <div>
+                <div class="nav-links-header-text">MAIN</div>
+                <div class="nav-links top">
+                    <ul>
+                        <li>Overview</li>
+                        <li>Feed</li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <div class="nav-links-header-text">TAGS</div>
+                <div class="nav-links">
+                    <ul>
+                        <li>#anime</li>
+                        <li>#drake-is-bad</li>
+                        <li>#videogames</li>
+                        <li>#travel</li>
+                    </ul>
+                </div>
+            </div>
+        {% else %}
+            <div id="account-button">
+                <a href="/signup">
+                    <button>Sign Up / Log In</button>
+                </a>
+            </div>
+            <div id="main-links">
+                <ul>
+                    <li>Home</li>
+                    <li>Featured</li>
+                    <li>Sports</li>
+                    <li>Entertainment</li>
+                    <li>Music</li>
+                    <li>Technology</li>
+                    <li>Search</li>
+                </ul>
+            </div>
+        {% end %}
+    </nav>
+</section>
