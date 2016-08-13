@@ -1,70 +1,80 @@
 @media only screen and (min-width: 1200px) {
 	header {
-		float: left;
-		width: 240px;
-		height: 100%;
-		background: #353436;
+		height: 80px;
+		background: white;
+		margin-bottom: 50px;
 		box-sizing: border-box;
+		border-bottom: 1px solid rgba(162, 163, 162, 0.4);
 	}
 	header * {
 		box-sizing: border-box;
 	}
-	#logo-and-context {
-		padding: 20px;
-		overflow: auto;
+	#header-wrapper {
+		height: 100%;
+		width: 95%;
+		max-width: 1650px;
+		margin: 0 auto;
 	}
 	#logo {
-		float: left;
 		font-size: 2em;
-		margin-top: 12px;
+		float: left;
+		width: 240px;
+		transform: translateY(20px);
 	}
 	#logo a {
-		color: white;
+		font-family: Jaapokki;
+		color: #353436;
+		display: inline-block;
+		padding: 7px 10px 0 0;
 	}
-	#header-context {
+	#search-form {
+		width: 240px;
+		height: 100%;
+		float: left;
+		transform: translateY(25px);
+	}
+	#search-form input {
+		font-family: Gotham;
+		font-size: 0.9em;
+		background: transparent;
+		color: #a2a3a2;
+		border: none;
+		outline: none;
+		border: 1px solid #a2a3a2;
+		width: 100%;
+		padding: 6px 0 7px 32px;
+		background-repeat: no-repeat;
+    	background-position-x: 3px;
+	}
+	#search-form input::-webkit-input-placeholder {
+		color: #a2a3a2;
+	}
+	#header-icon-area {
 		float: right;
+		height: 100%;
 	}
-	#header-context img {
-		width: 60px;
-		height: 60px;
+	#create-question-icon {
+		float: left;
+		transform: translate(-60px, 25px);
+	}
+	#create-question-icon img {
+		height: 30px;
+	}
+	#notification-icon {
+		float: left;
+		transform: translate(-30px, 25px);
+	}
+	#notification-icon img {
+		height: 30px;
+	}
+	#current-user-profile-pic {
+		float: left;
+	}
+	#current-user-profile-pic img {
+		width: 50px;
+		height: 50px;
 		border-radius: 50%;
 		box-shadow: 0 0 0 2px white;
-	}
-	nav {
-		width: 100%;
-		padding-left: 25px;
-	}
-	nav > div:nth-of-type(2) {
-		margin-top: 30px;
-	}
-	.nav-links-header-text {
-		font-size: 0.75em;
-		padding: 20px 0 20px 20px;
-		color: #777777;
-	}
-	.nav-links li {
-		color: #777777;
-		padding: 10px 20px 10px 15px;
-	}
-	.nav-links.top li:nth-of-type(2) {
-		background: #f1f1f1;
-		border-left: 4px solid #bd65ff;
-		color: #353436;
-	}
-	#account-button {
-		padding: 15px 0;
-		margin-bottom: 100px;
-		border-top: 1px solid rgba(255,255,255,.3);
-		border-bottom: 1px solid rgba(255,255,255,.3);
-	}
-	#account-button button {
-		background: transparent;
-		border: none;
-		color: white;
-		font-size: 1.5em;
-		outline: none;
-	}
-	#account-button button:hover {
-		cursor: pointer;
+		transform: translateY(15px);
 	}
 }

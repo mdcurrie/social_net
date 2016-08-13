@@ -1,7 +1,15 @@
 /*=================== GENERAL STYLING START ==================*/
 
+@font-face {
+	font-family: 'Jaapokki';
+	src: url('/static/fonts/jaapokkisubtract-regular.woff');
+}
+@font-face {
+	font-family: 'Gotham';
+	src: url('/static/fonts/GothamHTF-Book.woff');
+}
 html {
-	font-family: Montserrat, sans-serif;
+	font-family: Gotham, sans-serif;
 }
 a {
 	text-decoration: none;
@@ -19,14 +27,28 @@ a {
 /*=================== GENERAL STYLING END ====================*/
 
 @media only screen and (min-width: 1200px) {
+	body {
+		background: #f1f1f1;
+	}
+	main {
+		width: 95%;
+		max-width: 1650px;
+		overflow: auto;
+		margin: 0 auto;
+		height: calc(100% - 130px);
+		box-sizing: border-box;
+	}
+	main * {
+		box-sizing: border-box;
+	}
 	#question-comments {
-		width: calc(50% - 240px);
-		height: 100%;
+		width: 50%;
+		height: calc(100% - 80px);
 		float: left;
 	}
 	#question-content {
-		width: 50%;
-		height: 100%;
+		width: calc(50% - 240px);
+		height: calc(100% - 80px);
 		float: left;
 	}
 }
