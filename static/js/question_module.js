@@ -27,8 +27,8 @@ $(function() {
             q.find('.poll-percentage-wrapper').addClass('active');
             q.parents('.question-wrapper').find('.vote-count').text(data.votes + ' Votes');
             for (var i=0; i < data.percentages.length; i++) {
-                $('.question-wrapper').find('.poll-percentage').eq(i).text(parseInt(data.percentages[i]) + '%');
-                $('.question-wrapper').find('.bar-wrapper2').eq(i).css('width', data.percentages[i] + '%');
+                q.parents('.question-wrapper').find('.poll-percentage').eq(i).text(parseInt(data.percentages[i]) + '%');
+                q.parents('.question-wrapper').find('.bar-wrapper2').eq(i).css('width', data.percentages[i] + '%');
             }
         });
     });

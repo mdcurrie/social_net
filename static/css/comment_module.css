@@ -6,7 +6,7 @@
 		box-sizing: border-box;
 	}
 	.comment-section-title {
-		height: 70px;
+		height: 50px;
 		font-size: 1.75em;
 	}
 	.comment-section-title div {
@@ -15,7 +15,7 @@
 	}
 	.all-comments {
 		overflow: auto;
-		height: calc(100% - 103px);
+		height: calc(100% - 110px);
 		margin: 0 auto;
 		animation-timing-function: ease-out;
 		padding-top: 14px;
@@ -84,14 +84,14 @@
 		transform: translate(8px, 2px);
 	}
 	.comment-form {
-		height: 100px;
+		height: 60px;
 		padding-top: 20px;
 	}
 	.comment-form form {
 		width: 80%;
 		margin: 0 auto;
 	}
-	form input[name="comment"] {
+	.comment-form input[name="comment"] {
 		width: calc(100% - 46px);
 		height: 40px;
 		font-size: 1em;
@@ -102,11 +102,10 @@
 		border: none;
 		outline: none;
 	}
-	form img {
+	.comment-form img {
 		width: 40px;
 		height: 40px;
 		padding: 5px;
-		box-sizing: content-box;
 		border-left: 1px solid #f1f1f1;
 		float: left;
 		background: white;

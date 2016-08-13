@@ -76,14 +76,20 @@ a {
 		height: calc(100% - 170px);
 		overflow: auto;
 	}
-	#feed > div {
-		width: 50%;
-		float: left;
-		margin-bottom: 30px;
+	#feed-wrapper {
+		width: calc(100% - 40px);
 	}
-	#feed > div > div {
-		margin: 0 auto;
-		width: 80%;
+	.question-row {
+		overflow: auto;
+		margin-bottom: 20px;
+	}
+	.question-wrapper:nth-of-type(1) {
+		width: calc(50% - 10px);
+		float: left;
+	}
+	.question-wrapper:nth-of-type(2) {
+		width: calc(50% - 10px);
+		float: right;
 	}
 	#feed::-webkit-scrollbar {
 	    width: 6px;
@@ -105,7 +111,8 @@ a {
 		top: 80px;
 		height: calc(100% - 80px);
 		width: 33%;
-		background: white;
+		background: #f1f1f1;
+		padding: 30px;
 	}
 	#content-overlay {
 		position: absolute;

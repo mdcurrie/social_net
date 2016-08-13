@@ -1,7 +1,7 @@
 @media only screen and (min-width: 1200px) {
 	header {
 		height: 80px;
-		background: white;
+		background: #353436;
 		margin-bottom: 50px;
 		box-sizing: border-box;
 		border-bottom: 1px solid rgba(162, 163, 162, 0.4);
@@ -23,9 +23,12 @@
 	}
 	#logo a {
 		font-family: Jaapokki;
-		color: #353436;
+		color: white;
 		display: inline-block;
 		padding: 7px 10px 0 0;
+	}
+	#logo span {
+		color: #2eb398;
 	}
 	#search-form {
 		width: 240px;
@@ -37,17 +40,17 @@
 		font-family: Gotham;
 		font-size: 0.9em;
 		background: transparent;
-		color: #a2a3a2;
+		color: white;
 		border: none;
 		outline: none;
-		border: 1px solid #a2a3a2;
+		border: 1px solid white;
 		width: 100%;
 		padding: 6px 0 7px 32px;
 		background-repeat: no-repeat;
     	background-position-x: 3px;
 	}
 	#search-form input::-webkit-input-placeholder {
-		color: #a2a3a2;
+		color: white;
 	}
 	#header-icon-area {
 		float: right;
@@ -70,11 +73,19 @@
 	#current-user-profile-pic {
 		float: left;
 	}
+	#current-user-profile-pic button{
+		background: transparent;
+		border: none;
+		outline: none;
+	}
 	#current-user-profile-pic img {
 		width: 50px;
 		height: 50px;
 		border-radius: 50%;
 		box-shadow: 0 0 0 2px white;
 		transform: translateY(15px);
+	}
+	#current-user-profile-pic img:hover {
+		cursor: pointer;
 	}
 }

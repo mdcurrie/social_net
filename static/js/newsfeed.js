@@ -1,6 +1,35 @@
 $(function() {
-	$('.question-wrapper').on('click', showComments);
-	$('#content-overlay').on('click', hideComments);
+	$('.comment-count .svg-image').on('click', function() {
+		var question_id = $(this).parents('.question-wrapper').attr('id');
+		$.get('/comments/' + question_id, function(data) {
+			$('#off-canvas-comments').html(data);
+			$('.all-comments').scrollTop($('.all-comments')[0].scrollHeight);
+
+			$('.comment-form form').off('submit');
+			$('.comment-form form').on('submit', function(e) {
+		        e.preventDefault();
+		        submitForm();
+		    });
+
+			$('.comment-form img').off('click');
+		    $('.comment-form img').on('click', function() {
+		        submitForm();
+		    });
+		});
+
+		$('#off-canvas-comments').animate({right: 0, backgroundColor: 'black'}, 650, function() {
+			$('#content-overlay').css({'z-index': 10});
+			$('#content-overlay').animate({opacity: 0.5}, 650);
+		});
+	});
+
+	$('#content-overlay').on('click', function() {
+		$('#off-canvas-comments').animate({right: '-33%'}, 650, function() {
+			$('#content-overlay').animate({opacity: 0}, 650, function() {
+				$('#content-overlay').css({'z-index': -10});
+			});
+		});
+	});
 
 	$('#modal form').on('submit', function(e) {
 		e.preventDefault();
@@ -39,61 +68,6 @@ $(function() {
 		$(this).unbind('submit').submit();
 	});
 
-  	$(window).resize(function() {
-  		setTimeout(function() {
-  			resizeQuestionImage();
- 			metrics_top = $('#profile-metrics').position().top - 3;
- 			if ($(window).width() < 768) {
-				$('#overlay-content').height($(window).height() - 90);
-			}
-			else {
-				$('#overlay-content').height(300);
-			}
-  		}, 100);
-  	});
-
-    $('#profile-metrics a').on('click', function(e) {
-    	e.preventDefault();
-    	var clicked = $(this);
-    	var url = $(this).attr('href');
-    	$.getJSON(url, function(data) {
-    		console.log(data);
-    		$('body').addClass('no-scroll');
-    		$('#background-dark').css({"display": "block"});
-    		$('#overlay-close').css({"display": "block"});
-    		$('#overlay-content').html('');
-
-    		if ($('#profile-metrics a').index(clicked) == 0) {
-    			$('#overlay-title').text('Followers');
-    		}
-    		else if ($('#profile-metrics a').index(clicked) == 1) {
-    			$('#overlay-title').text('Following');
-    		}
-    		else {
-    			$('#overlay-title').text('Haters');
-    		}
-
-    		for (var key in data) {
-    			if (data[key]["follow_text"] != false) {
-	    			$('#overlay-content').append('<div class="image-row"><a href="/users/' + data[key]["_id"] + '"><img src="' + data[key]["profile_pic_link"] + '"/><h4>' + data[key]["username"] +
-	    										 '</h4></a><div class="row-buttons"><button>' + data[key]["follow_text"] + '</button><button>' + data[key]["hate_text"] + '</button></div></div>');
-	    		}
-	    		else {
-	    			$('#overlay-content').append('<div class="image-row"><a href="/users/' + data[key]["_id"] + '"><img src="' + data[key]["profile_pic_link"] + '"/><h4>' + data[key]["username"] +
-	    										 '</h4></a></div>');
-	    		}
-    		}
-    		$('#overlay').css({"display": "block"});
-    	});
-    });
-
-    $('#overlay-close, #background-dark').on('click', function() {
-	    $('body').removeClass('no-scroll');
-		$('#background-dark').css({"display": "none"});
-		$('#overlay-close').css({"display": "none"});
-		$('#overlay').css({"display": "none"});
-    });
-
     $('#follow-button').on('click', function() {
 		var user_id = window.location.href.split("/").pop();
 		$.getJSON('/follow_or_hate/' + user_id, {action: "follow"}, function(data) {
@@ -122,21 +96,6 @@ $(function() {
 		})
 	});
 
-	$('#open-button').on('click', function() {
-		$(this).css({"display": "none"});
-		$('#close-button').css({"display": "block"});
-		$('#modal').css({"display": "block"});
-		$('#question-title').focus();
-	});
-
-	$('#close-button').on('click', function() {
-		$(this).css({"display": "none"});
-		$('#modal').css({"display": "none"});
-		$('#open-button').css({"display": "block"});
-		$('.input-row input').val('');
-		$('#question-error').text('');
-	});
-
 	$('#answer-2').on('change paste keyup', function() {
 		if ($('#answer-2').val()) {
 			$('#answer-3').css('display', 'block');
@@ -162,18 +121,3 @@ $(function() {
 		}
 	});
 });
-
-function showComments() {
-	$('#off-canvas-comments').animate({right: 0}, 650, function() {
-		$('#content-overlay').css({'z-index': 10});
-		$('#content-overlay').animate({opacity: 0.5}, 650);
-	});
-}
-
-function hideComments() {
-	$('#off-canvas-comments').animate({right: '-33%'}, 650, function() {
-		$('#content-overlay').animate({opacity: 0}, 650, function() {
-			$('#content-overlay').css({'z-index': -10});
-		});
-	});
-}

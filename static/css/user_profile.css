@@ -1,0 +1,86 @@
+/*=================== GENERAL STYLING START ==================*/
+
+@font-face {
+	font-family: 'Jaapokki';
+	src: url('/static/fonts/jaapokkisubtract-regular.woff');
+}
+@font-face {
+	font-family: 'Gotham';
+	src: url('/static/fonts/GothamHTF-Book.woff');
+}
+html {
+	font-family: Gotham, sans-serif;
+}
+a {
+	text-decoration: none;
+}
+* {
+	color: #353436;
+}
+
+@media only screen and (min-width: 1200px) {
+	html, body, section, article {
+		height: 100%;
+	}
+}
+
+/*=================== GENERAL STYLING END ====================*/
+
+@media only screen and (min-width: 1200px) {
+	body {
+		background: #f1f1f1;
+	}
+	main {
+		width: 95%;
+		max-width: 1650px;
+		overflow: auto;
+		margin: 0 auto;
+		height: calc(100% - 130px);
+		box-sizing: border-box;
+	}
+	main * {
+		box-sizing: border-box;
+	}
+	#user-profile {
+		width: calc(100% - 480px);
+		height: calc(100% - 100px);
+		background: white;
+		float: left;
+	}
+	#profile-info {
+		overflow: auto;
+		padding: 30px;
+		background: #353436;
+	}
+	#profile-picture {
+		float: left;
+		margin-right: 25px;
+	}
+	#profile-picture img {
+		border-radius: 50%;
+		width: 160px;
+		height: 160px;
+		box-shadow: 0 0 0 2px white;
+	}
+	#profile-info-text {
+		float: left;
+		transform: translateY(20px);
+	}
+	#username {
+		font-size: 2em;
+		margin-bottom: 30px;
+		color: white;
+	}
+	#bio {
+		color: white;
+	}
+	#recent-questions > div {
+		width: 50%;
+		float: left;
+		margin-bottom: 30px;
+	}
+	#recent-questions > div > div {
+		margin: 0 auto;
+		width: 80%;
+	}
+}

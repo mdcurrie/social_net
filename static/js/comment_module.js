@@ -1,12 +1,10 @@
 $(function() {
-
     $('.all-comments').animate({scrollTop: $('.all-comments')[0].scrollHeight}, 1500);
-
+    
     $('.comment-form form').on('submit', function(e) {
         e.preventDefault();
         submitForm();
     });
-
     $('.comment-form img').on('click', function() {
         submitForm();
     });

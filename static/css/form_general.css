@@ -1,5 +1,13 @@
 /*=================== GENERAL STYLING START ==================*/
 
+@font-face {
+	font-family: 'Jaapokki';
+	src: url('/static/fonts/jaapokkisubtract-regular.woff');
+}
+@font-face {
+	font-family: 'Gotham';
+	src: url('/static/fonts/GothamHTF-Book.woff');
+}
 html {
 	font-family: Karla, sans-serif;
 	color: #333;
@@ -16,23 +24,6 @@ a {
 
 /*=================== GENERAL STYLING END ====================*/
 
-/*=================== HEADER STYLING START ===================*/
-
-header {
-	background-color: #eee04b;
-	height: 46px;
-	font-size: 2em;
-	text-align: center;
-}
-header a {
-	color: #333;
-}
-header h1 {
-	padding-top: 7px;
-}
-
-/*=================== HEADER STYLING END =====================*/
-
 /*=================== SECTION STYLING START ==================*/
 
 section {
@@ -46,7 +37,7 @@ section h1 {
 	font-size: 2em;
 	margin-bottom: 20px;
 }
-input, button {
+#generic-form input, button {
 	font-size: 1em;
 	display: block;
 	width: 100%;
@@ -54,30 +45,29 @@ input, button {
 	outline: none;
 }
 .input-row {
-	margin-bottom: 25px;
+	margin-bottom: 30px;
 }
-input {
+#generic-form input {
 	padding: 10px 0 10px 45px;
 	background-repeat: no-repeat;
 	background-size: 30px;
 	background-position: 4px;
 	box-sizing: border-box;
-	border-radius: 10px;
 	border: none;
 	background-color: #f1f1f1;
 }
-input:focus {
-	border-color: #eee04b;
-	box-shadow: 0 0 3px 2px rgba(238, 224, 75, 1);
+#generic-form input:focus {
+	border-color: #2eb398;
+	box-shadow: 0 0 3px 2px #2eb398;
 }
-.error-message {
+#generic-form.error-message {
 	font-size: 0.75em;
 	height: 1.5em;
 	color: red;
 	display: block;
 }
-button {
-	background-color: #eee04b;
+#generic-form button {
+	background-color: #2eb398;
 	border: 0px;
 	margin-top: 46px;
 	margin-bottom: 30px;
@@ -86,17 +76,17 @@ button {
 	border-radius: 10px;
 	position: relative;
 }
-button:hover {
-	background-color: #cbbf40;
+#generic-form button:hover {
+	background-color: #20826e;
 }
-button img {
+#generic-form button img {
 	width: 23px;
 	height: 23px;
 	position: absolute;
 	top: 7px;
 	right: 7px;
 }
-h3 {
+#generic-form h3 {
 	text-align: center;
 }
 #top-text {
@@ -116,7 +106,6 @@ h3 {
 		min-width: 350px;
 		margin-top: 80px;
 		padding: 20px 20px 30px 20px;
-		box-shadow: 0 1px 2px rgba(0,0,0,.1);
 	}
 	section h1 {
 		font-size: 2.5em;
