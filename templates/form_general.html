@@ -15,10 +15,8 @@
         <![endif]-->
     </head>
     <body>
-        <header role="banner">
-            <h1><a href="/">Hive</a></h1>
-        </header>
-        <section>
+        {% module Header() %}
+        <section id="generic-form">
             {% block section %}{% end %}
         </section>
     {% block js_files %}{% end %}

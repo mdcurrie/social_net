@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ profile["username"] }}'s profile</title>
+        <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
+        <link rel="stylesheet" href="{{ static_url("css/user_profile.css") }}">
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        {% module Header() %}
+        <main>
+            {% module SideColumn() %}
+            <section id="user-profile">
+                <div id="profile-info">
+                    <div id="profile-picture">
+                        <img src={{ profile["profile_pic_link"] }} alt="{{ profile["username"] }}'s profile picture">
+                    </div>
+                    <div id="profile-info-text">
+                        <div id="username">
+                            {{ profile["username"] }}
+                        </div>
+                        <div id="bio">
+                            {{ profile["bio"] }}
+                        </div>
+                    </div>
+                </div>
+             <!--   <div id="recent-questions">
+                    {% for idx, question in enumerate(questions) %}
+                        <div>
+                            <div>
+                                {% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx]) %}
+                            </div>
+                        </div>
+                    {% end %}
+                </div> -->
+            </section>
+        </main>
+        <script src="{{ static_url("js/jquery.min.js") }}"></script>
+        <script src="{{ static_url("js/user_profile.js") }}"></script>
+    </body>
+</html>

@@ -2,7 +2,7 @@
     <div id="header-wrapper">
         <div id="logo">
             <a href={% if current_user %}"/feed"{% else %}"/"{% end %}>
-                &middot;HIVE&middot;
+                &middot;HIV<span>E</span>&middot;
             </a>
         </div>
         <div id="search-form">
@@ -21,7 +21,12 @@
                     </a>
                 </div>
                 <div id="current-user-profile-pic">
-                    <img src="{{ current_user["profile_pic_link"] }}" alt="{{ current_user["username"] }}'s profile picture">
+                    <form action="/logout" method="post">
+                        {% raw xsrf_form_html() %}
+                        <button type="submit" formmethod="post" formaction="/logout">
+                            <img src="{{ current_user["profile_pic_link"] }}" alt="{{ current_user["username"] }}'s profile picture">
+                        </button>
+                    </form>
                 </div>
             </div>
         {% end %}

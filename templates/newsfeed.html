@@ -5,10 +5,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Hive</title>
-        <link href='https://fonts.googleapis.com/css?family=Karla' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
         <link rel="stylesheet" href="{{ static_url("css/newsfeed.css") }}">
+        <link rel="stylesheet" href="{{ static_url("css/comment_module.css") }}">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
           <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -34,90 +33,36 @@
 		        	</div>
 		        </div>
 		        <div id="feed">
-		        	{% for idx, question in enumerate(questions) %}
-		        		<div>
-		        			<div>
-		        				{% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx]) %}
-		        			</div>
-		        		</div>
-					{% end %}
+		        	<div id="feed-wrapper">
+			        	{% set position = 0 %}
+			        	{% for idx, question in enumerate(questions) %}
+			        		{% if position == 0 %}
+			        			<div class="question-row">
+			        				{% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx]) %}
+			        		{% else %}
+			        			{% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx]) %}
+			        			</div>
+			        		{% end %}
+			        		{% if position == 1 %}
+			        			{% set position = 0 %}
+			        		{% else %}
+			        			{% set position = 1 %}
+			        		{% end %}
+			        	{% else %}
+			        		{% if position == 0 %}
+			        			</div>
+			        		{% end %}
+						{% end %}
+					</div>
 				</div>
 		    </section>
-		    <aside id="off-canvas-comments"></aside>
+		    <aside id="off-canvas-comments">
+		    	<div class="all-comments"></div>
+		    </aside>
 		    <div id="content-overlay"></div>
 		</main>
-	    <!--<section id="main-content">
-	    	{% module Question(askers[0], questions[0], votes[0], favorites[0], shares[0], comments[0]) %} 
-	    </section>-->
-        <!--
-	    <div id="profile-info">
-	    	<div id="profile-wrapper">
-		    	<div id="profile-pic-and-text">
-			    	<div id="profile-pic">
-			    		<img src="{{ profile["profile_pic_link"] }}" alt="{{ profile["username"] }}'s avatar">
-			    	</div>
-			    	<div id="profile-text">
-				    	<div id="username">
-				    		<h1>{{ profile["username"] }}</h1>
-				    	</div>
-				    	<div id="profile-bio">
-				    		<h3>{{ profile["bio"] }}</h3>
-				    	</div>
-				    </div>
-				</div>
-			    <div id="profile-buttons">
-			    	{% if controlled == False %}
-				    	<button type="submit" class="profile-button {% if follower %}active{% end %}" id="follow-button">
-				    		{% if follower %}
-				    			Following
-				    		{% else %}
-				    			Follow
-				    		{% end %}
-				    	</button>
-				    	<button type="submit" class="profile-button {% if hater %}active{% end %}" id="hate-button">
-				    		{% if hater %}
-				    			Hating
-				    		{% else %}
-				    			Hate
-				    		{% end %}
-				    	</button>
-					{% end %}
-				</div>
-			</div>
-	    </div>
-	    <div id="profile-metrics">
-	    	<div id="profile-metrics-wrapper">
-		    	<div class="profile-metrics-text">
-		    		<a href="/users/{{ str(profile["_id"]) }}/get_relationships?relationship=follower">
-		    			<div class="text-num">{% if followers_count %}{{ followers_count["count"] }}{% else %}0{% end %}</div>
-		    			<div class="text-str">followers</div>
-		    		</a>
-		    	</div>
-		    	<div class="profile-metrics-text">
-		    		<a href="/users/{{ str(profile["_id"]) }}/get_relationships?relationship=following">
-			    		<div class="text-num">{% if following_count %}{{ following_count["count"] }}{% else %}0{% end %}</div>
-			    		<div class="text-str">following</div>
-			    	</a>
-		    	</div>
-				<div class="profile-metrics-text">
-					<a href="/users/{{ str(profile["_id"]) }}/get_relationships?relationship=hater">
-			    		<div class="text-num">{% if hater_count %}{{ hater_count["count"] }}{% else %}0{% end %}</div>
-			    		<div class="text-str">haters</div>
-			    	</a>
-		    	</div>
-		    	<div class="profile-metrics-text">
-		    		<div class="text-num">0</div>
-		    		<div class="text-str">votes</div>
-		    	</div>
-		    </div>
-		</div>
-		<div id="background-dark"></div>
-		<div id="overlay">
-			<h1 id="overlay-title">Followers</h1>
-			<div id="overlay-content">
-			</div>
-		</div>
-		<div id="overlay-close">&times</div>
+
+	    <!--
      	<section>
      		{% if controlled %}
 	     		<article id="ask-article">
@@ -168,6 +113,7 @@
 	        </form>
 	    {% end %} -->
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
+        <script src="{{ static_url("js/comment_module.js") }}"></script>
         <script src="{{ static_url("js/newsfeed.js") }}"></script>
     </body>
 </html>

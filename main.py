@@ -368,7 +368,7 @@ class LoginHandler(BaseHandler):
 class LogoutHandler(BaseHandler):
 	def post(self):
 		self.clear_cookie("auth_id")
-		self.redirect("/")
+		self.redirect("/login")
 
 # handler to check if email from signup form is already in use
 class EmailHandler(BaseHandler):
@@ -487,10 +487,14 @@ class CommentHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get (self, question_id):
 		comments = yield self.application.db.comments.find_one({"question_id": ObjectId(question_id)}, fields={"_id": 0, "comments": 1})
-		user_list  = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in comments]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)	
-		commenters = [user for comment in comments for user in user_list if user["_id"] == comment["user_id"]]
+		if comments:
+			comments = comments["comments"]
+			user_list  = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in comments]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)	
+			commenters = [user for comment in comments for user in user_list if user["_id"] == comment["user_id"]]
 
-		self.render("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime)
+			self.render("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime)
+		else:
+			self.render("comment_module.html", question_id=question_id, comments=None, commenters=None, datetime=datetime)
 
 	@tornado.gen.coroutine
 	def post(self, question_id):
@@ -628,107 +632,103 @@ class FavoriteShareHandler(BaseHandler):
 class ProfileHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, user_id):
-		if self.current_user and str(self.current_user["_id"]) == user_id:
-			self.redirect("/feed")
+		target_user = yield self.application.db.users.find_one({"_id": ObjectId(user_id)}, {"password": 0, "salt": 0, "hating": 0})
+		if not target_user:
+			self.redirect("/")
 		else:
-			target_user = yield self.application.db.users.find_one({"_id": ObjectId(user_id)}, {"password": 0, "salt": 0, "hating": 0})
-			if not target_user:
-				self.redirect("/")
+			if self.current_user:
+				ret = yield [self.application.db.questions.find().sort("_id", 1).to_list(10),
+							 self.application.db.followers.find_one({"user_id": ObjectId(user_id), "followers": self.current_user["_id"]}, {"followers": 0, "count": 0}),
+							 self.application.db.followers.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
+							 self.application.db.following.find_one({"user_id": ObjectId(user_id), "following": self.current_user["_id"]}, {"following": 0, "count": 0}),
+							 self.application.db.following.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
+							 self.application.db.haters.find_one({"user_id": ObjectId(user_id), "haters": self.current_user["_id"]}, {"haters": 0, "count": 0}),
+							 self.application.db.haters.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1})]
+
+				questions, follower, followers_count, following, following_count, hater, hater_count = ret
 			else:
-				if self.current_user:
-					ret = yield [self.application.db.questions.find().sort("_id", 1).to_list(10),
-								 self.application.db.followers.find_one({"user_id": ObjectId(user_id), "followers": self.current_user["_id"]}, {"followers": 0, "count": 0}),
-								 self.application.db.followers.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
-								 self.application.db.following.find_one({"user_id": ObjectId(user_id), "following": self.current_user["_id"]}, {"following": 0, "count": 0}),
-								 self.application.db.following.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
-								 self.application.db.haters.find_one({"user_id": ObjectId(user_id), "haters": self.current_user["_id"]}, {"haters": 0, "count": 0}),
-								 self.application.db.haters.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1})]
+				ret = yield [self.application.db.questions.find().sort("_id", 1).to_list(10),
+							 self.application.db.followers.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
+							 self.application.db.following.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
+							 self.application.db.haters.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1})]
 
-					questions, follower, followers_count, following, following_count, hater, hater_count = ret
+				questions, followers_count, following_count, hater_count = ret
+				follower = following = hater = None
+
+			votes_temp = None
+			if self.current_user:
+				temp1, temp2, temp3, askers_temp, votes_temp = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+													  	  self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+													      self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+													      self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10),
+													      self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
+			else:
+				temp1, temp2, temp3, askers_temp = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+													  	  self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+													      self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+													      self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10)]
+
+			favorites = []
+			shares    = []
+			comments  = []
+			askers    = []
+			votes     = []
+			for x in questions:
+				favorited = False
+				count     = 0
+				if temp1:
+					for y in temp1:
+						if x["_id"] == y["question_id"]:
+							count = y["count"]
+							if self.current_user and self.current_user["_id"] in y["user_ids"]:
+								favorited = True
+							break
+					favorites.append((favorited, count))
 				else:
-					ret = yield [self.application.db.questions.find().sort("_id", 1).to_list(10),
-								 self.application.db.followers.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
-								 self.application.db.following.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
-								 self.application.db.haters.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1})]
+					favorites.append((False, 0))
 
-					questions, followers_count, following_count, hater_count = ret
-					follower = following = hater = None
-
-
-				votes_temp = None
-				if self.current_user:
-					temp1, temp2, temp3, askers_temp, votes_temp = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-														  	  self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-														      self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-														      self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10),
-														      self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
+				shared = False
+				count  = 0
+				if temp2:
+					for y in temp2:
+						if x["_id"] == y["question_id"]:
+							count = y["count"]
+							if self.current_user and self.current_user["_id"] in y["user_ids"]:
+								shared = True
+							break
+					shares.append((shared, count))
 				else:
-					temp1, temp2, temp3, askers_temp = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-														  	  self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-														      self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-														      self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10)]
+					shares.append((False, 0))
 
-				favorites = []
-				shares    = []
-				comments  = []
-				askers    = []
-				votes     = []
-				for x in questions:
-					favorited = False
-					count     = 0
-					if temp1:
-						for y in temp1:
-							if x["_id"] == y["question_id"]:
-								count = y["count"]
-								if self.current_user and self.current_user["_id"] in y["user_ids"]:
-									favorited = True
-								break
-						favorites.append((favorited, count))
-					else:
-						favorites.append((False, 0))
+				commented = False
+				count     = 0
+				if temp3:
+					for y in temp3:
+						if x["_id"] == y["question_id"]:
+							count = y["count"]
+							if self.current_user and self.current_user["_id"] in [q["user_id"] for q in y["comments"]]:
+								commented = True
+							break	
+					comments.append((commented, count, y["comments"]))
+				else:
+					comments.append((commented, count, None))
 
-					shared = False
-					count  = 0
-					if temp2:
-						for y in temp2:
-							if x["_id"] == y["question_id"]:
-								count = y["count"]
-								if self.current_user and self.current_user["_id"] in y["user_ids"]:
-									shared = True
-								break
-						shares.append((shared, count))
-					else:
-						shares.append((False, 0))
+				vote = None
+				if votes_temp:
+					for y in votes_temp["votes"]:
+						if x["_id"] == y["question_id"]:
+							vote = y["vote_index"]
+							break
+					votes.append(vote)
+				else:
+					votes.append(None)
 
-					commented = False
-					count     = 0
-					if temp3:
-						for y in temp3:
-							if x["_id"] == y["question_id"]:
-								count = y["count"]
-								if self.current_user and self.current_user["_id"] in [q["user_id"] for q in y["comments"]]:
-									commented = True
-								break	
-						comments.append((commented, count, y["comments"]))
-					else:
-						comments.append((commented, count, None))
+				for y in askers_temp:
+					if y["_id"] == x["asker"]:
+						askers.append(y)
 
-					vote = None
-					if votes_temp:
-						for y in votes_temp["votes"]:
-							if x["_id"] == y["question_id"]:
-								vote = y["vote_index"]
-								break
-						votes.append(vote)
-					else:
-						votes.append(None)
-
-					for y in askers_temp:
-						if y["_id"] == x["asker"]:
-							askers.append(y)
-
-				self.render("newsfeed.html", profile=target_user, current_user=self.current_user, follower=follower, followers_count=followers_count, following_count=following_count,
-										 hater=hater, hater_count=hater_count, askers=askers, questions=questions, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=False,)
+			self.render("user_profile.html", profile=target_user, current_user=self.current_user, follower=follower, followers_count=followers_count, following_count=following_count,
+									 hater=hater, hater_count=hater_count, askers=askers, questions=questions, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=False,)
 
 # handler for displaying a user's personalized newsfeed
 class FeedHandler(BaseHandler):
@@ -737,12 +737,7 @@ class FeedHandler(BaseHandler):
 		if not self.current_user:
 			self.redirect("/")
 		else:
-			ret = yield [self.application.db.questions.find().sort("_id", 1).to_list(10),
-					     self.application.db.followers.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "count": 1}),
-				         self.application.db.following.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "count": 1}),
-				         self.application.db.haters.find_one({"user_id": self.current_user["_id"]}, {"_id": 0, "count": 1})]
-
-			questions, followers_count, following_count, hater_count = ret
+			questions = yield self.application.db.questions.find().sort("_id", 1).to_list(10)
 
 			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
 						 self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
@@ -811,8 +806,7 @@ class FeedHandler(BaseHandler):
 					if y["_id"] == x["asker"]:
 						askers.append(y)
 
-			self.render("newsfeed.html", profile=self.current_user, current_user=self.current_user, follower=None, followers_count=followers_count, following_count=following_count,
-										 hater=None, hater_count=hater_count, askers=askers, questions=questions, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True, datetime=datetime)
+			self.render("newsfeed.html", profile=self.current_user, current_user=self.current_user, askers=askers, questions=questions, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True, datetime=datetime)
 
 # handler to follow or hate a user
 class FollowHateHandler(BaseHandler):
