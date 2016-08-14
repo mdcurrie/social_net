@@ -44,132 +44,133 @@ class Application(tornado.web.Application):
 			debug=True,
 		)
 		client = motor.motor_tornado.MotorClient("mongodb://mcurrie:practice@ds021884.mlab.com:21884/hive")
+		# client.drop_database("hive")
 		self.db = client.hive
-		questions = self.db.questions
+		# questions = self.db.questions
 
-		def insert_questions(result, error):
-			if result:
-				questions.insert(
-						[{
-							"asker":      result[0],
-							"group":	  "Music",
-							"question":   "Rate Beyonces new album!",
-							"date":       datetime.utcnow(),
-							"image_link": "http://i.imgur.com/SX3tMDg.jpg",
-							"data":     [
-											{
-												"label": "it was LIT",
-												"votes": 12,
-											},
-											{
-												"label": "shes done better",
-												"votes": 19,
-											},
-											{
-												"label": "worse than Miley",
-												"votes": 3,
-											},
-										]
-						},
-						{
-							"asker":      result[0],
-							"question":   "Whos gonna become president? no trolls pls",
-							"date":	      datetime.utcnow(),
-							"image_link": "http://i.imgur.com/l4PPTGC.jpg",
-							"data":		[
-											{
-												"label": "hillary",
-												"votes": 63,
-											},
-											{
-												"label": "trump",
-												"votes": 13,
-											},
-											{
-												"label": "can obama get another term",
-												"votes": 300,
-											},
-											{
-												"label": "i hate them both",
-												"votes": 120,
-											},
-										]
-						},
-						{
-							"asker":       result[1],
-							"group":	   "Music",
-							"question":    "Best album of 2016?",
-							"date":        datetime.utcnow(),
-							"image_link":  "http://i.imgur.com/BpXMFZw.jpg",
-							"data":		[
-											{
-												"label": "views by drake",
-												"votes": 560,
-											},
-											{
-												"label": "tlop by kanye",
-												"votes": 940,
-											},
-											{
-												"label": "lemonade by beyonce",
-												"votes": 20400,
-											},
-										]
-						}]
-					)
+		# def insert_questions(result, error):
+		# 	if result:
+		# 		questions.insert(
+		# 				[{
+		# 					"asker":      result[0],
+		# 					"group":	  "Music",
+		# 					"question":   "Rate Beyonces new album!",
+		# 					"date":       datetime.utcnow(),
+		# 					"image_link": "http://i.imgur.com/SX3tMDg.jpg",
+		# 					"data":     [
+		# 									{
+		# 										"label": "it was LIT",
+		# 										"votes": 12,
+		# 									},
+		# 									{
+		# 										"label": "shes done better",
+		# 										"votes": 19,
+		# 									},
+		# 									{
+		# 										"label": "worse than Miley",
+		# 										"votes": 3,
+		# 									},
+		# 								]
+		# 				},
+		# 				{
+		# 					"asker":      result[0],
+		# 					"question":   "Whos gonna become president? no trolls pls",
+		# 					"date":	      datetime.utcnow(),
+		# 					"image_link": "http://i.imgur.com/l4PPTGC.jpg",
+		# 					"data":		[
+		# 									{
+		# 										"label": "hillary",
+		# 										"votes": 63,
+		# 									},
+		# 									{
+		# 										"label": "trump",
+		# 										"votes": 13,
+		# 									},
+		# 									{
+		# 										"label": "can obama get another term",
+		# 										"votes": 300,
+		# 									},
+		# 									{
+		# 										"label": "i hate them both",
+		# 										"votes": 120,
+		# 									},
+		# 								]
+		# 				},
+		# 				{
+		# 					"asker":       result[1],
+		# 					"group":	   "Music",
+		# 					"question":    "Best album of 2016?",
+		# 					"date":        datetime.utcnow(),
+		# 					"image_link":  "http://i.imgur.com/BpXMFZw.jpg",
+		# 					"data":		[
+		# 									{
+		# 										"label": "views by drake",
+		# 										"votes": 560,
+		# 									},
+		# 									{
+		# 										"label": "tlop by kanye",
+		# 										"votes": 940,
+		# 									},
+		# 									{
+		# 										"label": "lemonade by beyonce",
+		# 										"votes": 20400,
+		# 									},
+		# 								]
+		# 				}]
+		# 			)
 
-		self.db.users.insert(
-				[{
-					"username":         "BasedGod", 
-					"email":            "based@god.com",
-					"password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
-					"salt":			    b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
-					"profile_pic_link": "http://i.imgur.com/MQam61S.jpg",
-					"bio":              "Mogul, First Rapper Ever To Write And Publish A Book at 19, Film Score, Composer, Producer, Director #BASED"
-				},
-				{
-					"username":         "marcus", 
-					"email":            "m@e.com",
-					"password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
-					"salt":			    b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
-					"profile_pic_link": "http://i.imgur.com/pq88IQx.png",
-					"bio": "I'm new here!"
-				}],
-				callback=insert_questions
-			)
+		# self.db.users.insert(
+		# 		[{
+		# 			"username":         "BasedGod", 
+		# 			"email":            "based@god.com",
+		# 			"password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
+		# 			"salt":			    b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
+		# 			"profile_pic_link": "http://i.imgur.com/MQam61S.jpg",
+		# 			"bio":              "Mogul, First Rapper Ever To Write And Publish A Book at 19, Film Score, Composer, Producer, Director #BASED"
+		# 		},
+		# 		{
+		# 			"username":         "marcus", 
+		# 			"email":            "m@e.com",
+		# 			"password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
+		# 			"salt":			    b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
+		# 			"profile_pic_link": "http://i.imgur.com/pq88IQx.png",
+		# 			"bio": "I'm new here!"
+		# 		}],
+		# 		callback=insert_questions
+		# 	)
 
-		self.db.groups.insert(
-				[{
-					"name":			  "Music",
-					"pic_link":		  "http://i.imgur.com/2RrtWCM.jpg",
-					"posts":		  2,
-					"followers":      [],
-					"bio":		      "The official music group of Hive. Discuss your favorite music and discover new sounds."
-				},
-				{
-					"name":			  "Sports",
-					"pic_link":		  "http://i.imgur.com/Lky0iUM.png",
-					"posts":		  0,
-					"followers":	  [],
-					"bio":		      "The official sports group of Hive. Discuss your favorite sports team. Remember to keep it civil."
-				},
-				{
-					"name":			  "Anime",
-					"pic_link":		  "http://i.imgur.com/dNWrYKa.png",
-					"posts":		  0,
-					"followers":	  [],
-					"bio":		      "The official anime group of Hive. Discuss your favorite anime and try not to start any wars."
-				}]
-			)
+		# self.db.groups.insert(
+		# 		[{
+		# 			"name":			  "Music",
+		# 			"pic_link":		  "http://i.imgur.com/2RrtWCM.jpg",
+		# 			"posts":		  2,
+		# 			"followers":      [],
+		# 			"bio":		      "The official music group of Hive. Discuss your favorite music and discover new sounds."
+		# 		},
+		# 		{
+		# 			"name":			  "Sports",
+		# 			"pic_link":		  "http://i.imgur.com/Lky0iUM.png",
+		# 			"posts":		  0,
+		# 			"followers":	  [],
+		# 			"bio":		      "The official sports group of Hive. Discuss your favorite sports team. Remember to keep it civil."
+		# 		},
+		# 		{
+		# 			"name":			  "Anime",
+		# 			"pic_link":		  "http://i.imgur.com/dNWrYKa.png",
+		# 			"posts":		  0,
+		# 			"followers":	  [],
+		# 			"bio":		      "The official anime group of Hive. Discuss your favorite anime and try not to start any wars."
+		# 		}]
+		# 	)
 
-		self.db.comments.ensure_index("question_id", unique=True)
-		self.db.shares.ensure_index("question_id", unique=True)
-		self.db.favorites.ensure_index("question_id", unique=True)
-		self.db.followers.ensure_index("user_id", unique=True)
-		self.db.following.ensure_index("user_id", unique=True)
-		self.db.haters.ensure_index("user_id", unique=True)
-		self.db.hating.ensure_index("user_id", unique=True)
-		self.db.votes.ensure_index("user_id", unique=True)
+		# self.db.comments.ensure_index("question_id", unique=True)
+		# self.db.shares.ensure_index("question_id", unique=True)
+		# self.db.favorites.ensure_index("question_id", unique=True)
+		# self.db.followers.ensure_index("user_id", unique=True)
+		# self.db.following.ensure_index("user_id", unique=True)
+		# self.db.haters.ensure_index("user_id", unique=True)
+		# self.db.hating.ensure_index("user_id", unique=True)
+		# self.db.votes.ensure_index("user_id", unique=True)
 
 		tornado.web.Application.__init__(self, handlers, **settings)	
 
@@ -207,6 +208,8 @@ class IndexHandler(BaseHandler):
 	# redirect to /feed if already logged in
 	@tornado.gen.coroutine
 	def get(self):
+		self.redirect('/signup')
+		return
 		if self.current_user:
 			self.redirect("/feed")
 		else:
@@ -886,5 +889,5 @@ class GroupHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
