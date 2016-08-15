@@ -21,12 +21,17 @@
                     </a>
                 </div>
                 <div id="current-user-profile-pic">
-                    <form action="/logout" method="post">
-                        {% raw xsrf_form_html() %}
-                        <button type="submit" formmethod="post" formaction="/logout">
-                            <img src="{{ current_user["profile_pic_link"] }}" alt="{{ current_user["username"] }}'s profile picture">
-                        </button>
-                    </form>
+                    <div class="dropdown">
+                        <img class="dropbtn" src="{{ current_user["profile_pic_link"] }}" alt="{{ current_user["username"] }}'s profile picture">
+                        <div class="dropdown-content">
+                            <a href="{{ '/users/' + str(current_user["_id"]) }}">View Profile</a>
+                            <a href="/settings">Settings</a>
+                            <form action="/logout" method="post">
+                                {% raw xsrf_form_html() %}
+                                <button formaction="/logout" formmethod="post">Logout</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         {% end %}

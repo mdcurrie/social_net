@@ -335,7 +335,7 @@ class SettingsHandler(BaseHandler):
 		if not self.current_user:
 			self.redirect("/")
 		else:
-			self.render("settings.html")
+			self.render("settings.html", current_user=self.current_user)
 
 # handler for logging in registered users
 class LoginHandler(BaseHandler):
@@ -889,5 +889,5 @@ class GroupHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
