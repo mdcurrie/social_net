@@ -1,0 +1,89 @@
+/*=================== GENERAL STYLING START ==================*/
+
+@font-face {
+	font-family: 'Jaapokki';
+	src: url('/static/fonts/jaapokkisubtract-regular.woff');
+}
+@font-face {
+	font-family: 'Gotham';
+	src: url('/static/fonts/GothamHTF-Book.woff');
+}
+html {
+	font-family: Gotham, sans-serif;
+}
+a {
+	text-decoration: none;
+}
+* {
+	color: #353436;
+	box-sizing: border-box;
+}
+
+@media only screen and (min-width: 1200px) {
+	html, body, section, article {
+		height: 100%;
+	}
+}
+
+/*=================== GENERAL STYLING END ====================*/
+
+@media only screen and (min-width: 1200px) {
+	body {
+		background: #f1f1f1;
+	}
+	#user-settings {
+		background: white;
+		border-radius: 5px;
+		height: calc(100% - 180px);
+		width: 95%;
+		max-width: 1170px;
+		padding: 20px;
+		margin: 0 auto;
+	}
+	#user-profile-pic {
+		text-align: center;
+		margin-bottom: 20px;
+	}
+	#user-profile-pic img {
+		border-radius: 50%;
+		height: 180px;
+		width: 180px;
+	}
+	#username {
+		font-size: 2em;
+		margin-bottom: 50px;
+		text-align: center;
+	}
+	#row-settings {
+		width: 85%;
+		margin: 0 auto;
+	}
+	.row {
+		padding: 25px 0;
+		border-top: 1px solid rgba(0,0,0,.1);
+		overflow: auto;
+		position: relative;
+	}
+	.row:last-of-type {
+		border-bottom: 1px solid rgba(0,0,0,.1);
+	}
+	.key {
+		float: left;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+	.value {
+		float: right;
+	}
+	.value button {
+		border: none;
+		outline: none;
+		background: #2eb398;
+		color: white;
+		padding: 10px;
+	}
+	.value button:hover {
+		cursor: pointer;
+	}
+}

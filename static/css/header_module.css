@@ -58,7 +58,7 @@
 	}
 	#create-question-icon {
 		float: left;
-		transform: translate(-60px, 25px);
+		transform: translate(-53px, 25px);
 	}
 	#create-question-icon img {
 		height: 30px;
@@ -73,11 +73,6 @@
 	#current-user-profile-pic {
 		float: left;
 	}
-	#current-user-profile-pic button{
-		background: transparent;
-		border: none;
-		outline: none;
-	}
 	#current-user-profile-pic img {
 		width: 50px;
 		height: 50px;
@@ -86,6 +81,46 @@
 		transform: translateY(15px);
 	}
 	#current-user-profile-pic img:hover {
+		cursor: pointer;
+	}
+	header .dropdown {
+	    position: relative;
+	    display: inline-block;
+	}
+	header .dropdown-content {
+	    display: none;
+	    position: absolute;
+	    right: -2px;
+	    top: 60px;
+	    background: white;
+	    min-width: 135px;
+	    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+	}
+	header .dropdown-content a {
+	    color: #353436;
+	    padding: 10px 16px;
+	    text-decoration: none;
+	    display: block;
+	}
+	header .dropdown-content a:hover {
+		background: #f1f1f1;
+	}
+	header .dropdown:hover .dropdown-content {
+	    display: block;
+	}
+	#current-user-profile-pic button {
+		font-family: Gotham;
+		font-size: 1em;
+		width: 100%;
+		padding: 10px 16px;
+		color: #353436;
+		background: white;
+		text-align: left;
+		border: none;
+		outline: none;
+	}
+	#current-user-profile-pic button:hover {
+		background: #f1f1f1;
 		cursor: pointer;
 	}
 }
