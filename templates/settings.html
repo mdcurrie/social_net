@@ -16,17 +16,47 @@
     <body>
         {% module Header() %}
         <section id="user-settings">
+            <div id="save-button">
+                <button>Save</button>
+            </div>
             <div id="user-profile-pic">
                 <img src="{{ current_user["profile_pic_link"] }}" alt="Your profile picture">
+                <form action="/settings/updatePicture" method="post">
+                    {% raw xsrf_form_html() %}
+                    <input type="text" name="profile_picture" placeholder="{{ current_user["profile_pic_link"] }}" autocomplete="off">
+                </form>
             </div>
-            <div id="username">{{ current_user["username"] }}</div>
+            <div id="username">
+                <div class="wrapper">
+                    {{ current_user["username"] }}
+                </div>
+                <form action="/settings/updateUsername" method="post">
+                    {% raw xsrf_form_html() %}
+                    <input type="text" name="username" placeholder="{{ current_user["username"] }}" autocomplete="off">
+                </form>
+            </div>
+            <div id="bio">
+                <div class="wrapper">
+                    {{ current_user["bio"] }}
+                </div>
+                <form action="/settings/updateBio" method="post">
+                    {% raw xsrf_form_html() %}
+                    <input type="text" name="bio" placeholder="{{ current_user["bio"] }}" autocomplete="off">
+                </form>
+            </div>
             <div id="row-settings">
                 <div class="row">
                     <div class="key">
                         Email
                     </div>
                     <div class="value">
-                        {{ current_user["email"] }}
+                        <div id="email">
+                            {{ current_user["email"] }}
+                        </div>
+                        <form action="/settings/updateEmail" method="post">
+                            {% raw xsrf_form_html() %}
+                            <input type="email" name="email" placeholder="{{ current_user["email"] }}" autocomplete="off">
+                        </form>
                     </div>
                 </div>
                 <div class="row">
@@ -53,6 +83,9 @@
                         <button>Deactivate</button>
                     </div>
                 </div>
+            </div>
+        </section>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
+        <script src="{{ static_url("js/settings.js") }}"></script>
     </body>
 </html>

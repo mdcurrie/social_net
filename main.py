@@ -23,6 +23,7 @@ class Application(tornado.web.Application):
 					(r"/logout", LogoutHandler),
 					(r"/signup", SignupHandler),
 					(r"/settings", SettingsHandler),
+					(r"/settings/(\w+)", SettingsHandler),
 					(r"/email_lookup", EmailHandler),
 					(r"/users/(\w+)", ProfileHandler),
 					(r"/follow_or_hate/(\w+)", FollowHateHandler),
@@ -182,7 +183,7 @@ class BaseHandler(tornado.web.RequestHandler):
 		self.current_user = None
 		if auth_id:
 			auth_id      = str(auth_id, "utf-8")
-			current_user = yield self.application.db.users.find_one({"email": auth_id}, {"salt": 0, "password": 0})
+			current_user = yield self.application.db.users.find_one({"_id": ObjectId(auth_id)}, {"salt": 0, "password": 0})
 			if current_user == None:
 				self.clear_cookie("auth_id")
 			else:
@@ -324,18 +325,55 @@ class SignupHandler(BaseHandler):
 					"password":         password,
 					"salt":             salt,
 					"bio":              "I'm new here!",
-					"profile_pic_link": "http://i.imgur.com/pq88IQx.png", "questions": 0})
+					"profile_pic_link": "http://i.imgur.com/pq88IQx.png"})
 
-			self.set_secure_cookie("auth_id", email, httponly=True)
+			self.set_secure_cookie("auth_id", str(user.inserted_id), httponly=True)
 			self.redirect("/feed")
 
 class SettingsHandler(BaseHandler):
 	def get(self):
 		# redirect user to index page if not logged in
 		if not self.current_user:
-			self.redirect("/")
+			self.redirect("/login")
 		else:
 			self.render("settings.html", current_user=self.current_user)
+
+	@tornado.gen.coroutine
+	def post(self, command):
+		if not self.current_user:
+			self.redirect("/login")
+		else:
+			if command == "updateUsername":		
+				new_username = self.get_argument("username")
+				if len(new_username) < 6:
+					pass
+				elif re.compile("^[a-zA-Z0-9_ ]+$").match(new_username) == None:
+					pass
+				else:
+					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"username": new_username}})
+
+			elif command == "updateBio":
+				new_bio = self.get_argument("bio")
+				yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"bio": new_bio}})
+
+			elif command == "updateEmail":
+				new_email = self.get_argument("email")
+				if re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(new_email) == None:
+					pass
+				else:
+					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"email": new_email}})
+
+			elif command == "updatePicture":
+				new_picture = self.get_argument("profile_picture")
+				if re.compile(".*\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$").match(new_picture) == None:
+					pass
+				else:
+					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"profile_pic_link": new_picture}})
+
+			else:
+				pass
+
+			self.redirect("/settings")
 
 # handler for logging in registered users
 class LoginHandler(BaseHandler):
@@ -357,13 +395,13 @@ class LoginHandler(BaseHandler):
 		elif len(password) < 6:
 			self.render("login.html", email=None, email_error='', password_error='The password you entered is incorrect.')
 		else:
-			user = yield self.application.db.users.find_one({"email": email}, {"_id": 0, "salt": 1, "password": 1})
+			user = yield self.application.db.users.find_one({"email": email}, {"salt": 1, "password": 1})
 			if user == None:
 				self.render("login.html", email=None, email_error='The email you entered does not match any account.', password_error='')
 			elif bcrypt.hashpw(password.encode('utf-8'), user["salt"]) != user["password"]:
 				self.render("login.html", email=None, email_error='', password_error='The password you entered is incorrect.')
 			else:
-				self.set_secure_cookie("auth_id", email, httponly=True)
+				self.set_secure_cookie("auth_id", str(user["_id"]), httponly=True)
 				self.redirect("/feed")
 
 # handler for logging users out
@@ -889,5 +927,5 @@ class GroupHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
