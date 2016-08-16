@@ -88,6 +88,7 @@
 	    display: inline-block;
 	}
 	header .dropdown-content {
+		z-index: 100;
 	    display: none;
 	    position: absolute;
 	    right: -2px;

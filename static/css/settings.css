@@ -39,20 +39,94 @@ a {
 		max-width: 1170px;
 		padding: 20px;
 		margin: 0 auto;
+		position: relative;
+	}
+	#save-button {
+		display: none;
+		position: absolute;
+		right: 20px;
+		top: 20px;
 	}
 	#user-profile-pic {
 		text-align: center;
-		margin-bottom: 20px;
+		margin-bottom: 10px;
+		position: relative;
 	}
 	#user-profile-pic img {
 		border-radius: 50%;
 		height: 180px;
 		width: 180px;
 	}
+	#user-profile-pic img:hover {
+		cursor: pointer;
+	}
+	#user-profile-pic form {
+		display: none;
+		position: absolute;
+		width: 30%;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	#user-profile-pic input {
+		width: 100%;
+		font-size: 1em;
+		font-family: Gotham;
+		padding: 5px 20px;
+		border: none;
+		outline: none;
+		background: #f1f1f1;
+		text-align: center;
+		border-radius: 3px;
+	}
 	#username {
 		font-size: 2em;
-		margin-bottom: 50px;
+		margin-bottom: 10px;
 		text-align: center;
+	}
+	#username form {
+		display: none;
+		width: 30%;
+	}
+	#username input {
+	    background: #f1f1f1;
+	    padding: 4px 20px;
+	    border-radius: 3px;
+	    width: 100%;
+	    font-size: 1em;
+	    border: none;
+	    outline: none;
+	    text-align: center;
+	    font-family: Gotham;
+	}
+	#bio {
+		text-align: center;
+		margin-bottom: 40px;
+	}
+	#bio form {
+		display: none;
+		width: 30%;
+	}
+	#bio input {
+	    background: #f1f1f1;
+	    padding: 4px 20px;
+	    border-radius: 3px;
+	    width: 100%;
+	    font-size: 1em;
+	    border: none;
+	    outline: none;
+	    text-align: center;
+	    font-family: Gotham;
+	}
+	#user-settings .wrapper {
+		display: inline-block;
+		background: #f1f1f1;
+		padding: 5px 20px;
+		border-radius: 3px;
+		width: 30%;
+	}
+	#user-settings .wrapper:hover {
+		cursor: pointer;
 	}
 	#row-settings {
 		width: 85%;
@@ -63,6 +137,20 @@ a {
 		border-top: 1px solid rgba(0,0,0,.1);
 		overflow: auto;
 		position: relative;
+	}
+	.row:first-of-type form {
+		display: none;
+	}
+	.row:first-of-type input {
+		outline: none;
+		border: none;
+		padding: 5px 10px;
+		text-align: right;
+		background: #f1f1f1;
+		border-radius: 5px;
+		font-family: Gotham;
+		font-weight: bold;
+		font-size: 1em;
 	}
 	.row:last-of-type {
 		border-bottom: 1px solid rgba(0,0,0,.1);
@@ -84,6 +172,14 @@ a {
 		padding: 10px;
 	}
 	.value button:hover {
+		cursor: pointer;
+	}
+	#email {
+		padding: 5px 0;
+		color: #2eb398;
+		font-weight: bold;
+	}
+	#email:hover {
 		cursor: pointer;
 	}
 }
