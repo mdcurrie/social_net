@@ -46,8 +46,8 @@ function validateUsername() {
 		error.text('Letters, numbers, spaces, and underscores only.');
 		error.css({"display": "block", "color": "red"});
 	}
-	else if (username.length < 6) {
-		error.text('Your username must be at least 6 characters long.');
+	else if (username.length < 6 || username.length > 25) {
+		error.text('Your username must be 6-25 characters long.');
 		error.css({"display": "block", "color": "red"});
 	}
 	else {

@@ -16,6 +16,7 @@ a {
 }
 * {
 	color: #353436;
+	box-sizing: border-box;
 }
 
 @media only screen and (min-width: 1200px) {
@@ -31,56 +32,132 @@ a {
 		background: #f1f1f1;
 	}
 	main {
-		width: 95%;
-		max-width: 1650px;
-		overflow: auto;
-		margin: 0 auto;
-		height: calc(100% - 130px);
-		box-sizing: border-box;
-	}
-	main * {
-		box-sizing: border-box;
+		height: calc(100% - 180px);
 	}
 	#user-profile {
-		width: calc(100% - 480px);
-		height: calc(100% - 100px);
+		padding: 20px;
+		width: 95%;
+		max-width: 1170px;
+		height: 100%;
 		background: white;
-		float: left;
-	}
-	#profile-info {
-		overflow: auto;
-		padding: 30px;
-		background: #353436;
+		border-radius: 5px;
+		margin: 0 auto;
 	}
 	#profile-picture {
 		float: left;
-		margin-right: 25px;
+		margin-right: 50px;
 	}
 	#profile-picture img {
 		border-radius: 50%;
-		width: 160px;
-		height: 160px;
-		box-shadow: 0 0 0 2px white;
+		width: 150px;
+		height: 150px;
+	}
+	#profile-info {
+		width: 60%;
+		height: 156px;
+		margin: 0 auto;
 	}
 	#profile-info-text {
 		float: left;
-		transform: translateY(20px);
+		height: 100%;
+		width: calc(100% - 200px);
+		position: relative;
+	}
+	#username-and-button {
+		position: absolute;
+		top: 5px;
 	}
 	#username {
+		float: left;
+		margin-right: 20px;
 		font-size: 2em;
-		margin-bottom: 30px;
+	}
+	#username-and-button form {
+		float: left;
+		transform: translateY(1px);
+	}
+	#username-and-button button {
+	    padding: 5px 10px;
+	    border: 1px solid #2eb398;
+	    outline: none;
+	    background: transparent;
+	    color: #2eb398;
+	    font-family: Gotham;
+	    font-size: 1.1em;
+	    border-radius: 5px;
+	}
+	#username-and-button button.active {
+		background: #2eb398;
 		color: white;
+		border: none;
+	}
+	#username-and-button button:hover {
+		cursor: pointer;
 	}
 	#bio {
-		color: white;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		line-height: 1.4em;
 	}
-	#recent-questions > div {
-		width: 50%;
+	#metrics {
+		position: absolute;
+		bottom: 10px;
+		width: 100%;
+	}
+	#metrics > div {
 		float: left;
-		margin-bottom: 30px;
+		margin-right: 35px;
 	}
-	#recent-questions > div > div {
-		margin: 0 auto;
-		width: 80%;
+	#metrics span {
+		font-weight: bold;
+	}
+	#recent-answers {
+		padding: 0 10px;
+		margin: 10px 0 40px 0;
+	}
+	#recent-answers-header {
+		font-size: 1.1em;
+	}
+	.answer {
+		font-size: 0.9em;
+		margin: 10px 0;
+	}
+	#recent-questions {
+		overflow: auto;
+		margin: 20px 0;
+	}
+	#recent-questions-header {
+		padding-left: 10px;
+		font-size: 1.1em;
+	}
+	.question {
+		width: 33.3%;
+		padding: 10px;
+		float: left;
+	}
+	.question:last-of-type {
+		width: 33.4%;
+	}
+	.background-image {
+		height: 180px;
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: 50% 40%;
+		position: relative;
+	}
+	.background-image-overlay {
+		background: rgba(0,0,0,.4);
+		height: 100%;
+	}
+	.question-title {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		padding: 10px;
+		color: white;
+		font-size: 1.2em;
+		line-height: 1.1em;
+		word-break: break-word;
 	}
 }

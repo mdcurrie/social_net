@@ -11,14 +11,13 @@
 	}
 	#header-wrapper {
 		height: 100%;
-		width: 95%;
-		max-width: 1650px;
+		max-width: 1010px;
 		margin: 0 auto;
 	}
 	#logo {
 		font-size: 2em;
 		float: left;
-		width: 240px;
+		margin-right: 30px;
 		transform: translateY(20px);
 	}
 	#logo a {
@@ -26,9 +25,6 @@
 		color: white;
 		display: inline-block;
 		padding: 7px 10px 0 0;
-	}
-	#logo span {
-		color: #2eb398;
 	}
 	#search-form {
 		width: 240px;
