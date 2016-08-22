@@ -55,7 +55,8 @@
                         </div>
                         <form action="/settings/updateEmail" method="post">
                             {% raw xsrf_form_html() %}
-                            <input type="email" name="email" placeholder="{{ current_user["email"] }}" autocomplete="off">
+                            <input class="form-input" type="email" name="email" placeholder="{{ current_user["email"] }}" autocomplete="off">
+                            <button class="form-button" formaction="/settings/updateEmail" formmethod="post">Save</button>
                         </form>
                     </div>
                 </div>
@@ -64,23 +65,35 @@
                         Password
                     </div>
                     <div class="value">
-                        <button>Reset Password</button>
+                        <button class="form-button" id="reset-password-button">Reset Password</button>
+                        <form action="/settings/updatePassword" method="post">
+                            {% raw xsrf_form_html() %}
+                            <input class="form-input" type="password" name="old-password" placeholder="Old Password" autocomplete="off">
+                            <input class="form-input" type="password" name="new-password" placeholder="New Password" autocomplete="off">
+                            <button class="form-button" formaction="/settings/updatePassword" formmethod="post">Save</button>
+                        </form>
                     </div>
                 </div>
+                
                 <div class="row">
                     <div class="key">
                         Custom URL
                     </div>
                     <div class="value">
-                        <input placeholder='blank'>
+                        <button class="form-button" id="set-custom-url-button">Set Custom URL</button>
+                        <form action="/settings/updateURL" method="post">
+                            {% raw xsrf_form_html() %}
+                            https://hive.com/<input class="form-input" name="custom-url" placeholder="{% if current_user.get("custom_url") %}{{ current_user["custom_url"] }}{% end %}">
+                            <button class="form-button" formaction="/settings/updateURL" formmethod="post">Save</button>
+                        </form>
                     </div>
                 </div>
                 <div class="row">
                     <div class="key">
-                        Deactive Account
+                        Deactivate Account
                     </div>
-                    <div class="value">
-                        <button>Deactivate</button>
+                    <div class="value" id="deactivate-account-button">
+                        <button class="form-button">Deactivate</button>
                     </div>
                 </div>
             </div>

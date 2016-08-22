@@ -1,4 +1,5 @@
 import tornado.httpserver
+import tornado.httpclient
 import tornado.ioloop
 import tornado.options
 import tornado.web
@@ -6,6 +7,7 @@ import tornado.gen
 import motor.motor_tornado
 import logging
 import os.path
+import imghdr
 import bcrypt
 import re
 import json
@@ -302,8 +304,8 @@ class SignupHandler(BaseHandler):
 		password = self.get_argument("password")
 
 		# basic checks on password/email
-		if len(username) < 6:
-			self.render("signup.html", username_error='Your username must be at least 6 characters long.', email_error='', password_error='')
+		if len(username) < 6 or len(username) > 25:
+			self.render("signup.html", username_error='Your username must be 6-25 characters long.', email_error='', password_error='')
 		elif re.compile("^[a-zA-Z0-9_ ]+$").match(username) == None:
 			self.render("signup.html", username_error='Letters, numbers, spaces, and underscores only.', email_error='', password_error='')
 		elif re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(email) == None:
@@ -363,9 +365,38 @@ class SettingsHandler(BaseHandler):
 				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"email": new_email}})
 
+			elif command == "updatePassword":
+				old_password = self.get_argument("old-password")
+				new_password = self.get_argument("new-password")
+
+				if (len(old_password) < 6 or len(new_password) < 6):
+					pass
+				else:
+					user = yield self.application.db.users.find_one({"_id": self.current_user["_id"]}, {"salt": 1, "password": 1})
+					if user == None:
+						self.redirect("/")
+					else:
+						if bcrypt.hashpw(old_password.encode('utf-8'), user["salt"]) != user["password"]:
+							pass
+						else:
+							salt     = bcrypt.gensalt()
+							password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
+							yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"password": password, "salt": salt}})
+
+			elif command == "updateURL":
+				custom_url = self.get_argument("custom-url")
+				if len(custom_url) < 6:
+					pass
+				elif re.compile("^[a-zA-Z0-9_ ]+$").match(custom_url) == None:
+					pass
+				elif (yield self.application.db.users.find_one({"custom_url": custom_url})) == None:
+					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"custom_url": custom_url}})
+
 			elif command == "updatePicture":
 				new_picture = self.get_argument("profile_picture")
-				if re.compile(".*\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$").match(new_picture) == None:
+				http_client = tornado.httpclient.AsyncHTTPClient()
+				response    = yield http_client.fetch(new_picture)
+				if not imghdr.what(response.buffer):
 					pass
 				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"profile_pic_link": new_picture}})
@@ -677,7 +708,8 @@ class ProfileHandler(BaseHandler):
 			self.redirect("/")
 		else:
 			if self.current_user:
-				ret = yield [self.application.db.questions.find().sort("_id", 1).to_list(10),
+				own_profile = str(self.current_user["_id"]) == user_id
+				ret = yield [self.application.db.questions.find({"asker": ObjectId(user_id)}).sort("_id", 1).to_list(10),
 							 self.application.db.followers.find_one({"user_id": ObjectId(user_id), "followers": self.current_user["_id"]}, {"followers": 0, "count": 0}),
 							 self.application.db.followers.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
 							 self.application.db.following.find_one({"user_id": ObjectId(user_id), "following": self.current_user["_id"]}, {"following": 0, "count": 0}),
@@ -686,8 +718,23 @@ class ProfileHandler(BaseHandler):
 							 self.application.db.haters.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1})]
 
 				questions, follower, followers_count, following, following_count, hater, hater_count = ret
+
+				votes = yield self.application.db.votes.find({"user_id": ObjectId(user_id)}).to_list(3)
+				votes_string = []
+				if not votes:
+					recent_answers = None
+				else:
+					answered_questions = yield self.application.db.questions.find({"_id": {"$in": [vote["question_id"] for vote in votes[0]["votes"]]}}).to_list(3)
+					for q in answered_questions:
+						for v in votes[0]["votes"]:
+							if q["_id"] == v["question_id"]:
+								all_labels = [x["label"] for x in q["data"]]
+								this_vote  = all_labels.pop(v["vote_index"])
+								votes_string.append("Chose '" + this_vote + "' over '" + all_labels[0] + "'")
+
 			else:
-				ret = yield [self.application.db.questions.find().sort("_id", 1).to_list(10),
+				own_profile = False
+				ret = yield [self.application.db.questions.find({"asker": ObjectId(user_id)}).sort("_id", 1).to_list(),
 							 self.application.db.followers.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
 							 self.application.db.following.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
 							 self.application.db.haters.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1})]
@@ -695,80 +742,8 @@ class ProfileHandler(BaseHandler):
 				questions, followers_count, following_count, hater_count = ret
 				follower = following = hater = None
 
-			votes_temp = None
-			if self.current_user:
-				temp1, temp2, temp3, askers_temp, votes_temp = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-													  	  self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-													      self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-													      self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10),
-													      self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
-			else:
-				temp1, temp2, temp3, askers_temp = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-													  	  self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-													      self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-													      self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10)]
-
-			favorites = []
-			shares    = []
-			comments  = []
-			askers    = []
-			votes     = []
-			for x in questions:
-				favorited = False
-				count     = 0
-				if temp1:
-					for y in temp1:
-						if x["_id"] == y["question_id"]:
-							count = y["count"]
-							if self.current_user and self.current_user["_id"] in y["user_ids"]:
-								favorited = True
-							break
-					favorites.append((favorited, count))
-				else:
-					favorites.append((False, 0))
-
-				shared = False
-				count  = 0
-				if temp2:
-					for y in temp2:
-						if x["_id"] == y["question_id"]:
-							count = y["count"]
-							if self.current_user and self.current_user["_id"] in y["user_ids"]:
-								shared = True
-							break
-					shares.append((shared, count))
-				else:
-					shares.append((False, 0))
-
-				commented = False
-				count     = 0
-				if temp3:
-					for y in temp3:
-						if x["_id"] == y["question_id"]:
-							count = y["count"]
-							if self.current_user and self.current_user["_id"] in [q["user_id"] for q in y["comments"]]:
-								commented = True
-							break	
-					comments.append((commented, count, y["comments"]))
-				else:
-					comments.append((commented, count, None))
-
-				vote = None
-				if votes_temp:
-					for y in votes_temp["votes"]:
-						if x["_id"] == y["question_id"]:
-							vote = y["vote_index"]
-							break
-					votes.append(vote)
-				else:
-					votes.append(None)
-
-				for y in askers_temp:
-					if y["_id"] == x["asker"]:
-						askers.append(y)
-
-			self.render("user_profile.html", profile=target_user, current_user=self.current_user, follower=follower, followers_count=followers_count, following_count=following_count,
-									 hater=hater, hater_count=hater_count, askers=askers, questions=questions, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=False,)
+			self.render("user_profile.html", profile=target_user, current_user=self.current_user, votes_string=votes_string, follower=follower, followers_count=followers_count,
+				                             following_count=following_count, hater=hater, hater_count=hater_count, questions=questions, own_profile=own_profile)
 
 # handler for displaying a user's personalized newsfeed
 class FeedHandler(BaseHandler):
@@ -851,7 +826,7 @@ class FeedHandler(BaseHandler):
 # handler to follow or hate a user
 class FollowHateHandler(BaseHandler):
 	@tornado.gen.coroutine
-	def get(self, target_id):
+	def post(self, target_id):
 		if not self.current_user:
 			self.redirect("/")
 		else:
@@ -874,6 +849,8 @@ class FollowHateHandler(BaseHandler):
 					ret = yield [self.application.db.haters.find_and_modify({"user_id": target_id}, {"$inc": {"count": 1}, "$addToSet": {"haters": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, upsert=True, new=True),
 					             self.application.db.hating.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": 1}, "$addToSet": {"hating": target_id}}, upsert=True)]
 					self.write({"haters": ret[0]["count"], "display_text": "Hating"})
+
+			self.redirect("/users/" + str(target_id))
 
 # handler to display a user's followers
 class GetRelationshipsHandler(BaseHandler):
@@ -927,5 +904,5 @@ class GroupHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()

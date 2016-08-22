@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ profile["username"] }}'s profile</title>
+        <title>{{ profile["username"] }}'s profile - Hive</title>
         <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
         <link rel="stylesheet" href="{{ static_url("css/user_profile.css") }}">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -16,30 +16,81 @@
     <body>
         {% module Header() %}
         <main>
-            {% module SideColumn() %}
             <section id="user-profile">
                 <div id="profile-info">
                     <div id="profile-picture">
                         <img src={{ profile["profile_pic_link"] }} alt="{{ profile["username"] }}'s profile picture">
                     </div>
                     <div id="profile-info-text">
-                        <div id="username">
-                            {{ profile["username"] }}
+                        <div id="username-and-button">
+                            <div id="username">
+                                {{ profile["username"] }}
+                            </div>
+                            {% if not own_profile %}
+                                <form action="/follow_or_hate/{{ str(profile["_id"]) }}?action=follow" method="post">
+                                    {% raw xsrf_form_html() %}
+                                    {% if not follower %}
+                                        <button formaction="/follow_or_hate/{{ str(profile["_id"]) }}?action=follow" formmethod="post">Follow</button>
+                                    {% else %}
+                                        <button class="active" formaction="/follow_or_hate/{{ str(profile["_id"]) }}?action=follow" formmethod="post">Following</button>
+                                    {% end %}
+                                </form>
+                            {% end %}
                         </div>
                         <div id="bio">
                             {{ profile["bio"] }}
                         </div>
+                        <div id="metrics">
+                            <div id="question-count">
+                                {% if not questions %}
+                                    <span>0</span> questions
+                                {% else %}
+                                    <span>{{ len(questions) }}</span> questions
+                                {% end %}
+                            </div>
+                            <div id="followers-count">
+                                {% if not followers_count %}
+                                    <span>0</span> followers
+                                {% else %}
+                                    <span>{{ followers_count["count"] }}</span> followers
+                                {% end %}
+                            </div>
+                            <div id="following-count">
+                                {% if not following_count %}
+                                    <span>0</span> following
+                                {% else %}
+                                    <span>{{ following_count["count"] }}</span> following
+                                {% end %}
+                            </div>
+                        </div>
                     </div>
                 </div>
-             <!--   <div id="recent-questions">
-                    {% for idx, question in enumerate(questions) %}
-                        <div>
-                            <div>
-                                {% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx]) %}
+                <div id="recent-answers">
+                    <div id="recent-answers-header">
+                        Recent Answers
+                    </div>
+                    {% for string in votes_string %}
+                        <div class="answer">
+                           {{ string }}
+                        </div>
+                    {% end %}
+                </div>
+                <div id="recent-questions">
+                    <div id="recent-questions-header">
+                        Submitted Questions
+                    </div>
+                    {% for question in questions %}
+                        <div class="question">
+                            <div class="background-image" style="background-image: url({{ question["image_link"] }})">
+                                <div class="background-image-overlay">
+                                </div>
+                                <div class="question-title">
+                                    {{ question["question"] }}
+                                </div>
                             </div>
                         </div>
                     {% end %}
-                </div> -->
+                </div>
             </section>
         </main>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>

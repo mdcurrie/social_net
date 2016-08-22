@@ -10,7 +10,7 @@
         {% raw xsrf_form_html() %}
         <div class="input-row">
             <p class="error-message">{{ username_error }}</p>
-            <input style="background-image: url({{ static_url("images/mask.svg") }})" type="text" id="full-name" name="username" autocomplete="off" placeholder="Username" maxlength="20" autofocus>
+            <input style="background-image: url({{ static_url("images/mask.svg") }})" type="text" id="full-name" name="username" autocomplete="off" placeholder="Username" autofocus>
         </div>
         <div class="input-row">
             <p class="error-message">{{email_error }}</p>
