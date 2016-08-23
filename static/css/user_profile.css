@@ -35,9 +35,8 @@ a {
 		height: calc(100% - 180px);
 	}
 	#user-profile {
-		padding: 20px;
-		width: 95%;
-		max-width: 1170px;
+		padding: 20px 0;
+		max-width: 1010px;
 		height: 100%;
 		background: white;
 		border-radius: 5px;
@@ -96,8 +95,9 @@ a {
 	}
 	#bio {
 		position: absolute;
-		top: 50%;
+		top: calc(50% + 5px);
 		transform: translateY(-50%);
+		font-size: 0.9em;
 		line-height: 1.4em;
 	}
 	#metrics {
@@ -112,9 +112,13 @@ a {
 	#metrics span {
 		font-weight: bold;
 	}
+	#misc {
+		width: calc(100% - 20px);
+		margin: 0 auto;
+	}
 	#recent-answers {
-		padding: 0 10px;
-		margin: 10px 0 40px 0;
+		padding-left: 10px;
+		margin: 15px 0 40px 0;
 	}
 	#recent-answers-header {
 		font-size: 1.1em;
@@ -125,15 +129,18 @@ a {
 	}
 	#recent-questions {
 		overflow: auto;
-		margin: 20px 0;
 	}
 	#recent-questions-header {
 		padding-left: 10px;
 		font-size: 1.1em;
+		margin-bottom: 10px;
+	}
+	a:hover .background-image-overlay {
+		background: rgba(0,0,0,.1);
 	}
 	.question {
-		width: 33.3%;
-		padding: 10px;
+		width: calc(33.3% - 30px);
+		margin: 0 10px;
 		float: left;
 	}
 	.question:last-of-type {

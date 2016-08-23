@@ -128,7 +128,7 @@ a {
 		cursor: pointer;
 	}
 	#row-settings {
-		width: 85%;
+		width: calc(100% - 252px);
 		margin: 0 auto;
 	}
 	.row {
@@ -164,6 +164,7 @@ a {
 		font-weight: bold;
 		font-size: 1em;
 		max-width: 180px;
+		margin-right: 5px;
 	}
 	.form-button {
 		border: none;
@@ -173,18 +174,25 @@ a {
 		border-radius: 5px;
 		color: white;
 		padding: 7px;
+		transform: translateY(-1px);
 	}
 	.form-button:hover {
 		cursor: pointer;
 	}
-
-
 	#email {
 		padding: 5px 0;
 		color: #2eb398;
 		font-weight: bold;
 	}
 	#email:hover {
+		cursor: pointer;
+	}
+	#custom-url {
+		padding: 5px 0;
+		color: #2eb398;
+		font-weight: bold;
+	}
+	#custom-url:hover {
 		cursor: pointer;
 	}
 }

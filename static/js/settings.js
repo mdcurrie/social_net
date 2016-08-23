@@ -1,4 +1,27 @@
 $(function() {
+	/* profile picture */
+	$('#user-profile-pic img').on('click', function() {
+		$(this).css({"opacity": 0.1});
+		$('#user-profile-pic form').css({"display": "block"});
+		$('#user-profile-pic input').eq(1).focus();
+	});
+
+	$('#user-profile-pic form').on('submit', function(e) {
+		e.preventDefault();
+		var picture_link = $('#user-profile-pic form input').eq(1).val();
+
+		$("<img>", {
+			src: picture_link,
+			error: function() {
+				;
+			},
+			load: function() {
+				$('#user-profile-pic form').unbind('submit').submit();
+			}
+		});
+	});
+
+	/* username */
 	$('#username .wrapper').on('click', function() {
 		$(this).css({"display": "none"});
 		$('#username form').css({"display": "inline-block"});
@@ -13,12 +36,13 @@ $(function() {
 			return;
 		if (!(/^[a-zA-Z0-9_ ]+$/i.test(username)))
 			return;
-		if (username.length < 6)
+		if (username.length < 6 || username.length > 25)
 			return;
 
 		$('#username form').unbind('submit').submit();
 	});
 
+	/* bio */
 	$('#bio .wrapper').on('click', function() {
 		$(this).css({"display": "none"});
 		$('#bio form').css({"display": "inline-block"});
@@ -59,10 +83,10 @@ $(function() {
 		}
 
 		$('.row:nth-of-type(2) form').unbind('submit').submit();
-	})
+	});
 
 	/* custom URL */
-	$('#set-custom-url-button').on('click', function() {
+	$('#custom-url').on('click', function() {
 		$(this).css({"display": "none"});
 		$('.row:nth-of-type(3) form').css({"display": "block"});
 		$('.row:nth-of-type(3) input').eq(1).focus();
@@ -72,35 +96,13 @@ $(function() {
 		e.preventDefault();
 		var custom_url = $('.row:nth-of-type(3) input').eq(1).val();
 
-		if (custom_url.length < 6) {
+		if (custom_url.length >= 1 && custom_url.length < 6) {
 			return;
 		}
-		if (!(/^[a-zA-Z0-9_ ]+$/i.test(custom_url))) {
+		if (custom_url != '' && !(/^[a-zA-Z0-9_ ]+$/i.test(custom_url))) {
 			return;
 		}
 
 		$('.row:nth-of-type(3) form').unbind('submit').submit();
-	})
-
-	/* profile picture */
-	$('#user-profile-pic img').on('click', function() {
-		$(this).css({"opacity": 0.1});
-		$('#user-profile-pic form').css({"display": "block"});
-		$('#user-profile-pic input').eq(1).focus();
-	});
-
-	$('#user-profile-pic form').on('submit', function(e) {
-		e.preventDefault();
-		var picture_link = $('#user-profile-pic form input').eq(1).val();
-
-		$("<img>", {
-			src: picture_link,
-			error: function() {
-				;
-			},
-			load: function() {
-				$('#user-profile-pic form').unbind('submit').submit();
-			}
-		});
 	});
 });
