@@ -347,7 +347,7 @@ class SettingsHandler(BaseHandler):
 		else:
 			if command == "updateUsername":		
 				new_username = self.get_argument("username")
-				if len(new_username) < 6:
+				if len(new_username) < 6 or len(new_username) > 25:
 					pass
 				elif re.compile("^[a-zA-Z0-9_ ]+$").match(new_username) == None:
 					pass
@@ -360,9 +360,11 @@ class SettingsHandler(BaseHandler):
 
 			elif command == "updateEmail":
 				new_email = self.get_argument("email")
+				if new_email == self.current_user["email"]:
+					pass
 				if re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(new_email) == None:
 					pass
-				else:
+				elif (yield self.application.db.users.find_one({"email": new_email})) == None:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"email": new_email}})
 
 			elif command == "updatePassword":
@@ -385,9 +387,9 @@ class SettingsHandler(BaseHandler):
 
 			elif command == "updateURL":
 				custom_url = self.get_argument("custom-url")
-				if len(custom_url) < 6:
+				if 1 <= len(custom_url) < 6:
 					pass
-				elif re.compile("^[a-zA-Z0-9_ ]+$").match(custom_url) == None:
+				elif custom_url != '' and re.compile("^[a-zA-Z0-9_ ]+$").match(custom_url) == None:
 					pass
 				elif (yield self.application.db.users.find_one({"custom_url": custom_url})) == None:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"custom_url": custom_url}})
@@ -709,7 +711,7 @@ class ProfileHandler(BaseHandler):
 		else:
 			if self.current_user:
 				own_profile = str(self.current_user["_id"]) == user_id
-				ret = yield [self.application.db.questions.find({"asker": ObjectId(user_id)}).sort("_id", 1).to_list(10),
+				ret = yield [self.application.db.questions.find({"asker": ObjectId(user_id)}).sort("_id", 1).to_list(9),
 							 self.application.db.followers.find_one({"user_id": ObjectId(user_id), "followers": self.current_user["_id"]}, {"followers": 0, "count": 0}),
 							 self.application.db.followers.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
 							 self.application.db.following.find_one({"user_id": ObjectId(user_id), "following": self.current_user["_id"]}, {"following": 0, "count": 0}),

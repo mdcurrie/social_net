@@ -74,13 +74,18 @@
                         </form>
                     </div>
                 </div>
-                
                 <div class="row">
                     <div class="key">
                         Custom URL
                     </div>
                     <div class="value">
-                        <button class="form-button" id="set-custom-url-button">Set Custom URL</button>
+                        <div id="custom-url">
+                            {% if current_user.get("custom_url") %}
+                                https://hive.com/{{ current_user["custom_url"] }}
+                            {% else %}
+                                <button class="form-button" id="custom-url-button">Set Custom URL</button>
+                            {% end %}
+                        </div>
                         <form action="/settings/updateURL" method="post">
                             {% raw xsrf_form_html() %}
                             https://hive.com/<input class="form-input" name="custom-url" placeholder="{% if current_user.get("custom_url") %}{{ current_user["custom_url"] }}{% end %}">

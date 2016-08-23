@@ -65,31 +65,35 @@
                         </div>
                     </div>
                 </div>
-                <div id="recent-answers">
-                    <div id="recent-answers-header">
-                        Recent Answers
-                    </div>
-                    {% for string in votes_string %}
-                        <div class="answer">
-                           {{ string }}
+                <div id="misc">
+                    <div id="recent-answers">
+                        <div id="recent-answers-header">
+                            Recent Answers
                         </div>
-                    {% end %}
-                </div>
-                <div id="recent-questions">
-                    <div id="recent-questions-header">
-                        Submitted Questions
-                    </div>
-                    {% for question in questions %}
-                        <div class="question">
-                            <div class="background-image" style="background-image: url({{ question["image_link"] }})">
-                                <div class="background-image-overlay">
-                                </div>
-                                <div class="question-title">
-                                    {{ question["question"] }}
-                                </div>
+                        {% for string in votes_string %}
+                            <div class="answer">
+                               {{ string }}
                             </div>
+                        {% end %}
+                    </div>
+                    <div id="recent-questions">
+                        <div id="recent-questions-header">
+                            Submitted Questions
                         </div>
-                    {% end %}
+                        {% for question in questions %}
+                            <div class="question">
+                                <a href="/questions/{{ str(question["_id"]) }}">
+                                    <div class="background-image" style="background-image: url({{ question["image_link"] }})">
+                                        <div class="background-image-overlay">
+                                        </div>
+                                        <div class="question-title">
+                                            {{ question["question"] }}
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% end %}
+                    </div>
                 </div>
             </section>
         </main>
