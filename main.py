@@ -338,19 +338,21 @@ class SettingsHandler(BaseHandler):
 		if not self.current_user:
 			self.redirect("/login")
 		else:
-			self.render("settings.html", current_user=self.current_user)
+			self.render("settings.html", current_user=self.current_user, profile_pic_error='', username_error='',
+										 email_error='', password_error='', custom_url_error='')
 
 	@tornado.gen.coroutine
 	def post(self, command):
 		if not self.current_user:
 			self.redirect("/login")
 		else:
+			profile_pic_error = username_error = email_error = password_error = custom_url_error = ""
 			if command == "updateUsername":		
 				new_username = self.get_argument("username")
 				if len(new_username) < 6 or len(new_username) > 25:
-					pass
+					username_error = "Your username must be between 6 and 25 characters long."
 				elif re.compile("^[a-zA-Z0-9_ ]+$").match(new_username) == None:
-					pass
+					username_error = "Your username can only contain letters, numbers, and underscores."
 				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"username": new_username}})
 
@@ -362,24 +364,26 @@ class SettingsHandler(BaseHandler):
 				new_email = self.get_argument("email")
 				if new_email == self.current_user["email"]:
 					pass
-				if re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(new_email) == None:
-					pass
-				elif (yield self.application.db.users.find_one({"email": new_email})) == None:
+				elif re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(new_email) == None:
+					email_error = "That is not a valid email address."
+				elif (yield self.application.db.users.find_one({"email": new_email})) != None:
+					email_error = "An account is already registered with that email address."
+				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"email": new_email}})
 
 			elif command == "updatePassword":
 				old_password = self.get_argument("old-password")
 				new_password = self.get_argument("new-password")
 
-				if (len(old_password) < 6 or len(new_password) < 6):
-					pass
+				if (len(new_password) < 6):
+					password_error = "Your new password must contain at least 6 characters."
 				else:
 					user = yield self.application.db.users.find_one({"_id": self.current_user["_id"]}, {"salt": 1, "password": 1})
 					if user == None:
 						self.redirect("/")
 					else:
 						if bcrypt.hashpw(old_password.encode('utf-8'), user["salt"]) != user["password"]:
-							pass
+							password_error = "The password you entered was incorrect."
 						else:
 							salt     = bcrypt.gensalt()
 							password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
@@ -388,10 +392,14 @@ class SettingsHandler(BaseHandler):
 			elif command == "updateURL":
 				custom_url = self.get_argument("custom-url")
 				if 1 <= len(custom_url) < 6:
-					pass
+					custom_url_error = "Your custom URL must contain at least 6 characters."
 				elif custom_url != '' and re.compile("^[a-zA-Z0-9_ ]+$").match(custom_url) == None:
-					pass
-				elif (yield self.application.db.users.find_one({"custom_url": custom_url})) == None:
+					custom_url_error = "Your custom URL can only contain letters, numbers, and underscores."
+				elif custom_url in {"signup", "login", "feed", "settings"}:
+					custom_url_error = "Sorry, but that custom URL is not allowed."
+				elif (yield self.application.db.users.find_one({"custom_url": custom_url})) != None:
+					custom_url_error = "Sorry, but someone else is already using that custom URL."
+				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"custom_url": custom_url}})
 
 			elif command == "updatePicture":
@@ -399,14 +407,18 @@ class SettingsHandler(BaseHandler):
 				http_client = tornado.httpclient.AsyncHTTPClient()
 				response    = yield http_client.fetch(new_picture)
 				if not imghdr.what(response.buffer):
-					pass
+					profile_pic_error = "You must enter a link to an image."
 				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"profile_pic_link": new_picture}})
 
 			else:
 				pass
 
-			self.redirect("/settings")
+			if profile_pic_error or username_error or email_error or password_error or custom_url_error:
+				self.render("settings.html", current_user=self.current_user, profile_pic_error=profile_pic_error, username_error=username_error,
+											 email_error=email_error, password_error=password_error, custom_url_error=custom_url_error)
+			else:
+				self.redirect("/settings")
 
 # handler for logging in registered users
 class LoginHandler(BaseHandler):
@@ -711,41 +723,39 @@ class ProfileHandler(BaseHandler):
 		else:
 			if self.current_user:
 				own_profile = str(self.current_user["_id"]) == user_id
-				ret = yield [self.application.db.questions.find({"asker": ObjectId(user_id)}).sort("_id", 1).to_list(9),
-							 self.application.db.followers.find_one({"user_id": ObjectId(user_id), "followers": self.current_user["_id"]}, {"followers": 0, "count": 0}),
-							 self.application.db.followers.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
-							 self.application.db.following.find_one({"user_id": ObjectId(user_id), "following": self.current_user["_id"]}, {"following": 0, "count": 0}),
-							 self.application.db.following.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
-							 self.application.db.haters.find_one({"user_id": ObjectId(user_id), "haters": self.current_user["_id"]}, {"haters": 0, "count": 0}),
-							 self.application.db.haters.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1})]
-
-				questions, follower, followers_count, following, following_count, hater, hater_count = ret
-
-				votes = yield self.application.db.votes.find({"user_id": ObjectId(user_id)}).to_list(3)
-				votes_string = []
-				if not votes:
-					recent_answers = None
-				else:
-					answered_questions = yield self.application.db.questions.find({"_id": {"$in": [vote["question_id"] for vote in votes[0]["votes"]]}}).to_list(3)
-					for q in answered_questions:
-						for v in votes[0]["votes"]:
-							if q["_id"] == v["question_id"]:
-								all_labels = [x["label"] for x in q["data"]]
-								this_vote  = all_labels.pop(v["vote_index"])
-								votes_string.append("Chose '" + this_vote + "' over '" + all_labels[0] + "'")
-
 			else:
 				own_profile = False
-				ret = yield [self.application.db.questions.find({"asker": ObjectId(user_id)}).sort("_id", 1).to_list(),
-							 self.application.db.followers.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
-							 self.application.db.following.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1}),
-							 self.application.db.haters.find_one({"user_id": ObjectId(user_id)}, {"_id": 0, "count": 1})]
 
-				questions, followers_count, following_count, hater_count = ret
-				follower = following = hater = None
+			ret = yield [self.application.db.questions.find({"asker": ObjectId(user_id)}).sort("_id", 1).to_list(9),
+						 self.application.db.votes.find({"user_id": ObjectId(user_id)}, {"_id": 0}).to_list(9),
+						 self.application.db.followers.find_one({"user_id": ObjectId(user_id)}, {"_id": 0}),
+						 self.application.db.following.find_one({"user_id": ObjectId(user_id)}, {"_id": 0}),]
 
-			self.render("user_profile.html", profile=target_user, current_user=self.current_user, votes_string=votes_string, follower=follower, followers_count=followers_count,
-				                             following_count=following_count, hater=hater, hater_count=hater_count, questions=questions, own_profile=own_profile)
+			questions, votes, user_followers, user_following = ret
+
+			following_this_user  = self.current_user and user_followers and self.current_user["_id"] in user_followers["followers"]
+			user_followers_count = user_following_count = 0
+			if user_followers and user_following:
+				user_followers_count = user_followers["count"]
+				user_following_count = user_following["count"]
+				user_followers, user_following = yield [self.application.db.users.find({"_id": {"$in": [user_followers["followers"]]}}, {"username": 1, "profile_pic_link": 1}).to_list(6),
+														self.application.db.users.find({"_id": {"$in": [user_following["following"]]}}, {"username": 1, "profile_pic_link": 1}).to_list(6)]
+			else:
+				if user_followers:
+					user_followers_count = user_followers["count"]
+					user_followers = yield self.application.db.users.find({"_id": {"$in": [user_followers["followers"]]}}, {"username": 1, "profile_pic_link": 1}).to_list(6)
+				if user_following:
+					user_following_count = user_following["count"]
+					user_following = yield self.application.db.users.find({"_id": {"$in": [user_following["following"]]}}, {"username": 1, "profile_pic_link": 1}).to_list(6)
+
+			recent_answers = answered_questions = None
+			if votes:
+				answered_questions = yield self.application.db.questions.find({"_id": {"$in": [vote["question_id"] for vote in votes[0]["votes"]]}}).to_list(9)
+				recent_answers = [v["vote_index"] for q in answered_questions for v in votes[0]["votes"] if q["_id"] == v["question_id"]]
+
+			self.render("user_profile.html", profile=target_user, own_profile=own_profile, following_this_user=following_this_user, recent_answers=recent_answers,
+				 							 answered_questions=answered_questions, questions=questions, user_followers=user_followers, user_following=user_following,
+				 							 user_following_count=user_following_count, user_followers_count=user_followers_count)
 
 # handler for displaying a user's personalized newsfeed
 class FeedHandler(BaseHandler):

@@ -29,7 +29,7 @@
                             {% if not own_profile %}
                                 <form action="/follow_or_hate/{{ str(profile["_id"]) }}?action=follow" method="post">
                                     {% raw xsrf_form_html() %}
-                                    {% if not follower %}
+                                    {% if not following_this_user %}
                                         <button formaction="/follow_or_hate/{{ str(profile["_id"]) }}?action=follow" formmethod="post">Follow</button>
                                     {% else %}
                                         <button class="active" formaction="/follow_or_hate/{{ str(profile["_id"]) }}?action=follow" formmethod="post">Following</button>
@@ -49,18 +49,10 @@
                                 {% end %}
                             </div>
                             <div id="followers-count">
-                                {% if not followers_count %}
-                                    <span>0</span> followers
-                                {% else %}
-                                    <span>{{ followers_count["count"] }}</span> followers
-                                {% end %}
+                                <span>{{ user_followers_count }}</span> followers
                             </div>
                             <div id="following-count">
-                                {% if not following_count %}
-                                    <span>0</span> following
-                                {% else %}
-                                    <span>{{ following_count["count"] }}</span> following
-                                {% end %}
+                                <span>{{ user_following_count }}</span> following
                             </div>
                         </div>
                     </div>
@@ -68,30 +60,65 @@
                 <div id="misc">
                     <div id="recent-answers">
                         <div id="recent-answers-header">
-                            Recent Answers
+                            Recent Answers <span>See More</span>
                         </div>
-                        {% for string in votes_string %}
-                            <div class="answer">
-                               {{ string }}
-                            </div>
+                        {% if recent_answers %}
+                            {% set column = "left-column" %}
+                            {% for idx, answer in enumerate(recent_answers) %}
+                                <div class="question {{ column }}">
+                                    <a href="/questions/{{ str(answered_questions[idx]["_id"]) }}">
+                                        <div class="background-image" style="background-image: url({{ answered_questions[idx]["image_link"] }})">
+                                            <div class="background-image-overlay">
+                                            </div>
+                                            <div class="question-title">
+                                                {{ answered_questions[idx]["question"] }}
+                                            </div>
+                                        </div>
+                                        <div class="user-answer">
+                                            {{ answered_questions[idx]["data"][answer]["label"] }}
+                                        </div>
+                                    </a>
+                                </div>
+                                {% if column == "left-column" %}
+                                    {% set column = "mid-column" %}
+                                {% elif column == "mid-column" %}
+                                    {% set column = "right-column" %}
+                                {% else %}
+                                    {% set column = "left-column" %}
+                                {% end %}
+                            {% end %}
+                        {% else %}
+                            No answers yet.
                         {% end %}
                     </div>
                     <div id="recent-questions">
                         <div id="recent-questions-header">
-                            Submitted Questions
+                            Submitted Questions <span>See More</span>
                         </div>
-                        {% for question in questions %}
-                            <div class="question">
-                                <a href="/questions/{{ str(question["_id"]) }}">
-                                    <div class="background-image" style="background-image: url({{ question["image_link"] }})">
-                                        <div class="background-image-overlay">
+                        {% if questions %}
+                            {% set column = "left-column" %}
+                            {% for question in questions %}
+                                <div class="question {{ column }}">
+                                    <a href="/questions/{{ str(question["_id"]) }}">
+                                        <div class="background-image" style="background-image: url({{ question["image_link"] }})">
+                                            <div class="background-image-overlay">
+                                            </div>
+                                            <div class="question-title">
+                                                {{ question["question"] }}
+                                            </div>
                                         </div>
-                                        <div class="question-title">
-                                            {{ question["question"] }}
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
+                                    </a>
+                                </div>
+                                {% if column == "left-column" %}
+                                    {% set column = "mid-column" %}
+                                {% elif column == "mid-column" %}
+                                    {% set column = "right-column" %}
+                                {% else %}
+                                    {% set column = "left-column" %}
+                                {% end %}
+                            {% end %}
+                        {% else %}
+                            No questions yet.
                         {% end %}
                     </div>
                 </div>
