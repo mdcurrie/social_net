@@ -1,4 +1,7 @@
 $(function() {
+	if ($('.error-message').text()) {
+		
+	}
 	/* profile picture */
 	$('#user-profile-pic img').on('click', function() {
 		$(this).css({"opacity": 0.1});
@@ -13,7 +16,8 @@ $(function() {
 		$("<img>", {
 			src: picture_link,
 			error: function() {
-				;
+				$('#profile-pic-error').text("You must enter a link to an image.");
+				$('#profile-pic-error').css({"display": "block"});
 			},
 			load: function() {
 				$('#user-profile-pic form').unbind('submit').submit();
@@ -32,12 +36,21 @@ $(function() {
 		e.preventDefault();
 		var username = $('#username input').eq(1).val();
 
-		if (username == '')
+		if (username == '') {
+			$('#username-error').text("You must enter a username.");
+			$('#username-error').css({"display": "block"});
 			return;
-		if (!(/^[a-zA-Z0-9_ ]+$/i.test(username)))
+		}
+		if (!(/^[a-zA-Z0-9_ ]+$/i.test(username))) {
+			$('#username-error').text("Your username can only contain letters, numbers, and underscores.");
+			$('#username-error').css({"display": "block"});
 			return;
-		if (username.length < 6 || username.length > 25)
+		}
+		if (username.length < 6 || username.length > 25) {
+			$('#username-error').text("Your username must be between 6 and 25 characters long.");
+			$('#username-error').css({"display": "block"});
 			return;
+		}
 
 		$('#username form').unbind('submit').submit();
 	});
@@ -60,8 +73,11 @@ $(function() {
 		e.preventDefault();
 		var email = $('.row:first-of-type input').eq(1).val();
 
-		if (!(/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/i.test(email)))
+		if (!(/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/i.test(email))) {
+			$('#email-error').text('That is not a valid email address.');
+			$('#email-error').css({"display": "block"});
 			return;
+		}
 
 		$('.row:first-of-type form').unbind('submit').submit();
 	});
@@ -78,7 +94,9 @@ $(function() {
 		var old_password = $('.row:nth-of-type(2) input').eq(1).val();
 		var new_password = $('.row:nth-of-type(2) input').eq(2).val();
 
-		if (old_password.length < 6 || new_password.length < 6) {
+		if (new_password.length < 6) {
+			$('#reset-password-error').text("Your new password must contain at least 6 characters.");
+			$('#reset-password-error').css({"display": "block"});
 			return;
 		}
 
@@ -97,9 +115,18 @@ $(function() {
 		var custom_url = $('.row:nth-of-type(3) input').eq(1).val();
 
 		if (custom_url.length >= 1 && custom_url.length < 6) {
+			$('#custom-url-error').text("Your custom URL must contain at least 6 characters.");
+			$('#custom-url-error').css({"display": "block"});
+			return;
+		}
+		if (custom_url == "signup" || custom_url == "login" || custom_url == "feed" || custom_url == "settings") {
+			$('#custom-url-error').text("Sorry, but that custom URL is not allowed.");
+			$('#custom-url-error').css({"display": "block"});
 			return;
 		}
 		if (custom_url != '' && !(/^[a-zA-Z0-9_ ]+$/i.test(custom_url))) {
+			$('#custom-url-error').text("Your custom URL can only contain letters, numbers, and, underscores.");
+			$('#custom-url-error').css({"display": "block"});
 			return;
 		}
 

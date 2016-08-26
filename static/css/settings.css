@@ -78,12 +78,26 @@ a {
 		text-align: center;
 		border-radius: 3px;
 	}
+	#profile-pic-error {
+		display: none;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		left: calc(65% + 10px);
+		text-align: left;
+		font-size: 0.85em;
+		color: red;
+	}
 	#username {
-		font-size: 2em;
 		margin-bottom: 10px;
 		text-align: center;
+		position: relative;
+	}
+	#username .wrapper {
+		font-size: 2em;
 	}
 	#username form {
+		font-size: 2em;
 		display: none;
 		width: 30%;
 	}
@@ -97,6 +111,15 @@ a {
 	    outline: none;
 	    text-align: center;
 	    font-family: Gotham;
+	}
+	#username-error {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		left: calc(65% + 10px);
+		text-align: left;
+		font-size: 0.85em;
+		color: red;
 	}
 	#bio {
 		text-align: center;
@@ -178,6 +201,7 @@ a {
 	}
 	.form-button:hover {
 		cursor: pointer;
+		background: #23927c;
 	}
 	#email {
 		padding: 5px 0;
@@ -194,5 +218,12 @@ a {
 	}
 	#custom-url:hover {
 		cursor: pointer;
+	}
+	.error-message {
+		position: absolute;
+		right: 0;
+		bottom: 5px;
+		font-size: 0.85em;
+		color: red;
 	}
 }

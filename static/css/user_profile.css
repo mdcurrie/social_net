@@ -93,6 +93,13 @@ a {
 	#username-and-button button:hover {
 		cursor: pointer;
 	}
+	#username-and-button button.active:hover {
+		background: #23927c;
+	}
+	#username-and-button button:not(.active):hover {
+		background: #2eb398;
+		color: white;
+	}
 	#bio {
 		position: absolute;
 		top: calc(50% + 5px);
@@ -113,38 +120,76 @@ a {
 		font-weight: bold;
 	}
 	#misc {
-		width: calc(100% - 20px);
+		width: calc(100% - 40px);
 		margin: 0 auto;
 	}
 	#recent-answers {
-		padding-left: 10px;
-		margin: 15px 0 40px 0;
+		border-top: 1px solid rgba(0,0,0,.1);
+		border-bottom: 1px solid rgba(0,0,0,.1);
+		margin: 0 auto;
+		margin-top: 12px;
+		margin-bottom: 12px;
+		padding: 10px 0 12px 0;
+		overflow: auto;
 	}
 	#recent-answers-header {
 		font-size: 1.1em;
+		margin-bottom: 10px;
+	}
+	#recent-answers-header span {
+		font-size: 0.7em;
+		font-weight: bold;
+		color: #2eb398;
+		padding-left: 5px;
+	}
+	#recent-answers-header span:hover {
+		cursor: pointer;
 	}
 	.answer {
 		font-size: 0.9em;
 		margin: 10px 0;
 	}
+	.answer:last-of-type {
+		margin-bottom: 0;
+	}
+	.user-answer {
+		margin-top: 8px;
+		font-size: 0.9em;
+		padding: 0 10px;
+		word-break: break-word;
+	}
 	#recent-questions {
 		overflow: auto;
 	}
 	#recent-questions-header {
-		padding-left: 10px;
 		font-size: 1.1em;
 		margin-bottom: 10px;
+	}
+	#recent-questions-header span {
+		font-size: 0.7em;
+		font-weight: bold;
+		color: #2eb398;
+		padding-left: 5px;
+	}
+	#recent-questions-header span:hover {
+		cursor: pointer;
 	}
 	a:hover .background-image-overlay {
 		background: rgba(0,0,0,.1);
 	}
 	.question {
-		width: calc(33.3% - 30px);
-		margin: 0 10px;
 		float: left;
 	}
-	.question:last-of-type {
-		width: 33.4%;
+	.left-column {
+		margin-right: 10px;
+		width: calc(33.3% - 7px);
+	}
+	.mid-column {
+		width: calc(33.3% - 7px);
+	}
+	.right-column {
+		margin-left: 10px;
+		width: calc(33.4% - 6px);
 	}
 	.background-image {
 		height: 180px;
