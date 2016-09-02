@@ -3,8 +3,6 @@
 @media only screen and (min-width: 1200px) {
 	.question-wrapper {
 		position: relative;
-		margin: 0 auto;
-		height: 560px;
 	}
 	.question-wrapper * {
 		box-sizing: border-box;
@@ -14,7 +12,6 @@
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 50% 40%;
-		border: 3px solid #e4e4e4;
 		border-bottom: none;
 		position: relative;
 	}
@@ -23,29 +20,32 @@
 		height: 100%;
 		background: linear-gradient(180deg, rgba(0,0,0,.4), rgba(0,0,0,0), rgba(0,0,0,0), rgba(0,0,0,.4));
 		background: rgba(0,0,0,.4);
+		transition: background 0.3s;
 	}
 	.asker-info {
 		position: absolute;
-		transform: translate(20px, 20px);
+		top: 20px;
+		left: 20px;
 		width: calc(100% - 40px);
-		z-index: 1;
+		z-index: 10;
 	}
 	.asker-profile-pic {
 		float: left;
 		margin-right: 10px;
 	}
 	.asker-profile-pic img {
-		width: 50px;
-		height: 50px;
+		width: 45px;
+		height: 45px;
 		border-radius: 50%;
 		box-shadow: 0 0 0 2px white;
 	}
 	.asker-text {
 		display: inline-block;
-		transform: translateY(6px);
+		transform: translateY(5px);
 	}
 	.asker-username {
 		float: left;
+		margin-bottom: 6px;
 	}
 	.asker-username a {
 		color: white;
@@ -53,7 +53,6 @@
 	.question-date {
 		color: white;
 		font-size: 0.8em;
-		transform: translateY(8px);
 	}
 	.question-title {
 		position: absolute;
@@ -68,7 +67,6 @@
 		color: white;
 	}
 	.question-content {
-		border: 3px solid #e4e4e4;
 		border-top: none;
 		position: relative;
 	}

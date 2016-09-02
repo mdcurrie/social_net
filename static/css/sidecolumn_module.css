@@ -1,27 +1,72 @@
 @media only screen and (min-width: 1200px) {
 	#side-column {
-		float: left;
+		position: fixed;
 		width: 240px;
-		height: 100%;
+		padding: 130px 20px 0 10px;
+		background: #353436;
 		box-sizing: border-box;
 	}
 	#side-column * {
 		box-sizing: border-box;
-	}
-	nav {
-		width: 100%;
 	}
 	nav > div:nth-of-type(2) {
 		margin-top: 40px;
 	}
 	.nav-links-header-text {
 		font-size: 0.75em;
+		font-weight: bold;
 		padding-bottom: 10px;
-		color: #353436;
+		padding-left: 10px;
+		color: #868686;
+		float: left;
+	}
+	.nav-links {
+		clear: left;
 	}
 	.nav-links li {
-		color: #353436;
-		padding: 8px 20px 8px 0;
+		color: white;
+		padding: 8px 20px 8px 10px;
+	}
+	.nav-links.top li:last-of-type {
+		padding-left: 6px;
+		border-left: 4px solid #2eb398;
+		background: #636363;
+		border-top-right-radius: 5px;
+		border-bottom-right-radius: 5px;
+	}
+	#topics {
+		position: relative;
+	}
+	#topics li:first-of-type {
+		display: none;
+	}
+	#add-topics-button {
+		border: none;
+		outline: none;
+	    background: transparent;
+	    color: #868686;
+	    font-size: 1.5em;
+	    position: absolute;
+	    top: -8px;
+	    right: 0;
+	    transition: color 0.3s;
+	}
+	#add-topics-button:hover {
+		cursor: pointer;
+		color: white;
+	}
+	#topic-name-input {
+		font-family: Gotham;
+		width: 100%;
+		border: none;
+		outline: none;
+		background: transparent;
+		color: white;
+		border-bottom: 3px solid white;
+		padding-bottom: 5px;
+	}
+	#topic-name-input::-webkit-input-placeholder {
+		color: white;
 	}
 	#account-button {
 		padding: 15px 0;

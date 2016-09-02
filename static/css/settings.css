@@ -31,6 +31,9 @@ a {
 	body {
 		background: #f1f1f1;
 	}
+	main {
+		padding-top: 130px;
+	}
 	#user-settings {
 		background: white;
 		border-radius: 5px;
@@ -55,9 +58,11 @@ a {
 		border-radius: 50%;
 		height: 180px;
 		width: 180px;
+		transition: opacity 0.3s;
 	}
 	#user-profile-pic img:hover {
 		cursor: pointer;
+		opacity: 0.2;
 	}
 	#user-profile-pic form {
 		display: none;
@@ -149,6 +154,9 @@ a {
 	}
 	#user-settings .wrapper:hover {
 		cursor: pointer;
+	}
+	#bio .wrapper {
+		min-height: 1.5em;
 	}
 	#row-settings {
 		width: calc(100% - 252px);

@@ -32,15 +32,15 @@ a {
 		background: #f1f1f1;
 	}
 	main {
-		height: calc(100% - 180px);
+		padding-top: 130px;
 	}
 	#user-profile {
 		padding: 20px 0;
 		max-width: 1010px;
-		height: 100%;
 		background: white;
 		border-radius: 5px;
 		margin: 0 auto;
+		margin-bottom: 40px;
 	}
 	#profile-picture {
 		float: left;
@@ -119,9 +119,39 @@ a {
 	#metrics span {
 		font-weight: bold;
 	}
+	#followers-count, #following-count:hover {
+		cursor: pointer;
+	}
 	#misc {
 		width: calc(100% - 40px);
 		margin: 0 auto;
+	}
+	#relation {
+		display: none;
+		border-top: 1px solid rgba(0,0,0,.1);
+		margin-top: 12px;
+		padding-top: 10px;
+	}
+	#relation-header {
+		font-size: 1.1em;
+		margin-bottom: 10px;
+		padding-left: 5px;
+	}
+	#relation-header span {
+		font-size: 0.7em;
+		font-weight: bold;
+		color: #2eb398;
+		padding-left: 5px;
+	}
+	#relation-header span:hover {
+		cursor: pointer;
+	}
+	.user-profile-pic img {
+		width: 12.5%;
+		padding: 0 5px;
+	}
+	#none-text {
+		padding-left: 5px;
 	}
 	#recent-answers {
 		border-top: 1px solid rgba(0,0,0,.1);
@@ -135,6 +165,7 @@ a {
 	#recent-answers-header {
 		font-size: 1.1em;
 		margin-bottom: 10px;
+		padding-left: 5px;
 	}
 	#recent-answers-header span {
 		font-size: 0.7em;
@@ -164,6 +195,7 @@ a {
 	#recent-questions-header {
 		font-size: 1.1em;
 		margin-bottom: 10px;
+		padding-left: 5px;
 	}
 	#recent-questions-header span {
 		font-size: 0.7em;
@@ -179,17 +211,8 @@ a {
 	}
 	.question {
 		float: left;
-	}
-	.left-column {
-		margin-right: 10px;
-		width: calc(33.3% - 7px);
-	}
-	.mid-column {
-		width: calc(33.3% - 7px);
-	}
-	.right-column {
-		margin-left: 10px;
-		width: calc(33.4% - 6px);
+		padding: 0 5px;
+		width: 33.3%;
 	}
 	.background-image {
 		height: 180px;
@@ -200,6 +223,7 @@ a {
 	}
 	.background-image-overlay {
 		background: rgba(0,0,0,.4);
+		transition: background 0.3s;
 		height: 100%;
 	}
 	.question-title {

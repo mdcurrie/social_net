@@ -17,15 +17,15 @@ $(function() {
 		    });
 		});
 
-		$('#off-canvas-comments').animate({right: 0, backgroundColor: 'black'}, 650, function() {
+		$('#off-canvas-comments').animate({right: 0, backgroundColor: 'black'}, 300, function() {
 			$('#content-overlay').css({'z-index': 10});
-			$('#content-overlay').animate({opacity: 0.5}, 650);
+			$('#content-overlay').animate({opacity: 0.5}, 200);
 		});
 	});
 
 	$('#content-overlay').on('click', function() {
-		$('#off-canvas-comments').animate({right: '-33%'}, 650, function() {
-			$('#content-overlay').animate({opacity: 0}, 650, function() {
+		$('#off-canvas-comments').animate({right: '-33%'}, 300, function() {
+			$('#content-overlay').animate({opacity: 0}, 200, function() {
 				$('#content-overlay').css({'z-index': -10});
 			});
 		});
@@ -66,34 +66,6 @@ $(function() {
 		}
 
 		$(this).unbind('submit').submit();
-	});
-
-    $('#follow-button').on('click', function() {
-		var user_id = window.location.href.split("/").pop();
-		$.getJSON('/follow_or_hate/' + user_id, {action: "follow"}, function(data) {
-			$('.text-num').eq(0).text(data.followers);
-			$('#follow-button').text(data.display_text);
-			if (data.display_text == "Following") {
-				$('#follow-button').addClass('active');
-			}
-			else {
-				$('#follow-button').removeClass('active');
-			}
-		})
-	});
-
-	$('#hate-button').on('click', function() {
-		var user_id = window.location.href.split("/").pop();
-		$.getJSON('/follow_or_hate/' + user_id, {action: "hate"}, function(data) {
-			$('.text-num').eq(2).text(data.haters);
-			$('#hate-button').text(data.display_text);
-			if (data.display_text == "Hating") {
-				$('#hate-button').addClass('active');
-			}
-			else {
-				$('#hate-button').removeClass('active');
-			}
-		})
 	});
 
 	$('#answer-2').on('change paste keyup', function() {
