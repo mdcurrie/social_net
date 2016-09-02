@@ -15,99 +15,101 @@
     </head>
     <body>
         {% module Header() %}
-        <section id="user-settings">
-            <div id="save-button">
-                <button>Save</button>
-            </div>
-            <div id="user-profile-pic">
-                <img src="{{ current_user["profile_pic_link"] }}" alt="Your profile picture">
-                <form action="/settings/updatePicture" method="post">
-                    {% raw xsrf_form_html() %}
-                    <input type="text" name="profile_picture" placeholder="{{ current_user["profile_pic_link"] }}" autocomplete="off">
-                </form>
-                <div id="profile-pic-error">{{ profile_pic_error }}</div>
-            </div>
-            <div id="username">
-                <div class="wrapper">
-                    {{ current_user["username"] }}
+        <main>
+            <section id="user-settings">
+                <div id="save-button">
+                    <button>Save</button>
                 </div>
-                <form action="/settings/updateUsername" method="post">
-                    {% raw xsrf_form_html() %}
-                    <input type="text" name="username" placeholder="{{ current_user["username"] }}" autocomplete="off">
-                </form>
-                <div id="username-error">{{ username_error }}</div>
-            </div>
-            <div id="bio">
-                <div class="wrapper">
-                    {{ current_user["bio"] }}
+                <div id="user-profile-pic">
+                    <img src="{{ current_user["profile_pic_link"] }}" alt="Your profile picture">
+                    <form action="/settings/updatePicture" method="post">
+                        {% raw xsrf_form_html() %}
+                        <input type="text" name="profile_picture" placeholder="{{ current_user["profile_pic_link"] }}" autocomplete="off">
+                    </form>
+                    <div id="profile-pic-error">{{ profile_pic_error }}</div>
                 </div>
-                <form action="/settings/updateBio" method="post">
-                    {% raw xsrf_form_html() %}
-                    <input type="text" name="bio" placeholder="{{ current_user["bio"] }}" autocomplete="off">
-                </form>
-            </div>
-            <div id="row-settings">
-                <div class="row">
-                    <div class="key">
-                        Email
+                <div id="username">
+                    <div class="wrapper">
+                        {{ current_user["username"] }}
                     </div>
-                    <div class="value">
-                        <div id="email">
-                            {{ current_user["email"] }}
+                    <form action="/settings/updateUsername" method="post">
+                        {% raw xsrf_form_html() %}
+                        <input type="text" name="username" placeholder="{{ current_user["username"] }}" autocomplete="off">
+                    </form>
+                    <div id="username-error">{{ username_error }}</div>
+                </div>
+                <div id="bio">
+                    <div class="wrapper">
+                        {{ current_user["bio"] }}
+                    </div>
+                    <form action="/settings/updateBio" method="post">
+                        {% raw xsrf_form_html() %}
+                        <input type="text" name="bio" placeholder="{{ current_user["bio"] }}" autocomplete="off">
+                    </form>
+                </div>
+                <div id="row-settings">
+                    <div class="row">
+                        <div class="key">
+                            Email
                         </div>
-                        <form action="/settings/updateEmail" method="post" novalidate>
-                            {% raw xsrf_form_html() %}
-                            <input class="form-input" type="email" name="email" placeholder="{{ current_user["email"] }}" autocomplete="off">
-                            <button class="form-button" formaction="/settings/updateEmail" formmethod="post">Save</button>
-                        </form>
-                        <div class="error-message" id="email-error">{{ email_error }}</div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="key">
-                        Password
-                    </div>
-                    <div class="value">
-                        <button class="form-button" id="reset-password-button">Reset Password</button>
-                        <form action="/settings/updatePassword" method="post">
-                            {% raw xsrf_form_html() %}
-                            <input class="form-input" type="password" name="old-password" placeholder="Old Password" autocomplete="off">
-                            <input class="form-input" type="password" name="new-password" placeholder="New Password" autocomplete="off">
-                            <button class="form-button" formaction="/settings/updatePassword" formmethod="post">Save</button>
-                        </form>
-                    </div>
-                    <div class="error-message" id="reset-password-error">{{ password_error }}</div>
-                </div>
-                <div class="row">
-                    <div class="key">
-                        Custom URL
-                    </div>
-                    <div class="value">
-                        <div id="custom-url">
-                            {% if current_user.get("custom_url") %}
-                                https://hive.com/{{ current_user["custom_url"] }}
-                            {% else %}
-                                <button class="form-button" id="custom-url-button">Set Custom URL</button>
-                            {% end %}
+                        <div class="value">
+                            <div id="email">
+                                {{ current_user["email"] }}
+                            </div>
+                            <form action="/settings/updateEmail" method="post" novalidate>
+                                {% raw xsrf_form_html() %}
+                                <input class="form-input" type="email" name="email" placeholder="{{ current_user["email"] }}" autocomplete="off">
+                                <button class="form-button" formaction="/settings/updateEmail" formmethod="post">Save</button>
+                            </form>
+                            <div class="error-message" id="email-error">{{ email_error }}</div>
                         </div>
-                        <form action="/settings/updateURL" method="post">
-                            {% raw xsrf_form_html() %}
-                            https://hive.com/<input class="form-input" name="custom-url" autocomplete="off" placeholder="{% if current_user.get("custom_url") %}{{ current_user["custom_url"] }}{% end %}">
-                            <button class="form-button" formaction="/settings/updateURL" formmethod="post">Save</button>
-                        </form>
                     </div>
-                    <div class="error-message" id="custom-url-error">{{ custom_url_error }}</div>
+                    <div class="row">
+                        <div class="key">
+                            Password
+                        </div>
+                        <div class="value">
+                            <button class="form-button" id="reset-password-button">Reset Password</button>
+                            <form action="/settings/updatePassword" method="post">
+                                {% raw xsrf_form_html() %}
+                                <input class="form-input" type="password" name="old-password" placeholder="Old Password" autocomplete="off">
+                                <input class="form-input" type="password" name="new-password" placeholder="New Password" autocomplete="off">
+                                <button class="form-button" formaction="/settings/updatePassword" formmethod="post">Save</button>
+                            </form>
+                        </div>
+                        <div class="error-message" id="reset-password-error">{{ password_error }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="key">
+                            Custom URL
+                        </div>
+                        <div class="value">
+                            <div id="custom-url">
+                                {% if current_user.get("custom_url") %}
+                                    https://hive.com/{{ current_user["custom_url"] }}
+                                {% else %}
+                                    <button class="form-button" id="custom-url-button">Set Custom URL</button>
+                                {% end %}
+                            </div>
+                            <form action="/settings/updateURL" method="post">
+                                {% raw xsrf_form_html() %}
+                                https://hive.com/<input class="form-input" name="custom-url" autocomplete="off" placeholder="{% if current_user.get("custom_url") %}{{ current_user["custom_url"] }}{% end %}">
+                                <button class="form-button" formaction="/settings/updateURL" formmethod="post">Save</button>
+                            </form>
+                        </div>
+                        <div class="error-message" id="custom-url-error">{{ custom_url_error }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="key">
+                            Deactivate Account
+                        </div>
+                        <div class="value" id="deactivate-account-button">
+                            <button class="form-button">Deactivate</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="key">
-                        Deactivate Account
-                    </div>
-                    <div class="value" id="deactivate-account-button">
-                        <button class="form-button">Deactivate</button>
-                    </div>
-                </div>
-            </div>
-        </section>
+            </section>
+        </main>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
         <script src="{{ static_url("js/settings.js") }}"></script>
     </body>

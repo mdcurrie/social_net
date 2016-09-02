@@ -1,0 +1,22 @@
+<div id="relation-header">
+	{% if relation == "follower" %}
+		Followers <span>See More</span>
+	{% else %}
+		Following <span>See More</span>
+	{% end %}
+</div>
+{% if relation_list %}
+	{% for user in relation_list %}
+		<div class="user">
+			<div class="user-profile-pic">
+				<a href="/users/{{ user["_id"] }}">
+					<img src="{{ user["profile_pic_link"] }}" alt="{{ user["username"] }}'s profile picture">
+				</a>
+			</div>
+		</div>
+	{% end %}
+{% else %}
+	<div id="none-text">
+		None yet.
+	</div>
+{% end %}

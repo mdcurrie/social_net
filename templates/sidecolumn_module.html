@@ -10,17 +10,27 @@
                     </ul>
                 </div>
             </div>
-            <div>
+            <div id="topics">
                 <div class="nav-links-header-text">TOPICS</div>
+                <button id="add-topics-button">+</button>
                 <div class="nav-links">
                     <ul>
-                        <li>#music</li>
-                        <li>#tech</li>
-                        <li>#videogames</li>
-                        <li>#travel</li>
-                        <li>#how-to</li>
+                        <li>
+                            <form action="/add_topic" method="post">
+                                {% raw xsrf_form_html() %}
+                                <input id="topic-name-input" name="topic-name" placeholder='Like "music" or "new-york"' autocomplete="off" maxlength="30">
+                            </form>
+                        </li>
+                        {% if current_user.get("topics") %}
+                            {% for topic in current_user["topics"] %}
+                                <li>#{{ topic }}</li>
+                            {% end %}
+                        {% end %}
                     </ul>
                 </div>
+            </div>
+            <div id="create-question">
+                <button id="create-question-button">+ Create Question</button>
             </div>
         {% else %}
             <div id="account-button">

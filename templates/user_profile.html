@@ -48,24 +48,25 @@
                                     <span>{{ len(questions) }}</span> questions
                                 {% end %}
                             </div>
-                            <div id="followers-count">
+                            <div id="followers-count" class="/users/{{ profile["_id"] }}/get_relationships?relationship=follower">
                                 <span>{{ user_followers_count }}</span> followers
                             </div>
-                            <div id="following-count">
+                            <div id="following-count" class="/users/{{ profile["_id"] }}/get_relationships?relationship=following">
                                 <span>{{ user_following_count }}</span> following
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="misc">
+                    <div id="relation">
+                    </div>
                     <div id="recent-answers">
                         <div id="recent-answers-header">
                             Recent Answers <span>See More</span>
                         </div>
                         {% if recent_answers %}
-                            {% set column = "left-column" %}
                             {% for idx, answer in enumerate(recent_answers) %}
-                                <div class="question {{ column }}">
+                                <div class="question">
                                     <a href="/questions/{{ str(answered_questions[idx]["_id"]) }}">
                                         <div class="background-image" style="background-image: url({{ answered_questions[idx]["image_link"] }})">
                                             <div class="background-image-overlay">
@@ -75,17 +76,10 @@
                                             </div>
                                         </div>
                                         <div class="user-answer">
-                                            {{ answered_questions[idx]["data"][answer]["label"] }}
+                                            A: {{ answered_questions[idx]["data"][answer]["label"] }}
                                         </div>
                                     </a>
                                 </div>
-                                {% if column == "left-column" %}
-                                    {% set column = "mid-column" %}
-                                {% elif column == "mid-column" %}
-                                    {% set column = "right-column" %}
-                                {% else %}
-                                    {% set column = "left-column" %}
-                                {% end %}
                             {% end %}
                         {% else %}
                             No answers yet.

@@ -19,39 +19,23 @@
 	    <main>
 		    {% module SideColumn() %}
 	        <section id="main-content">
-	        	<div id="main-content-header">
-		        	<div id="main-content-title">
-		        		Feed
-		        	</div>
-		        	<div id="main-content-selection">
-		        		<div class="selection">
-		        			Top
-		        		</div>
-		        		<div class="selection">
-		        			Recent
-		        		</div>
-		        	</div>
-		        </div>
-		        <div id="feed">
-		        	<div id="feed-wrapper">
-			        	{% set position = 0 %}
+	        	<div id="main-content-wrapper">
+		        	<div id="main-content-header">
+			        	<div id="main-content-title">
+			        		Feed
+			        	</div>
+			        	<div id="main-content-selection">
+			        		<div class="selection">
+			        			Top
+			        		</div>
+			        		<div class="selection">
+			        			Recent
+			        		</div>
+			        	</div>
+			        </div>
+			        <div id="feed">
 			        	{% for idx, question in enumerate(questions) %}
-			        		{% if position == 0 %}
-			        			<div class="question-row">
-			        				{% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx]) %}
-			        		{% else %}
-			        			{% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx]) %}
-			        			</div>
-			        		{% end %}
-			        		{% if position == 1 %}
-			        			{% set position = 0 %}
-			        		{% else %}
-			        			{% set position = 1 %}
-			        		{% end %}
-			        	{% else %}
-			        		{% if position == 0 %}
-			        			</div>
-			        		{% end %}
+			        		{% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx]) %}
 						{% end %}
 					</div>
 				</div>
