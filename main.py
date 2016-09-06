@@ -906,8 +906,10 @@ class AddTopicToFeed(BaseHandler):
 		else:
 			# topic will be added to the user's feed only if the topic already exists
 			topic_name = self.get_argument("topic-name")
-			yield self.application.db.topics.find_and_modify({"name": topic_name}, {"$addToSet": {"followers": self.current_user["_id"]}})
-			self.redirect("/feed")
+			if re.compile("^[a-zA-Z0-9 \-]+$").match(topic_name) != None:
+				topic_name = topic_name.lower().replace(' ', '-')
+				yield self.application.db.topics.find_and_modify({"name": topic_name}, {"$addToSet": {"followers": self.current_user["_id"]}})
+				self.redirect("/feed")
 
 class GroupHandler(BaseHandler):
 	def get(self, group_name):

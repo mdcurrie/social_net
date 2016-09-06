@@ -1,12 +1,16 @@
 <section id="side-column">
     <nav role="navigation">
         {% if current_user %}
-            <div>
+            <div id="create-question">
+                <button>+ New Question</button>
+            </div>
+            <div class="section-divider"></div>
+            <div id="main">
                 <div class="nav-links-header-text">MAIN</div>
                 <div class="nav-links top">
                     <ul>
                         <li>Overview</li>
-                        <li>Feed</li>
+                        <li class="active">Feed</li>
                     </ul>
                 </div>
             </div>
@@ -29,9 +33,6 @@
                     </ul>
                 </div>
             </div>
-            <div id="create-question">
-                <button id="create-question-button">+ Create Question</button>
-            </div>
         {% else %}
             <div id="account-button">
                 <a href="/signup">
@@ -52,3 +53,43 @@
         {% end %}
     </nav>
 </section>
+{% if current_user %}
+    <div id="question-dark-overlay"></div>
+    <aside id="off-canvas-question-form">
+        <div id="question-form-wrapper">
+        <div id="question-form-header">Create a Question</div>
+            <form action="/create_question" method="post">
+                {% raw xsrf_form_html() %}
+                <div class="input-section">
+                    <div class="input-label">Question Title</div>
+                    <input name="question-title" id="question-title" autocomplete="off" maxlength="120">
+                </div>
+                <div class="input-section">
+                    <div class="input-label">Cover Image Link</div>
+                    <input name="image-link" id="image-link" autocomplete="off">
+                </div>
+                <div class="input-section">
+                    <div class="input-label">Choice A</div>
+                    <input name="choice-a" id="choice-a" autocomplete="off" maxlength="40">
+                </div>
+                <div class="input-section">
+                    <div class="input-label">Choice B</div>
+                    <input name="choice-b" id="choice-b" autocomplete="off" maxlength="40">
+                </div>
+                <div class="input-section">
+                    <div class="input-label">Choice C <span class="optional">Optional</span></div>
+                    <input name="choice-c" id="choice-c" autocomplete="off" maxlength="40">
+                </div>
+                <div class="input-section">
+                    <div class="input-label">Choice D <span class="optional">Optional</span></div>
+                    <input name="choice-d" id="choice-d" autocomplete="off" maxlength="40">
+                </div>
+                <div class="input-section">
+                    <div class="input-label">Choice E <span class="optional">Optional</span></div>
+                    <input name="choice-e" id="choice-e" autocomplete="off" maxlength="40">
+                </div>
+                <button id="submit-question-button" formaction="/create-question" formmethod="post">Submit</button>
+            </form>
+        </div>
+    </aside>
+{% end %}
