@@ -80,9 +80,9 @@ a {
 		padding-bottom: 20px;
 	}
 	#off-canvas-comments {
-		position: absolute;
+		position: fixed;
 		right: -33%;
-		z-index: 20;
+		z-index: 50;
 		top: 80px;
 		height: calc(100% - 80px);
 		width: 33%;
@@ -90,7 +90,7 @@ a {
 		padding: 30px;
 	}
 	#content-overlay {
-		position: absolute;
+		position: fixed;
 		width: 100%;
 		height: calc(100% - 80px);
 		top: 80px;

@@ -2,21 +2,39 @@
 	#side-column {
 		position: fixed;
 		width: 240px;
-		padding: 130px 20px 0 10px;
+		padding-top: 130px;
 		background: #353436;
 		box-sizing: border-box;
 	}
 	#side-column * {
 		box-sizing: border-box;
 	}
-	nav > div:nth-of-type(2) {
-		margin-top: 40px;
+	#create-question {
+		width: 72%;
+		margin: 0 auto;
+	}
+	#create-question button {
+		width: 100%;
+		border: none;
+		outline: none;
+		color: white;
+		background: #868686;
+		padding: 7px 0;
+		border-radius: 3px;
+		font-family: Gotham;		
+	}
+	#create-question button:hover {
+		cursor: pointer;
+		background: #656565;
+	}
+	nav > div {
+		margin-bottom: 40px;
 	}
 	.nav-links-header-text {
 		font-size: 0.75em;
 		font-weight: bold;
 		padding-bottom: 10px;
-		padding-left: 10px;
+		padding-left: 34px;
 		color: #868686;
 		float: left;
 	}
@@ -25,14 +43,14 @@
 	}
 	.nav-links li {
 		color: white;
-		padding: 8px 20px 8px 10px;
+		padding: 8px 20px 8px 34px;
 	}
-	.nav-links.top li:last-of-type {
-		padding-left: 6px;
-		border-left: 4px solid #2eb398;
-		background: #636363;
-		border-top-right-radius: 5px;
-		border-bottom-right-radius: 5px;
+	.nav-links li.active {
+		background: #868686;
+	}
+	.nav-links li:hover {
+		background: #868686;
+		cursor: pointer;
 	}
 	#topics {
 		position: relative;
@@ -48,7 +66,7 @@
 	    font-size: 1.5em;
 	    position: absolute;
 	    top: -8px;
-	    right: 0;
+	    right: 30px;
 	    transition: color 0.3s;
 	}
 	#add-topics-button:hover {
@@ -82,6 +100,69 @@
 		outline: none;
 	}
 	#account-button button:hover {
+		cursor: pointer;
+	}
+	#question-dark-overlay {
+		position: fixed;
+		top: 80px;
+		left: 0;
+		width: 100%;
+		height: calc(100% - 80px);
+		background: black;
+		z-index: -100;
+		opacity: 0;
+	}
+	#off-canvas-question-form {
+		position: fixed;
+		right: -33%;
+		z-index: 50;
+		top: 80px;
+		height: calc(100% - 80px);
+		width: 33%;
+		background: #f1f1f1;
+		padding: 30px;
+	}
+	#question-form-wrapper {
+		width: 80%;
+		margin: 0 auto;
+	}
+	#question-form-header {
+		font-size: 2em;
+		margin-bottom: 40px;
+	}
+	.input-section {
+		margin: 20px 0;
+	}
+	.input-label {
+		margin-bottom: 4px;
+		font-size: 1.1em;
+	}
+	.input-section input {
+	    font-family: Gotham;
+	    background: white;
+	    border: none;
+	    outline: none;
+	    padding: 7px 3px;
+	    width: 100%;		
+	}
+	.optional {
+		color: #9c9c9c;
+		font-size: 0.75em;
+	}
+	#submit-question-button {
+		width: 100%;
+		border: none;
+		outline: none;
+		font-family: Gotham;
+		padding: 7px 0;
+		background: #2eb398;
+		color: white;
+		margin-top: 20px;
+		font-size: 1.1em;
+		border-radius: 3px;
+	}
+	#submit-question-button:hover {
+		background: #23927c;
 		cursor: pointer;
 	}
 }

@@ -17,8 +17,8 @@ $(function() {
 		    });
 		});
 
-		$('#off-canvas-comments').animate({right: 0, backgroundColor: 'black'}, 300, function() {
-			$('#content-overlay').css({'z-index': 10});
+		$('#off-canvas-comments').animate({right: 0}, 300, function() {
+			$('#content-overlay').css({'z-index': 40});
 			$('#content-overlay').animate({opacity: 0.5}, 200);
 		});
 	});
