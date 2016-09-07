@@ -19,7 +19,7 @@
 		outline: none;
 		color: white;
 		background: #868686;
-		padding: 7px 0;
+		padding: 10px 0;
 		border-radius: 3px;
 		font-family: Gotham;		
 	}
@@ -144,6 +144,10 @@
 	    outline: none;
 	    padding: 7px 3px;
 	    width: 100%;		
+	}
+	.input-section:nth-of-type(6), .input-section:nth-of-type(7) {
+		display: none;
+		opacity: 0;
 	}
 	.optional {
 		color: #9c9c9c;
