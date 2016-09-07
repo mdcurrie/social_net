@@ -56,10 +56,10 @@
                     <div class="poll-answer">
                         <div class="percent-and-bar">
                             <div class="poll-percentage-wrapper">
-                                <div class="poll-percentage">{{ int(q["votes"]*100/total_votes) }}%</div>
+                                <div class="poll-percentage">{% if total_votes == 0 %}0%{% else %}{{ int(q["votes"]*100/total_votes) }}%{% end %}</div>
                             </div>
                             <div class="bar-wrapper1">
-                                <div class="bar-wrapper2" style="width: {{ q["votes"]*100/total_votes }}%">
+                                <div class="bar-wrapper2" style="width: {% if total_votes == 0 %}0%{% else %}{{ q["votes"]*100/total_votes }}%{% end %}">
                                     <div class="poll-bar"><div>{{ q["label"] }}</div></div>
                                 </div>
                             </div>
@@ -70,10 +70,10 @@
                         <div class="poll-answer">
                             <div class="percent-and-bar">
                                 <div class="poll-percentage-wrapper active">
-                                    <div class="poll-percentage">{{ int(q["votes"]*100/total_votes) }}%</div>
+                                    <div class="poll-percentage">{% if total_votes == 0 %}0%{% else %}{{ int(q["votes"]*100/total_votes) }}%{% end %}</div>
                                 </div>
                                 <div class="bar-wrapper1">
-                                    <div class="bar-wrapper2" style="width: {{ q["votes"]*100/total_votes }}%">
+                                    <div class="bar-wrapper2" style="width: {% if total_votes == 0 %}0%{% else %}{{ q["votes"]*100/total_votes }}%{% end %}">
                                         <div class="poll-bar"><div>{{ q["label"] }}</div></div>
                                     </div>
                                 </div>
@@ -83,10 +83,10 @@
                         <div class="poll-answer">
                             <div class="percent-and-bar">
                                 <div class="poll-percentage-wrapper">
-                                    <div class="poll-percentage">{{ int(q["votes"]*100/total_votes) }}%</div>
+                                    <div class="poll-percentage">{% if total_votes == 0 %}0%{% else %}{{ int(q["votes"]*100/total_votes) }}%{% end %}</div>
                                 </div>
                                 <div class="bar-wrapper1">
-                                    <div class="bar-wrapper2" style="width: {{ q["votes"]*100/total_votes }}%">
+                                    <div class="bar-wrapper2" style="width: {% if total_votes == 0 %}0%{% else %}{{ q["votes"]*100/total_votes }}%{% end %}">
                                         <div class="poll-bar"><div>{{ q["label"] }}</div></div>
                                     </div>
                                 </div>

@@ -57,28 +57,28 @@
     <div id="question-dark-overlay"></div>
     <aside id="off-canvas-question-form">
         <div id="question-form-wrapper">
-        <div id="question-form-header">Create a Question</div>
+            <div id="question-form-header">Create a Question</div>
             <form action="/create_question" method="post">
                 {% raw xsrf_form_html() %}
                 <div class="input-section">
                     <div class="input-label">Question Title</div>
-                    <input name="question-title" id="question-title" autocomplete="off" maxlength="120">
+                    <input name="question-title" id="question-title" placeholder="Good vacation spot in Europe?" autocomplete="off" maxlength="120">
                 </div>
                 <div class="input-section">
                     <div class="input-label">Cover Image Link</div>
-                    <input name="image-link" id="image-link" autocomplete="off">
+                    <input name="image-link" id="image-link" placeholder="http://i.imgur.com/jmWKu1r.jpg" autocomplete="off">
                 </div>
                 <div class="input-section">
                     <div class="input-label">Choice A</div>
-                    <input name="choice-a" id="choice-a" autocomplete="off" maxlength="40">
+                    <input name="choice-a" id="choice-a" placeholder="Paris" autocomplete="off" maxlength="40">
                 </div>
                 <div class="input-section">
                     <div class="input-label">Choice B</div>
-                    <input name="choice-b" id="choice-b" autocomplete="off" maxlength="40">
+                    <input name="choice-b" id="choice-b" placeholder="London" autocomplete="off" maxlength="40">
                 </div>
                 <div class="input-section">
                     <div class="input-label">Choice C <span class="optional">Optional</span></div>
-                    <input name="choice-c" id="choice-c" autocomplete="off" maxlength="40">
+                    <input name="choice-c" id="choice-c" placeholder="Rome" autocomplete="off" maxlength="40">
                 </div>
                 <div class="input-section">
                     <div class="input-label">Choice D <span class="optional">Optional</span></div>
@@ -87,6 +87,10 @@
                 <div class="input-section">
                     <div class="input-label">Choice E <span class="optional">Optional</span></div>
                     <input name="choice-e" id="choice-e" autocomplete="off" maxlength="40">
+                </div>
+                <div class="input-section">
+                    <div class="input-label">Topics</span></div>
+                    <input name="topics" id="topics-input" placeholder="europe travel eiffel-tower" autocomplete="off" maxlength="100">
                 </div>
                 <button id="submit-question-button" formaction="/create-question" formmethod="post">Submit</button>
             </form>

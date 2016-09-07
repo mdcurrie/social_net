@@ -477,41 +477,43 @@ class EmailHandler(BaseHandler):
 class CreateQuestionHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def post(self):
-		if self.current_user:
+		if not self.current_user:
+			self.redirect("/")
+		else:
 			question_title = self.get_argument("question-title")
 			image_link     = self.get_argument("image-link")
-			answer_1       = self.get_argument("answer-1")
-			answer_2       = self.get_argument("answer-2")
-			answer_3       = self.get_argument("answer-3")
-			answer_4       = self.get_argument("answer-4")
-			answer_5       = self.get_argument("answer-5")
+			choices        = set([self.get_argument("choice-" + x) for x in 'abcde']) - set([''])
+			topics         = self.get_argument("topics")
 
-			# check question
-			if ((question_title == '') or (answer_1 == '' or answer_2 == '') or (answer_1 == answer_2) or (answer_3 != '' and answer_3 in {answer_1, answer_2}) or
-	        	(answer_4 != '' and answer_4 in {answer_1, answer_2, answer_3}) or (answer_5 != '' and answer_5 in {answer_1, answer_2, answer_3, answer_4})): return
+			# check for errors in question
+			http_client = tornado.httpclient.AsyncHTTPClient()
+			if question_title == '':
+				pass
+			elif len(choices) < 2:
+				pass
+			elif re.compile("^[a-zA-Z0-9 \-]+$").match(topics) == None:
+				pass
+			elif not imghdr.what((yield http_client.fetch(image_link)).buffer):
+				pass
+			else:
+				topics   = topics.lower().split(' ')
+				data     = [{'label': label, 'votes': 0} for label in choices]
 
-			# initialize all options to 0 votes
-			labels = [answer for answer in [answer_1, answer_2, answer_3, answer_4, answer_5] if answer]
-			data   = [{'label': label, 'votes': 0} for label in labels]
-
-			question = yield self.application.db.questions.insert_one({
-					"asker":      self.current_user["_id"],
-					"question":   question_title,
-					"date":       datetime.utcnow(),
-					"image_link": image_link,
-					"data":       data,
-				})
+				yield self.application.db.questions.insert({
+						"asker":      self.current_user["_id"],
+						"question":   question_title,
+						"date":       datetime.utcnow(),
+						"image_link": image_link,
+						"data":       data,
+						"topics":     topics,
+					})
 
 			self.redirect("/feed")
-
-		else:
-			self.redirect("/signup")
 
 # handler to display individual question page
 class QuestionHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, question_id):
-
 		question_id = ObjectId(question_id)
 		question = yield self.application.db.questions.find_one({"_id": question_id})
 		if not question:
