@@ -142,7 +142,8 @@
 	    background: white;
 	    border: none;
 	    outline: none;
-	    padding: 7px 3px;
+	    padding: 5px 3px;
+	    font-size: 1em;
 	    width: 100%;		
 	}
 	.input-section:nth-of-type(6), .input-section:nth-of-type(7) {

@@ -31,24 +31,23 @@ a {
 		background: #f1f1f1;
 	}
 	main {
-		width: 95%;
-		max-width: 1650px;
-		overflow: auto;
+		height: 100%;
+		padding-top: 130px;
+		width: 100%;
+		max-width: 1010px;
 		margin: 0 auto;
-		height: calc(100% - 130px);
 		box-sizing: border-box;
 	}
 	main * {
 		box-sizing: border-box;
 	}
-	#question-comments {
+	#question-content {
 		width: 50%;
-		height: calc(100% - 80px);
 		float: left;
 	}
-	#question-content {
-		width: calc(50% - 240px);
-		height: calc(100% - 80px);
+	#question-comments {
+		width: 50%;
+		height: 100%;
 		float: left;
 	}
 }

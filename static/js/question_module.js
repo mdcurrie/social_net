@@ -1,23 +1,4 @@
-var animate_down = false;
-
 $(function() {
-   /* function runIt() {
-        if (animate_down) {
-            animate_down = false;
-            $('.question-image').animate({'background-position-x': '50%', 'background-position-y': '43%'}, 3000, 'linear', function() {
-                runIt();
-            });
-        }
-        else {
-            animate_down = true;
-            $('.question-image').animate({'background-position-x': '50%', 'background-position-y': '37%'}, 3000, 'linear', function() {
-                runIt();
-            });
-        }
-    }
-
-    runIt();*/
-
     $('.poll-answer').on('click', function() {
         var question_id = $(this).parent().attr('class').split(' ')[1];
         var vote_index  = $(this).prevAll().length;
@@ -38,16 +19,16 @@ $(function() {
         var clicked = $(this);
         $.getJSON('/favorite_or_share/' + question_id, {action: "favorite"}, function(data) {
             if (data.favorite) {
-                clicked.siblings('.icon-indicator').addClass('active');
+                clicked.find('path').css({"fill": "#e64c65"});
             }
             else {
-                clicked.siblings('.icon-indicator').removeClass('active');
+                clicked.find('path').css({"fill": "white"});
             }
             clicked.parents('.favorite-count').children('.count-text').text(data.count);
         });
     });
 
-    $('.share-count .svg-image').on('click', function() {
+   /* $('.share-count .svg-image').on('click', function() {
         var question_id = $(this).attr('class').split(' ')[1];
         var clicked = $(this);
         $.getJSON('/favorite_or_share/' + question_id, {action: "share"}, function(data) {
@@ -59,5 +40,5 @@ $(function() {
             }
             clicked.parents('.share-count').children('.count-text').text(data.count);
         });
-    });
+    });*/
 });

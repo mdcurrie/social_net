@@ -19,12 +19,6 @@ a {
 	box-sizing: border-box;
 }
 
-@media only screen and (min-width: 1200px) {
-	html, body, section, article {
-		height: 100%;
-	}
-}
-
 /*=================== GENERAL STYLING END ====================*/
 
 @media only screen and (min-width: 1200px) {
@@ -42,12 +36,6 @@ a {
 		margin: 0 auto;
 		height: initial;
 		position: relative;
-	}
-	#save-button {
-		display: none;
-		position: absolute;
-		right: 20px;
-		top: 20px;
 	}
 	#user-profile-pic {
 		text-align: center;

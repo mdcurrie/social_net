@@ -92,7 +92,7 @@
 		margin: 0 auto;
 	}
 	.comment-form input[name="comment"] {
-		width: calc(100% - 46px);
+		width: calc(100% - 45px);
 		height: 40px;
 		font-size: 1em;
 		padding: 10px 20px;

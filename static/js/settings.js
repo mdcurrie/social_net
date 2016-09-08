@@ -1,7 +1,4 @@
 $(function() {
-	if ($('.error-message').text()) {
-		
-	}
 	/* profile picture */
 	$('#user-profile-pic img').on('click', function() {
 		$(this).css({"opacity": 0.1});
