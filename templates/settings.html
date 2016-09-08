@@ -17,9 +17,6 @@
         {% module Header() %}
         <main>
             <section id="user-settings">
-                <div id="save-button">
-                    <button>Save</button>
-                </div>
                 <div id="user-profile-pic">
                     <img src="{{ current_user["profile_pic_link"] }}" alt="Your profile picture">
                     <form action="/settings/updatePicture" method="post">

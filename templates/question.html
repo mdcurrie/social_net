@@ -16,7 +16,6 @@
     <body>
         {% module Header() %}
         <main>
-            {% module SideColumn() %}
             <section id="question-content">
                 {% module Question(asker, question, vote, favorites, shares, comments) %}  
             </section>
@@ -25,5 +24,6 @@
             </section>
         </main>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
+        <script src="{{ static_url("js/question.js") }}"></script>
     </body>
 </html>

@@ -355,7 +355,17 @@ class SettingsHandler(BaseHandler):
 			self.redirect("/login")
 		else:
 			profile_pic_error = username_error = email_error = password_error = custom_url_error = ""
-			if command == "updateUsername":		
+
+			if command == "updatePicture":
+				new_picture = self.get_argument("profile_picture")
+				http_client = tornado.httpclient.AsyncHTTPClient()
+				response    = yield http_client.fetch(new_picture)
+				if not imghdr.what(response.buffer):
+					profile_pic_error = "You must enter a link to an image."
+				else:
+					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"profile_pic_link": new_picture}})
+
+			elif command == "updateUsername":		
 				new_username = self.get_argument("username")
 				if len(new_username) < 6 or len(new_username) > 25:
 					username_error = "Your username must be between 6 and 25 characters long."
@@ -409,15 +419,6 @@ class SettingsHandler(BaseHandler):
 					custom_url_error = "Sorry, but someone else is already using that custom URL."
 				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"custom_url": custom_url}})
-
-			elif command == "updatePicture":
-				new_picture = self.get_argument("profile_picture")
-				http_client = tornado.httpclient.AsyncHTTPClient()
-				response    = yield http_client.fetch(new_picture)
-				if not imghdr.what(response.buffer):
-					profile_pic_error = "You must enter a link to an image."
-				else:
-					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"profile_pic_link": new_picture}})
 
 			else:
 				pass
@@ -499,14 +500,21 @@ class CreateQuestionHandler(BaseHandler):
 				topics   = topics.lower().split(' ')
 				data     = [{'label': label, 'votes': 0} for label in choices]
 
-				yield self.application.db.questions.insert({
-						"asker":      self.current_user["_id"],
-						"question":   question_title,
-						"date":       datetime.utcnow(),
-						"image_link": image_link,
-						"data":       data,
-						"topics":     topics,
-					})
+				# yield self.application.db.questions.insert({
+				# 		"asker":      self.current_user["_id"],
+				# 		"question":   question_title,
+				# 		"date":       datetime.utcnow(),
+				# 		"image_link": image_link,
+				# 		"data":       data,
+				# 		"topics":     topics,
+				# 	})
+
+				topic_relations = []
+				for topic in topics:
+					topics_subset = set(topics) - set([topic])
+					topic_relations.append([topic, list(topics_subset)])
+
+				yield [self.application.db.topics.find_and_modify({"name": topic_relations[0][0]}, )]
 
 			self.redirect("/feed")
 
