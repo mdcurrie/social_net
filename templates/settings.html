@@ -21,9 +21,8 @@
                     <img src="{{ current_user["profile_pic_link"] }}" alt="Your profile picture">
                     <form action="/settings/updatePicture" method="post">
                         {% raw xsrf_form_html() %}
-                        <input type="text" name="profile_picture" placeholder="{{ current_user["profile_pic_link"] }}" autocomplete="off">
+                        <input type="text" name="profile-picture" placeholder="{{ current_user["profile_pic_link"] }}" autocomplete="off">
                     </form>
-                    <div id="profile-pic-error">{{ profile_pic_error }}</div>
                 </div>
                 <div id="username">
                     <div class="wrapper">
@@ -33,7 +32,6 @@
                         {% raw xsrf_form_html() %}
                         <input type="text" name="username" placeholder="{{ current_user["username"] }}" autocomplete="off">
                     </form>
-                    <div id="username-error">{{ username_error }}</div>
                 </div>
                 <div id="bio">
                     <div class="wrapper">
@@ -58,7 +56,6 @@
                                 <input class="form-input" type="email" name="email" placeholder="{{ current_user["email"] }}" autocomplete="off">
                                 <button class="form-button" formaction="/settings/updateEmail" formmethod="post">Save</button>
                             </form>
-                            <div class="error-message" id="email-error">{{ email_error }}</div>
                         </div>
                     </div>
                     <div class="row">
@@ -74,7 +71,6 @@
                                 <button class="form-button" formaction="/settings/updatePassword" formmethod="post">Save</button>
                             </form>
                         </div>
-                        <div class="error-message" id="reset-password-error">{{ password_error }}</div>
                     </div>
                     <div class="row">
                         <div class="key">
@@ -94,7 +90,6 @@
                                 <button class="form-button" formaction="/settings/updateURL" formmethod="post">Save</button>
                             </form>
                         </div>
-                        <div class="error-message" id="custom-url-error">{{ custom_url_error }}</div>
                     </div>
                     <div class="row">
                         <div class="key">

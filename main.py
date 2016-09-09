@@ -14,6 +14,11 @@ import json
 from datetime import datetime
 from bson.objectid import ObjectId
 
+def test_icc_profile_images(h, f):
+	if h.startswith(b'\xff\xd8'):
+		return "jpeg"
+imghdr.tests.append(test_icc_profile_images)
+
 from tornado.options import define, options
 define("port", default=8000, help="run on the given port", type=int)
 
@@ -340,37 +345,36 @@ class SignupHandler(BaseHandler):
 			self.set_secure_cookie("auth_id", str(user.inserted_id), httponly=True)
 			self.redirect("/feed")
 
+# handler for user to modify account settings
 class SettingsHandler(BaseHandler):
 	def get(self):
-		# redirect user to index page if not logged in
+		# redirect user to login page if not logged in
 		if not self.current_user:
 			self.redirect("/login")
 		else:
-			self.render("settings.html", current_user=self.current_user, profile_pic_error='', username_error='',
-										 email_error='', password_error='', custom_url_error='')
+			self.render("settings.html", current_user=self.current_user)
 
 	@tornado.gen.coroutine
 	def post(self, command):
 		if not self.current_user:
 			self.redirect("/login")
 		else:
-			profile_pic_error = username_error = email_error = password_error = custom_url_error = ""
-
 			if command == "updatePicture":
-				new_picture = self.get_argument("profile_picture")
+				new_picture = self.get_argument("profile-picture")
 				http_client = tornado.httpclient.AsyncHTTPClient()
 				response    = yield http_client.fetch(new_picture)
 				if not imghdr.what(response.buffer):
-					profile_pic_error = "You must enter a link to an image."
+					logging.info(imghdr.what(response.buffer))
+					self.write({"error": "You must enter a link to an image."})
 				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"profile_pic_link": new_picture}})
 
 			elif command == "updateUsername":		
 				new_username = self.get_argument("username")
 				if len(new_username) < 6 or len(new_username) > 25:
-					username_error = "Your username must be between 6 and 25 characters long."
+					self.write({"error": "Your username must be between 6 and 25 characters long."})
 				elif re.compile("^[a-zA-Z0-9_ ]+$").match(new_username) == None:
-					username_error = "Your username can only contain letters, numbers, and underscores."
+					self.write({"error": "Your username can only contain letters, numbers, and underscores."})
 				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"username": new_username}})
 
@@ -383,9 +387,9 @@ class SettingsHandler(BaseHandler):
 				if new_email == self.current_user["email"]:
 					pass
 				elif re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(new_email) == None:
-					email_error = "That is not a valid email address."
+					self.write({"error": "That is not a valid email address."})
 				elif (yield self.application.db.users.find_one({"email": new_email})) != None:
-					email_error = "An account is already registered with that email address."
+					self.write({"error": "An account is already registered with that email address."})
 				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"email": new_email}})
 
@@ -394,14 +398,14 @@ class SettingsHandler(BaseHandler):
 				new_password = self.get_argument("new-password")
 
 				if (len(new_password) < 6):
-					password_error = "Your new password must contain at least 6 characters."
+					self.write({"error": "Your new password must contain at least 6 characters."})
 				else:
 					user = yield self.application.db.users.find_one({"_id": self.current_user["_id"]}, {"salt": 1, "password": 1})
 					if user == None:
 						self.redirect("/")
 					else:
 						if bcrypt.hashpw(old_password.encode('utf-8'), user["salt"]) != user["password"]:
-							password_error = "The password you entered was incorrect."
+							self.write({"error": "The password you entered was incorrect."})
 						else:
 							salt     = bcrypt.gensalt()
 							password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
@@ -410,24 +414,15 @@ class SettingsHandler(BaseHandler):
 			elif command == "updateURL":
 				custom_url = self.get_argument("custom-url")
 				if 1 <= len(custom_url) < 6:
-					custom_url_error = "Your custom URL must contain at least 6 characters."
-				elif custom_url != '' and re.compile("^[a-zA-Z0-9_ ]+$").match(custom_url) == None:
-					custom_url_error = "Your custom URL can only contain letters, numbers, and underscores."
+					self.write({"error": "Your custom URL must contain at least 6 characters."})
+				elif custom_url != '' and re.compile("^[a-zA-Z0-9_]+$").match(custom_url) == None:
+					self.write({"error": "Your custom URL can only contain letters, numbers, and underscores."})
 				elif custom_url in {"signup", "login", "feed", "settings"}:
-					custom_url_error = "Sorry, but that custom URL is not allowed."
+					self.write({"error": "Sorry, but that custom URL is not allowed."})
 				elif (yield self.application.db.users.find_one({"custom_url": custom_url})) != None:
-					custom_url_error = "Sorry, but someone else is already using that custom URL."
+					self.write({"error": "Sorry, but someone else is already using that custom URL."})
 				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"custom_url": custom_url}})
-
-			else:
-				pass
-
-			if profile_pic_error or username_error or email_error or password_error or custom_url_error:
-				self.render("settings.html", current_user=self.current_user, profile_pic_error=profile_pic_error, username_error=username_error,
-											 email_error=email_error, password_error=password_error, custom_url_error=custom_url_error)
-			else:
-				self.redirect("/settings")
 
 # handler for logging in registered users
 class LoginHandler(BaseHandler):
@@ -514,7 +509,7 @@ class CreateQuestionHandler(BaseHandler):
 					topics_subset = set(topics) - set([topic])
 					topic_relations.append([topic, list(topics_subset)])
 
-				yield [self.application.db.topics.find_and_modify({"name": topic_relations[0][0]}, )]
+				yield [self.application.db.topics.find_and_modify({"name": topic_relations[0][0]},) ]
 
 			self.redirect("/feed")
 
