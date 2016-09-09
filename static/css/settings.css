@@ -47,6 +47,7 @@ a {
 		height: 180px;
 		width: 180px;
 		transition: opacity 0.3s;
+		object-fit: cover;
 	}
 	#user-profile-pic img:hover {
 		cursor: pointer;
@@ -72,7 +73,6 @@ a {
 		border-radius: 3px;
 	}
 	#profile-pic-error {
-		display: none;
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
