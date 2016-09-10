@@ -11,15 +11,16 @@
         <div class="input-row">
             <p class="error-message">{{ email_error }}</p>
             <input style="background-image: url({{ static_url("images/mail.svg") }})" type="email" id="email" name="email"
-            {% if email %}value="{{ email }}"{% end %} autocomplete="off" placeholder="Email" {% if email == None %}autofocus{% end %}>
+            {% if email %}value="{{ email }}"{% end %} autocomplete="off" placeholder="Email" {% if email_error or not password_error %}autofocus{% end %}>
         </div>
         <div class="input-row">
             <p class="error-message">{{ password_error }}</p>
-            <input style="background-image: url({{ static_url("images/lock.svg") }})" type="password" id="password" name="password" placeholder="Password" {% if email %}autofocus{% end %}>
+            <input style="background-image: url({{ static_url("images/lock.svg") }})" type="password" id="password" name="password" placeholder="Password" {% if password_error %}autofocus{% end %}>
         </div>
-        <button type="submit">Log In<img src="{{ static_url("images/chevron-thin-right.svg") }}"></button>
+        <button type="submit">Log In</button>
     </form>
     <h3 id="top-text"><a href="">Forgot your password?</a></h3>
+    <div id="text-divider"></div>
     <h3 id="bot-text">Don't have an account? <a href="/signup">Sign Up</a></h3>
 {% end %}
 

@@ -13,16 +13,17 @@
             <input style="background-image: url({{ static_url("images/mask.svg") }})" type="text" id="full-name" name="username" autocomplete="off" placeholder="Username" autofocus>
         </div>
         <div class="input-row">
-            <p class="error-message">{{email_error }}</p>
-            <input style="background-image: url({{ static_url("images/mail.svg") }})" type="email" id="email" name="email" autocomplete="off" placeholder="Email">
+            <p class="error-message">{{ email_error }}</p>
+            <input style="background-image: url({{ static_url("images/mail.svg") }})" type="email" id="email" name="email" autocomplete="off" placeholder="Email" {% if email_error %}autofocus{% end %}>
         </div>
         <div class="input-row">
             <p class="error-message">{{ password_error }}</p>
-            <input style="background-image: url({{ static_url("images/lock.svg") }})" type="password" id="password" name="password" placeholder="Password">
+            <input style="background-image: url({{ static_url("images/lock.svg") }})" type="password" id="password" name="password" placeholder="Password" {% if password_error %}autofocus{% end %}>
         </div>
-        <button type="submit">Sign Up<img src="{{ static_url("images/chevron-thin-right.svg") }}"></button>
+        <button type="submit">Sign Up</button>
     </form>
     <h3 id="top-text">By signing up you agree to our <a href="">Terms of Service</a> and <a href="">Privacy Policy</a>, including <a href="">Cookie Policy</a></h3>
+    <div id="text-divider"></div>
     <h3 id="bot-text">Already have an account? <a href="/login">Log In</a></h3>
 {% end %}
 

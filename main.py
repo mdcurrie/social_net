@@ -14,6 +14,7 @@ import json
 from datetime import datetime
 from bson.objectid import ObjectId
 
+# imghdr patch to recognize jpeg format
 def test_icc_profile_images(h, f):
 	if h.startswith(b'\xff\xd8'):
 		return "jpeg"
@@ -198,10 +199,10 @@ class BaseHandler(tornado.web.RequestHandler):
 			else:
 				self.current_user = current_user
 
-#module to render the page header
+# module to render the page header
 class HeaderModule(tornado.web.UIModule):
-	def render(self):
-		return self.render_string("header_module.html", current_user=self.current_user)
+	def render(self, search=True):
+		return self.render_string("header_module.html", current_user=self.current_user, search=search)
 
 	def css_files(self):
 		return self.handler.static_url("css/header_module.css")
@@ -209,6 +210,7 @@ class HeaderModule(tornado.web.UIModule):
 	def javascript_files(self):
 		return self.handler.static_url("js/header_module.js")
 
+# module to render the side column
 class SideColumnModule(tornado.web.UIModule):
 	def render(self):
 		return self.render_string("sidecolumn_module.html", current_user=self.current_user)
@@ -299,7 +301,6 @@ class IndexHandler(BaseHandler):
 
 			self.render("index.html", askers=askers, questions=questions, groups=groups, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=False,)
 
-
 # handler for registering new users
 class SignupHandler(BaseHandler):
 	def get(self):
@@ -342,8 +343,43 @@ class SignupHandler(BaseHandler):
 					"bio":              "I'm new here!",
 					"profile_pic_link": "http://i.imgur.com/pq88IQx.png"})
 
-			self.set_secure_cookie("auth_id", str(user.inserted_id), httponly=True)
+			self.set_secure_cookie("auth_id", str(user), httponly=True)
 			self.redirect("/feed")
+
+# handler for logging in registered users
+class LoginHandler(BaseHandler):
+	# redirect user to /feed if already logged in
+	def get(self):
+		if self.current_user:
+			self.redirect("/feed")
+		else:
+			self.render("login.html", email=None, email_error='', password_error='')
+
+	@tornado.gen.coroutine
+	def post(self):
+		email    = self.get_argument("email")
+		password = self.get_argument("password")
+
+		# verify email/password combo
+		if re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(email) == None:
+			self.render("login.html", email=email, email_error='Please enter a valid email address.', password_error='')
+		elif len(password) < 6:
+			self.render("login.html", email=email, email_error='', password_error='The password you entered is incorrect.')
+		else:
+			user = yield self.application.db.users.find_one({"email": email}, {"salt": 1, "password": 1})
+			if user == None:
+				self.render("login.html", email=email, email_error='The email you entered does not match any account.', password_error='')
+			elif bcrypt.hashpw(password.encode('utf-8'), user["salt"]) != user["password"]:
+				self.render("login.html", email=email, email_error='', password_error='The password you entered is incorrect.')
+			else:
+				self.set_secure_cookie("auth_id", str(user["_id"]), httponly=True)
+				self.redirect("/feed")
+
+# handler for logging users out
+class LogoutHandler(BaseHandler):
+	def post(self):
+		self.clear_cookie("auth_id")
+		self.redirect("/login")
 
 # handler for user to modify account settings
 class SettingsHandler(BaseHandler):
@@ -354,6 +390,8 @@ class SettingsHandler(BaseHandler):
 		else:
 			self.render("settings.html", current_user=self.current_user)
 
+	# command indicates which field the user wants to modify
+	# AJAX response with an error message if user sends invalid parameters
 	@tornado.gen.coroutine
 	def post(self, command):
 		if not self.current_user:
@@ -361,10 +399,10 @@ class SettingsHandler(BaseHandler):
 		else:
 			if command == "updatePicture":
 				new_picture = self.get_argument("profile-picture")
+				# check if link is an actual image format using imghdr
 				http_client = tornado.httpclient.AsyncHTTPClient()
 				response    = yield http_client.fetch(new_picture)
 				if not imghdr.what(response.buffer):
-					logging.info(imghdr.what(response.buffer))
 					self.write({"error": "You must enter a link to an image."})
 				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"profile_pic_link": new_picture}})
@@ -374,10 +412,11 @@ class SettingsHandler(BaseHandler):
 				if len(new_username) < 6 or len(new_username) > 25:
 					self.write({"error": "Your username must be between 6 and 25 characters long."})
 				elif re.compile("^[a-zA-Z0-9_ ]+$").match(new_username) == None:
-					self.write({"error": "Your username can only contain letters, numbers, and underscores."})
+					self.write({"error": "Your username can only contain letters, numbers, spaces, and underscores."})
 				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"username": new_username}})
 
+			# bio is limited to 140 characters
 			elif command == "updateBio":
 				new_bio = self.get_argument("bio")[:140]
 				yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"bio": new_bio}})
@@ -406,6 +445,7 @@ class SettingsHandler(BaseHandler):
 					else:
 						if bcrypt.hashpw(old_password.encode('utf-8'), user["salt"]) != user["password"]:
 							self.write({"error": "The password you entered was incorrect."})
+							self.redirect("/feed")
 						else:
 							salt     = bcrypt.gensalt()
 							password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
@@ -417,6 +457,7 @@ class SettingsHandler(BaseHandler):
 					self.write({"error": "Your custom URL must contain at least 6 characters."})
 				elif custom_url != '' and re.compile("^[a-zA-Z0-9_]+$").match(custom_url) == None:
 					self.write({"error": "Your custom URL can only contain letters, numbers, and underscores."})
+				# some URLS are off-limits
 				elif custom_url in {"signup", "login", "feed", "settings"}:
 					self.write({"error": "Sorry, but that custom URL is not allowed."})
 				elif (yield self.application.db.users.find_one({"custom_url": custom_url})) != None:
@@ -424,40 +465,10 @@ class SettingsHandler(BaseHandler):
 				else:
 					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"custom_url": custom_url}})
 
-# handler for logging in registered users
-class LoginHandler(BaseHandler):
-	# redirect user to /feed if already logged in
-	def get(self):
-		if self.current_user:
-			self.redirect("/feed")
-		else:
-			self.render("login.html", email=None, email_error='', password_error='')
-
-	@tornado.gen.coroutine
-	def post(self):
-		email    = self.get_argument("email")
-		password = self.get_argument("password")
-
-		# verify email/password combo
-		if re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(email) == None:
-			self.render("login.html", email=None, email_error='Please enter a valid email address.', password_error='')
-		elif len(password) < 6:
-			self.render("login.html", email=None, email_error='', password_error='The password you entered is incorrect.')
-		else:
-			user = yield self.application.db.users.find_one({"email": email}, {"salt": 1, "password": 1})
-			if user == None:
-				self.render("login.html", email=None, email_error='The email you entered does not match any account.', password_error='')
-			elif bcrypt.hashpw(password.encode('utf-8'), user["salt"]) != user["password"]:
-				self.render("login.html", email=None, email_error='', password_error='The password you entered is incorrect.')
 			else:
-				self.set_secure_cookie("auth_id", str(user["_id"]), httponly=True)
-				self.redirect("/feed")
+				pass
 
-# handler for logging users out
-class LogoutHandler(BaseHandler):
-	def post(self):
-		self.clear_cookie("auth_id")
-		self.redirect("/login")
+
 
 # handler to check if email from signup form is already in use
 class EmailHandler(BaseHandler):

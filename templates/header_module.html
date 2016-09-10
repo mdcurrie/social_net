@@ -1,10 +1,12 @@
 <header role="banner">
     <div id="header-wrapper">
-        <div id="search-form">
-            <form>
-                <input placeholder="Search all..." style="background-image: url({{ static_url("images/magnifying-glass-white.svg") }})">
-            </form>
-        </div>
+        {% if search %}
+            <div id="search-form">
+                <form>
+                    <input placeholder="Search all..." style="background-image: url({{ static_url("images/magnifying-glass-white.svg") }})">
+                </form>
+            </div>
+        {% end %}
         <div id="logo">
             <a href={% if current_user %}"/feed"{% else %}"/"{% end %}>
                 &middot;HIVE&middot;
