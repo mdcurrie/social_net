@@ -9,7 +9,7 @@
 	src: url('/static/fonts/GothamHTF-Book.woff');
 }
 html {
-	font-family: Karla, sans-serif;
+	font-family: Gotham, sans-serif;
 	color: #333;
 }
 a {
@@ -41,24 +41,28 @@ section h1 {
 	font-size: 1em;
 	display: block;
 	width: 100%;
-	font-family: Karla;
+	font-family: Gotham;
 	outline: none;
 }
 .input-row {
-	margin-bottom: 30px;
+	margin-bottom: 25px;
+}
+.error-message {
+	color: #e64c65;
 }
 #generic-form input {
 	padding: 10px 0 10px 45px;
 	background-repeat: no-repeat;
-	background-size: 30px;
-	background-position: 4px;
+	background-size: 25px;
+	background-position: 10px 7px;
 	box-sizing: border-box;
 	border: none;
 	background-color: #f1f1f1;
+	border-radius: 3px;
 }
 #generic-form input:focus {
 	border-color: #2eb398;
-	box-shadow: 0 0 3px 2px #2eb398;
+	box-shadow: 0 0 3px 1px #2eb398;
 }
 #generic-form.error-message {
 	font-size: 0.75em;
@@ -69,12 +73,13 @@ section h1 {
 #generic-form button {
 	background-color: #2eb398;
 	border: 0px;
-	margin-top: 46px;
-	margin-bottom: 30px;
+	margin-top: 43px;
+	margin-bottom: 55px;
 	padding: 10px 0;
 	cursor: pointer;
-	border-radius: 10px;
+	border-radius: 3px;
 	position: relative;
+	color: white;
 }
 #generic-form button:hover {
 	background-color: #20826e;
@@ -90,32 +95,42 @@ section h1 {
 	text-align: center;
 }
 #top-text {
-	border-bottom: 1px solid #c2c7d0;
-	padding-bottom: 30px;
-	margin-bottom: 30px;
 	font-size: 0.75em;
+}
+#text-divider {
+	width: 65%;
+	height: 0;
+	border-top: 1px solid rgba(0,0,0,.1);
+	margin: 0 auto;
+	margin-top: 30px;
+	margin-bottom: 30px;
 }
 #bot-text {
 	font-size: 0.75em;
 }
 
-@media only screen and (min-width: 500px) {
+@media only screen and (min-width: 1200px) {
+	main {
+		padding-top: 130px;
+	}
 	section {
 		width: 25%;
 		max-width: 550px;
 		min-width: 350px;
-		margin-top: 80px;
-		padding: 20px 20px 30px 20px;
+		padding: 50px;
+		border-radius: 5px;
 	}
 	section h1 {
-		font-size: 2.5em;
+		font-size: 2.25em;
 		margin-bottom: 40px;
 	}
 	#top-text, #bot-text, .error-message {
 		font-size: 0.9em;
 	}
-	#error-message {
-		height: 0.9em;
+	.error-message {
+		height: 1.2em;
+		font-size: 0.85em;
+		margin-bottom: 2px;
 	}
 }
 

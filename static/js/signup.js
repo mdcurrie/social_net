@@ -44,15 +44,15 @@ function validateUsername() {
 	}
 	if (!(/^[a-zA-Z0-9_ ]+$/i.test(username))) {
 		error.text('Letters, numbers, spaces, and underscores only.');
-		error.css({"display": "block", "color": "red"});
+		error.css({"display": "block", "color": "#e64c65"});
 	}
 	else if (username.length < 6 || username.length > 25) {
 		error.text('Your username must be 6-25 characters long.');
-		error.css({"display": "block", "color": "red"});
+		error.css({"display": "block", "color": "#e64c65"});
 	}
 	else {
 		error.text('Great choice!');
-		error.css({"display": "block", "color": "green"});
+		error.css({"display": "block", "color": "#2eb398"});
 		valid_username = true;
 	}
 	error.animate({"opacity": 1}, 100);
@@ -70,7 +70,7 @@ function validateEmail(send_json=true) {
 	}
 	if (!(/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/i.test(email))) {
 		error.text('Please enter a valid email address.');
-		error.css({"display": "block", "color": "red"});
+		error.css({"display": "block", "color": "#e64c65"});
 		return;
 	}
 	if (send_json == false) {
@@ -81,11 +81,11 @@ function validateEmail(send_json=true) {
 		$.getJSON('email_lookup', {email: email}, function(data) {
 			if (data.email_taken) {
 				error.text('That email is already taken.');
-				error.css({"display": "block", "color": "red"});
+				error.css({"display": "block", "color": "#e64c65"});
 			}
 			else {
 				error.text('Looks good.');
-				error.css({"display": "block", "color": "green"});
+				error.css({"display": "block", "color": "#2eb398"});
 				valid_email = true;
 			}
 		});
@@ -101,11 +101,11 @@ function validatePassword() {
 
 	if (password.length < 6) {
 		error.text('Your password must be at least 6 characters long.');
-		error.css({"display": "block", "color": "red"});	
+		error.css({"display": "block", "color": "#e64c65"});	
 	}
 	else {
 		error.text("Don't share it with anyone.");
-		error.css({"display": "block", "color": "green"});
+		error.css({"display": "block", "color": "#2eb398"});
 		valid_password = true;
 	}
 	error.animate({"opacity": 1}, 100);

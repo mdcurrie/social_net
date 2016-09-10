@@ -1,11 +1,12 @@
 $(function() {
-	/* profile picture */
+	/* profile picture section */
 	$('#user-profile-pic img').on('click', function() {
 		$(this).css({"opacity": 0.1});
 		$('#user-profile-pic form').css({"display": "block"});
 		$('#user-profile-pic input').eq(1).focus();
 	});
 
+	/* validate profile pic URL before submitting form */
 	$('#user-profile-pic form').on('submit', function(e) {
 		e.preventDefault();
 		var picture_link = $('#user-profile-pic form input').eq(1).val();
@@ -18,7 +19,6 @@ $(function() {
 			src: picture_link,
 			error: function() {
 				$('#profile-pic-error').text("You must enter a link to an image.");
-				$('#profile-pic-error').css({"display": "block"});
 			},
 			load: function() {
 				$.post('/settings/updatePicture', {_xsrf: getCookie('_xsrf'), "profile-picture": picture_link}, function(data) {
@@ -38,13 +38,14 @@ $(function() {
 		});
 	});
 
-	/* username */
+	/* username section */
 	$('#username .wrapper').on('click', function() {
 		$(this).css({"display": "none"});
 		$('#username form').css({"display": "inline-block"});
 		$('#username input').focus();
 	});
 
+	/* validate username before submitting form */
 	$('#username form').on('submit', function(e) {
 		e.preventDefault();
 		var username = $('#username input').eq(1).val();
@@ -55,17 +56,14 @@ $(function() {
 
 		if (username == '') {
 			$('#username-error').text("You must enter a username.");
-			$('#username-error').css({"display": "block"});
 			return;
 		}
 		if (!(/^[a-zA-Z0-9_ ]+$/i.test(username))) {
-			$('#username-error').text("Your username can only contain letters, numbers, and underscores.");
-			$('#username-error').css({"display": "block"});
+			$('#username-error').text("Your username can only contain letters, numbers, spaces, and underscores.");
 			return;
 		}
 		if (username.length < 6 || username.length > 25) {
 			$('#username-error').text("Your username must be between 6 and 25 characters long.");
-			$('#username-error').css({"display": "block"});
 			return;
 		}
 
@@ -83,7 +81,7 @@ $(function() {
 		});
 	});
 
-	/* bio */
+	/* bio section */
 	$('#bio .wrapper').on('click', function() {
 		$(this).css({"display": "none"});
 		$('#bio form').css({"display": "inline-block"});
@@ -102,13 +100,14 @@ $(function() {
 		});
 	});
 
-	/* email */
+	/* email section */
 	$('#email').on('click', function() {
 		$(this).css({"display": "none"});
 		$('.row:first-of-type form').css({"display": "block"});
 		$('.row:first-of-type input').focus();
 	});
 
+	/* validate email before submitting form */
 	$('.row:first-of-type form').on('submit', function(e) {
 		e.preventDefault();
 		var email = $('.row:first-of-type input').eq(1).val();
@@ -136,13 +135,14 @@ $(function() {
 		});
 	});
 
-	/* password */
+	/* password section */
 	$('#reset-password-button').on('click', function() {
 		$(this).css({"display": "none"});
 		$('.row:nth-of-type(2) form').css({"display": "block"});
 		$('.row:nth-of-type(2) input').eq(1).focus();
 	});
 
+	/* validate passwords before submitting form */
 	$('.row:nth-of-type(2) form').on('submit', function(e) {
 		e.preventDefault();
 		var old_password = $('.row:nth-of-type(2) input').eq(1).val();
@@ -171,7 +171,7 @@ $(function() {
 		});
 	});
 
-	/* custom URL */
+	/* custom URL section */
 	$('#custom-url').on('click', function() {
 		$(this).css({"display": "none"});
 		$('.row:nth-of-type(3) form').css({"display": "block"});
