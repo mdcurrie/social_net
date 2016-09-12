@@ -22,9 +22,9 @@
                 {% elif total_seconds < 172800 %}
                     Yesterday
                 {% elif total_seconds < 15770000 %}
-                    {{ question["date"].strftime("%B %d") }}
+                    {{ question["date"].strftime("%B %d").replace(' 0', ' ') }}
                 {% else %}
-                    {{ question["date"].strftime("%B %d, %Y") }}
+                    {{ question["date"].strftime("%B %d, %Y").replace(' 0', ' ') }}
                 {% end %}
             </div>
         </div>
@@ -73,17 +73,6 @@
         </div>
     </div>
     <div class="question-content">
-        <div class="vote-count">
-            {% set vote_count = sum([q["votes"] for q in question["data"]]) %}
-            {% if vote_count <= 1000 %}
-                {{ vote_count }}
-            {% elif vote_count <= 999999 %}
-                {{ round(vote_count/1000, 1) }}K
-            {% else %}
-                {{ round(vote_count/1000000, 1) }}M
-            {% end %}
-            Votes
-        </div>
         <div class="labels {{ str(question["_id"]) }}">
             {% set total_votes = sum([x["votes"] for x in question["data"]]) %}
             {% for idx, q in enumerate(question["data"]) %}
@@ -130,11 +119,26 @@
                     {% end %}
                 {% end %}
             {% end %}
+            <div class="vote-count">
+                {% set vote_count = sum([q["votes"] for q in question["data"]]) %}
+                {% if vote_count <= 1000 %}
+                    {{ vote_count }}
+                {% elif vote_count <= 999999 %}
+                    {{ round(vote_count/1000, 1) }}K
+                {% else %}
+                    {{ round(vote_count/1000000, 1) }}M
+                {% end %}
+                Votes
+            </div>
         </div>
         <div class="topics-container">
             {% if question.get("topics") %}
                 {% for topic in question["topics"] %}
-                    <span class="question-topic">#{{ topic }}</span>
+                    <span class="question-topic">
+                        <a href="/topics/{{ topic }}">
+                            #{{ topic }}
+                        </a>
+                    </span>
                 {% end %}
             {% end %}
         </div>

@@ -36,13 +36,14 @@ class Application(tornado.web.Application):
 					(r"/users/(\w+)", ProfileHandler),
 					(r"/follow_or_hate/(\w+)", FollowHateHandler),
 					(r"/users/(\w+)/get_relationships", GetRelationshipsHandler),
-					(r"/groups/(\w+)", GroupHandler),
 					(r"/questions/(\w+)", QuestionHandler),
 					(r"/comments/(\w+)", CommentHandler),
 					(r"/favorite_or_share/(\w+)", FavoriteShareHandler),
 					(r"/vote/(\w+)", VoteHandler),
 					(r"/create_question", CreateQuestionHandler),
 					(r"/add_topic", AddTopicToFeed),
+					(r"/topics/(\w+)", TopicHandler),
+					(r"/favorites", FavoritesHandler),
 		]
 		settings = dict(
 			template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -185,20 +186,6 @@ class Application(tornado.web.Application):
 
 		tornado.web.Application.__init__(self, handlers, **settings)	
 
-# get user's information if logged in
-class BaseHandler(tornado.web.RequestHandler):
-	@tornado.gen.coroutine
-	def prepare(self):
-		auth_id = self.get_secure_cookie("auth_id")
-		self.current_user = None
-		if auth_id:
-			auth_id      = str(auth_id, "utf-8")
-			current_user = yield self.application.db.users.find_one({"_id": ObjectId(auth_id)}, {"salt": 0, "password": 0})
-			if current_user == None:
-				self.clear_cookie("auth_id")
-			else:
-				self.current_user = current_user
-
 # module to render the page header
 class HeaderModule(tornado.web.UIModule):
 	def render(self, search=True):
@@ -212,8 +199,8 @@ class HeaderModule(tornado.web.UIModule):
 
 # module to render the side column
 class SideColumnModule(tornado.web.UIModule):
-	def render(self):
-		return self.render_string("sidecolumn_module.html", current_user=self.current_user)
+	def render(self, title):
+		return self.render_string("sidecolumn_module.html", current_user=self.current_user, title=title)
 
 	def css_files(self):
 		return self.handler.static_url("css/sidecolumn_module.css")
@@ -221,85 +208,19 @@ class SideColumnModule(tornado.web.UIModule):
 	def javascript_files(self):
 		return self.handler.static_url("js/sidecolumn_module.js")
 
-# handler for the home page
-class IndexHandler(BaseHandler):
-	# redirect to /feed if already logged in
+# get user's information if logged in
+class BaseHandler(tornado.web.RequestHandler):
 	@tornado.gen.coroutine
-	def get(self):
-		self.redirect('/signup')
-		return
-		if self.current_user:
-			self.redirect("/feed")
-		else:
-			questions, groups = yield [self.application.db.questions.find().sort("_id", 1).to_list(10),
-									   self.application.db.groups.find().to_list(3)]
-
-			votes_temp = None
-			temp1, temp2, temp3, askers_temp = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-													  self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-													  self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-													  self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10)]
-
-			favorites = []
-			shares    = []
-			comments  = []
-			askers    = []
-			votes     = []
-			for x in questions:
-				favorited = False
-				count     = 0
-				if temp1:
-					for y in temp1:
-						if x["_id"] == y["question_id"]:
-							count = y["count"]
-							if self.current_user and self.current_user["_id"] in y["user_ids"]:
-								favorited = True
-							break
-					favorites.append((favorited, count))
-				else:
-					favorites.append((False, 0))
-
-				shared = False
-				count  = 0
-				if temp2:
-					for y in temp2:
-						if x["_id"] == y["question_id"]:
-							count = y["count"]
-							if self.current_user and self.current_user["_id"] in y["user_ids"]:
-								shared = True
-							break
-					shares.append((shared, count))
-				else:
-					shares.append((False, 0))
-
-				commented = False
-				count     = 0
-				if temp3:
-					for y in temp3:
-						if x["_id"] == y["question_id"]:
-							count = y["count"]
-							if self.current_user and self.current_user["_id"] in [q["user_id"] for q in y["comments"]]:
-								commented = True
-							break	
-					comments.append((commented, count, y["comments"]))
-				else:
-					comments.append((commented, count, None))
-
-				vote = None
-				if votes_temp:
-					for y in votes_temp["votes"]:
-						if x["_id"] == y["question_id"]:
-							vote = y["vote_index"]
-							break
-					votes.append(vote)
-				else:
-					votes.append(None)
-
-				for y in askers_temp:
-					if y["_id"] == x["asker"]:
-						askers.append(y)
-
-			self.render("index.html", askers=askers, questions=questions, groups=groups, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=False,)
+	def prepare(self):
+		auth_id = self.get_secure_cookie("auth_id")
+		self.current_user = None
+		if auth_id:
+			auth_id      = str(auth_id, "utf-8")
+			current_user = yield self.application.db.users.find_one({"_id": ObjectId(auth_id)}, {"salt": 0, "password": 0})
+			if current_user == None:
+				self.clear_cookie("auth_id")
+			else:
+				self.current_user = current_user
 
 # handler for registering new users
 class SignupHandler(BaseHandler):
@@ -380,6 +301,96 @@ class LogoutHandler(BaseHandler):
 	def post(self):
 		self.clear_cookie("auth_id")
 		self.redirect("/login")
+
+# handler to check if email from signup form is already in use
+class EmailHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self):
+		email = self.get_argument("email")
+		if (yield self.application.db.users.find_one({"email": email}, {"_id": 1})):
+			self.write({"email_taken": True})
+		else:
+			self.write({"email_taken": False})
+
+# handler for the home page
+class IndexHandler(BaseHandler):
+	# redirect to /feed if already logged in
+	@tornado.gen.coroutine
+	def get(self):
+		self.redirect('/signup')
+		return
+		if self.current_user:
+			self.redirect("/feed")
+		else:
+			questions, groups = yield [self.application.db.questions.find().sort("_id", 1).to_list(10),
+									   self.application.db.groups.find().to_list(3)]
+
+			votes_temp = None
+			temp1, temp2, temp3, askers_temp = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+													  self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+													  self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+													  self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10)]
+
+			favorites = []
+			shares    = []
+			comments  = []
+			askers    = []
+			votes     = []
+			for x in questions:
+				favorited = False
+				count     = 0
+				if temp1:
+					for y in temp1:
+						if x["_id"] == y["question_id"]:
+							count = y["count"]
+							if self.current_user and self.current_user["_id"] in y["user_ids"]:
+								favorited = True
+							break
+					favorites.append((favorited, count))
+				else:
+					favorites.append((False, 0))
+
+				shared = False
+				count  = 0
+				if temp2:
+					for y in temp2:
+						if x["_id"] == y["question_id"]:
+							count = y["count"]
+							if self.current_user and self.current_user["_id"] in y["user_ids"]:
+								shared = True
+							break
+					shares.append((shared, count))
+				else:
+					shares.append((False, 0))
+
+				commented = False
+				count     = 0
+				if temp3:
+					for y in temp3:
+						if x["_id"] == y["question_id"]:
+							count = y["count"]
+							if self.current_user and self.current_user["_id"] in [q["user_id"] for q in y["comments"]]:
+								commented = True
+							break	
+					comments.append((commented, count, y["comments"]))
+				else:
+					comments.append((commented, count, None))
+
+				vote = None
+				if votes_temp:
+					for y in votes_temp["votes"]:
+						if x["_id"] == y["question_id"]:
+							vote = y["vote_index"]
+							break
+					votes.append(vote)
+				else:
+					votes.append(None)
+
+				for y in askers_temp:
+					if y["_id"] == x["asker"]:
+						askers.append(y)
+
+			self.render("index.html", askers=askers, questions=questions, groups=groups, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=False,)
 
 # handler for user to modify account settings
 class SettingsHandler(BaseHandler):
@@ -467,18 +478,6 @@ class SettingsHandler(BaseHandler):
 
 			else:
 				pass
-
-
-
-# handler to check if email from signup form is already in use
-class EmailHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get(self):
-		email = self.get_argument("email")
-		if (yield self.application.db.users.find_one({"email": email}, {"_id": 1})):
-			self.write({"email_taken": True})
-		else:
-			self.write({"email_taken": False})
 			
 # handler for user to create a question
 class CreateQuestionHandler(BaseHandler):
@@ -781,6 +780,68 @@ class ProfileHandler(BaseHandler):
 				 							 answered_questions=answered_questions, questions=questions, user_followers=user_followers, user_following=user_following,
 				 							 user_following_count=user_following_count, user_followers_count=user_followers_count)
 
+def process_questions(current_user, questions, temp1, temp2, temp3, askers_temp, votes_temp):
+	favorites = []
+	shares    = []
+	comments  = []
+	askers    = []
+	votes     = []
+	for x in questions:
+		favorited = False
+		count     = 0
+		if temp1:
+			for y in temp1:
+				if x["_id"] == y["question_id"]:
+					count = y["count"]
+					if current_user and current_user["_id"] in y["user_ids"]:
+						favorited = True
+					break
+			favorites.append((favorited, count))
+		else:
+			favorites.append((False, 0))
+
+		shared = False
+		count  = 0
+		if temp2:
+			for y in temp2:
+				if x["_id"] == y["question_id"]:
+					count = y["count"]
+					if current_user and current_user["_id"] in y["user_ids"]:
+						shared = True
+					break
+			shares.append((shared, count))
+		else:
+			shares.append((False, 0))
+
+		commented = False
+		count     = 0
+		if temp3:
+			for y in temp3:
+				if x["_id"] == y["question_id"]:
+					count = y["count"]
+					if current_user and current_user["_id"] in [q["user_id"] for q in y["comments"]]:
+						commented = True
+					break	
+			comments.append((commented, count, y["comments"]))
+		else:
+			comments.append((commented, count, None))
+
+		vote = None
+		if votes_temp:
+			for y in votes_temp["votes"]:
+				if x["_id"] == y["question_id"]:
+					vote = y["vote_index"]
+					break
+			votes.append(vote)
+		else:
+			votes.append(None)
+
+		for y in askers_temp:
+			if y["_id"] == x["asker"]:
+				askers.append(y)
+
+	return favorites, shares, comments, askers, votes
+
 # handler for displaying a user's personalized newsfeed
 class FeedHandler(BaseHandler):
 	@tornado.gen.coroutine
@@ -797,67 +858,55 @@ class FeedHandler(BaseHandler):
 						 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
 
 			temp1, temp2, temp3, askers_temp, votes_temp = ret
-			
-			favorites = []
-			shares    = []
-			comments  = []
-			askers    = []
-			votes     = []
-			for x in questions:
-				favorited = False
-				count     = 0
-				if temp1:
-					for y in temp1:
-						if x["_id"] == y["question_id"]:
-							count = y["count"]
-							if self.current_user and self.current_user["_id"] in y["user_ids"]:
-								favorited = True
-							break
-					favorites.append((favorited, count))
-				else:
-					favorites.append((False, 0))
+			favorites, shares, comments, askers, votes   = process_questions(self.current_user, questions, temp1, temp2, temp3, askers_temp, votes_temp)
 
-				shared = False
-				count  = 0
-				if temp2:
-					for y in temp2:
-						if x["_id"] == y["question_id"]:
-							count = y["count"]
-							if self.current_user and self.current_user["_id"] in y["user_ids"]:
-								shared = True
-							break
-					shares.append((shared, count))
-				else:
-					shares.append((False, 0))
+			self.render("newsfeed.html", current_user=self.current_user, title='Feed', topic=False, following_topic=False, askers=askers, questions=questions,
+										 votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True, datetime=datetime)
 
-				commented = False
-				count     = 0
-				if temp3:
-					for y in temp3:
-						if x["_id"] == y["question_id"]:
-							count = y["count"]
-							if self.current_user and self.current_user["_id"] in [q["user_id"] for q in y["comments"]]:
-								commented = True
-							break	
-					comments.append((commented, count, y["comments"]))
-				else:
-					comments.append((commented, count, None))
+class FavoritesHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self):
+		if not self.current_user:
+			self.redirect("/")
+		else:
+			favorited = yield self.application.db.favorites.find({"user_ids": self.current_user["_id"]}, {"_id": 0, "question_id": 1}).to_list(10)
+			questions = yield self.application.db.questions.find({"_id": {"$in": [fav["question_id"] for fav in favorited]}}).sort("_id", 1).to_list(10)
 
-				vote = None
-				if votes_temp:
-					for y in votes_temp["votes"]:
-						if x["_id"] == y["question_id"]:
-							vote = y["vote_index"]
-							break
-					votes.append(vote)
-				else:
-					votes.append(None)
+			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+						 self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10),
+						 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
 
-				for y in askers_temp:
-					if y["_id"] == x["asker"]:
-						askers.append(y)
+			temp1, temp2, temp3, askers_temp, votes_temp = ret
+			favorites, shares, comments, askers, votes   = process_questions(self.current_user, questions, temp1, temp2, temp3, askers_temp, votes_temp)
 
-			self.render("newsfeed.html", profile=self.current_user, current_user=self.current_user, askers=askers, questions=questions, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True, datetime=datetime)
+			self.render("newsfeed.html", current_user=self.current_user, title='Favorites', topic=False, following_topic=False, askers=askers, questions=questions,
+										 votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True, datetime=datetime)	
+
+# handler for displaying questions of a specific topic
+class TopicHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self, topic_name):
+		questions = yield self.application.db.questions.find({"topics": topic_name}).sort("_id", 1).to_list(10)
+		if not questions:
+			self.redirect("/")
+
+		ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+					 self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+					 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
+					 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10),
+					 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
+
+		temp1, temp2, temp3, askers_temp, votes_temp = ret
+		favorites, shares, comments, askers, votes   = process_questions(self.current_user, questions, temp1, temp2, temp3, askers_temp, votes_temp)
+
+		following_topic = False
+		if self.current_user and (yield self.application.db.topics.find_one({"topics": topic_name, "followers": self.current_user["_id"]}, {"_id": 1})):
+			following_topic = True
+
+		self.render("newsfeed.html", current_user=self.current_user, title=topic_name, topic=topic_name, following_topic=following_topic, askers=askers, questions=questions,
+									 votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True, datetime=datetime)
 
 # handler to follow or hate a user
 class FollowHateHandler(BaseHandler):
@@ -918,20 +967,14 @@ class AddTopicToFeed(BaseHandler):
 	@tornado.gen.coroutine
 	def post(self):
 		if not self.current_user:
-			self.redirect("/")
+			self.redirect("/login")
 		else:
 			# topic will be added to the user's feed only if the topic already exists
 			topic_name = self.get_argument("topic-name")
-			if re.compile("^[a-zA-Z0-9 \-]+$").match(topic_name) != None:
-				topic_name = topic_name.lower().replace(' ', '-')
+			if re.compile("^[a-zA-Z0-9\-]+$").match(topic_name) != None:
+				topic_name = topic_name.lower()
 				yield self.application.db.topics.find_and_modify({"name": topic_name}, {"$addToSet": {"followers": self.current_user["_id"]}})
 				self.redirect("/feed")
-
-class GroupHandler(BaseHandler):
-	def get(self, group_name):
-		target_group = self.application.db.groups.find_one({"name": group_name})
-		questions = self.application.db.questions.find({"group": group_name}).sort("_id", pymongo.DESCENDING).limit(10)
-		self.render("group.html", profile=target_group, current_user=self.current_user, questions=questions, db=self.application.db)
 
 if __name__ == "__main__":
 	tornado.options.parse_command_line()

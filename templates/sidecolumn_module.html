@@ -4,19 +4,20 @@
             <div id="create-question">
                 <button>+ New Question</button>
             </div>
-            <div class="section-divider"></div>
+            <div class="sidecolumn-divider"></div>
             <div id="main">
                 <div class="nav-links-header-text">MAIN</div>
                 <div class="nav-links top">
                     <ul>
-                        <li>Overview</li>
-                        <li class="active">Feed</li>
+                        <li {% if title == 'Feed' %}class="active"{% end %}>Feed</li>
+                        <li {% if title == 'Favorites' %}class="active"{% end %}>Favorites</li>
                     </ul>
                 </div>
             </div>
+            <div class="sidecolumn-divider"></div>
             <div id="topics">
                 <div class="nav-links-header-text">TOPICS</div>
-                <button id="add-topics-button">+</button>
+                <!--<button id="add-topics-button">+</button>-->
                 <div class="nav-links">
                     <ul>
                         <li>

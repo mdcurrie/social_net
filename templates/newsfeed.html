@@ -17,12 +17,21 @@
     <body>
 	    {% module Header() %}
 	    <main>
-		    {% module SideColumn() %}
+		    {% module SideColumn(title) %}
 	        <section id="main-content">
 	        	<div id="main-content-wrapper">
 		        	<div id="main-content-header">
 			        	<div id="main-content-title">
-			        		Feed
+			        		{% if not topic %}
+			        			{{ title }}
+			        		{% else %}
+			        			#{{ topic }}
+			        			{% if following_topic %}
+			        				<button id="follow-topic-button" class="active">Following</button>
+			        			{% else %}
+			        				<button id="follow-topic-button">Follow</button>
+			        			{% end %}
+			        		{% end %}
 			        	</div>
 			        	<div id="main-content-selection">
 			        		<div class="selection">
@@ -45,57 +54,6 @@
 		    </aside>
 		    <div id="content-overlay"></div>
 		</main>
-
-	    <!--
-     	<section>
-     		{% if controlled %}
-	     		<article id="ask-article">
-	     			<div id="close-button">
-	     				&times
-	     			</div>
-	     			<div id="open-button">
-		     			<button>+</button>
-		     			<h5>Ask a question</h5>
-		     		</div>
-					<div id="modal">
-						<div id="modal-content">
-							<form method="post" action="create_question">
-								{% raw xsrf_form_html() %}
-								<p id="question-error"></p>
-								<div class="input-row">
-									<input style="background-image: url({{ static_url("images/help.svg") }})" type="text" id="question-title" name="question-title" autocomplete="off" placeholder="Enter a question" maxlength="30">
-								</div>
-								<div class="input-row">
-									<input style="background-image: url({{ static_url("images/image.svg") }})" type="text" id="image-link" name="image-link" autocomplete="off" placeholder="Link to image (not required)">
-								</div>
-								<div class="input-row">
-									<input style="background-image: url({{ static_url("images/chevron-small-right.svg") }})" type="text" id="answer-1" name="answer-1" autocomplete="off" placeholder="Option 1" maxlength="20">
-								</div>
-								<div class="input-row">
-									<input style="background-image: url({{ static_url("images/chevron-small-right.svg") }})" type="text" id="answer-2" name="answer-2" autocomplete="off" placeholder="Option 2" maxlength="20">
-								</div>
-								<div class="input-row">
-									<input style="background-image: url({{ static_url("images/chevron-small-right.svg") }})" type="text" id="answer-3" name="answer-3" autocomplete="off" placeholder="Option 3 (not required)" maxlength="20">
-								</div>
-								<div class="input-row">
-									<input style="background-image: url({{ static_url("images/chevron-small-right.svg") }})" type="text" id="answer-4" name="answer-4" autocomplete="off" placeholder="Option 4 (not required)" maxlength="20">
-								</div>
-								<div class="input-row">
-									<input style="background-image: url({{ static_url("images/chevron-small-right.svg") }})" type="text" id="answer-5" name="answer-5" autocomplete="off" placeholder="Option 5 (not required)" maxlength="20">
-								</div>
-								<button type="submit">Post Your Question<img src="{{ static_url("images/chevron-thin-right.svg") }}"></button>
-							</form>
-						</div>
-					</div>
-	     		</article>
-	     	{% end %}
-        </section>
-        {% if controlled %}
-	        <form method="post" action="logout">
-	            {% raw xsrf_form_html() %}
-	            <input type="submit" value="Log Out">
-	        </form>
-	    {% end %} -->
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
         <script src="{{ static_url("js/comment_module.js") }}"></script>
         <script src="{{ static_url("js/newsfeed.js") }}"></script>
