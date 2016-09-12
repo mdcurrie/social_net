@@ -99,11 +99,10 @@
 		position: relative;
 	}
 	.vote-count {
-		position: absolute;
-		bottom: 36px;
-		right: 11px;
 		font-size: 0.9em;
 		color: #353436;
+		padding: 8px 20px;
+		text-align: right;
 	}
 	.labels {
 		background: white;
@@ -150,12 +149,10 @@
 	}
 	.topics-container {
 		background: #e4e4e4;
-		height: 30px;
-		padding: 0 5px;
+		padding: 5px;
 	}
 	.question-topic {
 		display: inline-block;
-		transform: translateY(7px);
 		margin: 0 10px;
 	}
 }

@@ -28,6 +28,11 @@ $(function() {
 		validatePassword();
 		if (valid_username && valid_email && valid_password) {
 			$('form').unbind('submit').submit();
+
+			/* prevent double submission of form */
+			$('form').on('submit', function(e) {
+				e.preventDefault();
+			});
 		}
 	});
 });

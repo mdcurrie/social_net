@@ -13,5 +13,10 @@ $(function() {
 			return;
 		}
 		$(this).unbind('submit').submit();
+
+		/* prevent double submission of form */
+		$('form').on('submit', function(e) {
+			e.preventDefault();
+		});
 	});
 });
