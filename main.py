@@ -312,6 +312,114 @@ class EmailHandler(BaseHandler):
 		else:
 			self.write({"email_taken": False})
 
+# handler for displaying a user's profile page
+class ProfileHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self, user_id):
+		try:
+			user_id = ObjectId(user_id)
+		except:
+			self.redirect("/")
+		else:
+			target_user = yield self.application.db.users.find_one({"_id": user_id}, {"password": 0, "salt": 0, "hating": 0})
+			if not target_user:
+				self.redirect("/")
+			else:
+				own_profile = self.current_user and self.current_user["_id"] == user_id
+
+				ret = yield [self.application.db.questions.find({"asker": user_id}).sort("_id", 1).to_list(None),
+							 self.application.db.votes.find({"user_id": user_id}, {"_id": 0}).to_list(9),
+							 self.application.db.followers.find_one({"user_id": user_id}, {"_id": 0}),
+							 self.application.db.following.find_one({"user_id": user_id}, {"_id": 0}),]
+
+				questions, votes, user_followers, user_following = ret
+
+				following_this_user  = self.current_user and user_followers and self.current_user["_id"] in user_followers["followers"]
+				user_followers_count = user_following_count = 0
+				if user_followers and user_following:
+					user_followers_count = user_followers["count"]
+					user_following_count = user_following["count"]
+					user_followers, user_following = yield [self.application.db.users.find({"_id": {"$in": user_followers["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(6),
+															self.application.db.users.find({"_id": {"$in": user_following["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(6)]
+				else:
+					if user_followers:
+						user_followers_count = user_followers["count"]
+						user_followers = yield self.application.db.users.find({"_id": {"$in": user_followers["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(6)
+					if user_following:
+						user_following_count = user_following["count"]
+						user_following = yield self.application.db.users.find({"_id": {"$in": user_following["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(6)
+
+				recent_answers = answered_questions = None
+				if votes:
+					answered_questions = yield self.application.db.questions.find({"_id": {"$in": [vote["question_id"] for vote in votes[0]["votes"]]}}).to_list(None)
+					recent_answers = [v["vote_index"] for q in answered_questions for v in votes[0]["votes"] if q["_id"] == v["question_id"]]
+
+				self.render("user_profile.html", profile=target_user, own_profile=own_profile, following_this_user=following_this_user, recent_answers=recent_answers,
+					 							 answered_questions=answered_questions, questions=questions, user_followers=user_followers, user_following=user_following,
+					 							 user_following_count=user_following_count, user_followers_count=user_followers_count)
+
+# handler to follow or hate a user
+class FollowHateHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def post(self, target_id):
+		if not self.current_user:
+			self.redirect("/login")
+		else:
+			try:
+				target_id = ObjectId(target_id)
+			except:
+				self.redirect("/")
+			else:
+				if self.get_argument("action") == "follow":
+					if (yield self.application.db.followers.find_one({"user_id": target_id, "followers": self.current_user["_id"]}, fields={"_id": 1})):
+						ret = yield [self.application.db.followers.find_and_modify({"user_id": target_id}, {"$inc": {"count": -1}, "$pull": {"followers": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, new=True),
+								     self.application.db.following.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": -1}, "$pull": {"following": target_id}})]
+						self.write({"followers": ret[0]["count"], "display_text": "Follow"})
+					else:
+						ret = yield [self.application.db.followers.find_and_modify({"user_id": target_id}, {"$inc": {"count": 1}, "$addToSet": {"followers": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, upsert=True, new=True),
+								     self.application.db.following.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": 1}, "$addToSet": {"following": target_id}}, upsert=True)]
+						self.write({"followers": ret[0]["count"], "display_text": "Following"})
+				else:
+					if (yield self.application.db.haters.find_one({"user_id": target_id, "haters": self.current_user["_id"]}, fields={"_id": 1})):
+						ret = yield [self.application.db.haters.find_and_modify({"user_id": target_id}, {"$inc": {"count": -1}, "$pull": {"haters": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, new=True),
+						             self.application.db.hating.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": -1}, "$pull": {"hating": target_id}})]
+						self.write({"haters": ret[0]["count"], "display_text": "Hate"})
+					else:
+						ret = yield [self.application.db.haters.find_and_modify({"user_id": target_id}, {"$inc": {"count": 1}, "$addToSet": {"haters": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, upsert=True, new=True),
+						             self.application.db.hating.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": 1}, "$addToSet": {"hating": target_id}}, upsert=True)]
+						self.write({"haters": ret[0]["count"], "display_text": "Hating"})
+
+				self.redirect("/users/" + str(target_id))
+
+# handler to display a user's followers
+class GetRelationshipsHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self, target_id):
+		try:
+			target_id = ObjectId(target_id)
+		except:
+			self.redirect("/")
+		else:
+			relation  = self.get_argument("relationship")
+			if relation == "follower":
+				relation_list = yield self.application.db.followers.find_one({"user_id": target_id}, {"_id": 0, "followers": 1})
+				if relation_list:
+					relation_list = yield self.application.db.users.find({"_id": {"$in": relation_list["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
+			elif relation == "following":
+				relation_list = yield self.application.db.following.find_one({"user_id": target_id}, {"_id": 0, "following": 1})
+				if relation_list:
+					relation_list = yield self.application.db.users.find({"_id": {"$in": relation_list["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
+			else:
+				relation_list = yield self.application.db.haters.find_one({"user_id": target_id}, {"_id": 0, "haters": 1})
+				if relation_list:
+					relation_list = yield self.application.db.users.find({"_id": {"$in": relation_list["haters"]}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
+
+			if relation_list:
+				for user in relation_list:
+					user["_id"] = str(user["_id"])
+
+			self.render("relationship.html", relation_list=relation_list, relation=relation)
+
 # handler for the home page
 class IndexHandler(BaseHandler):
 	# redirect to /feed if already logged in
@@ -736,50 +844,6 @@ class FavoriteShareHandler(BaseHandler):
 						count = str(round(action_list["count"])/1000000, 1) + 'M'
 					self.write({action: True, "count": count})
 
-# handler for displaying a user's profile page
-class ProfileHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get(self, user_id):
-		target_user = yield self.application.db.users.find_one({"_id": ObjectId(user_id)}, {"password": 0, "salt": 0, "hating": 0})
-		if not target_user:
-			self.redirect("/")
-		else:
-			if self.current_user:
-				own_profile = str(self.current_user["_id"]) == user_id
-			else:
-				own_profile = False
-
-			ret = yield [self.application.db.questions.find({"asker": ObjectId(user_id)}).sort("_id", 1).to_list(None),
-						 self.application.db.votes.find({"user_id": ObjectId(user_id)}, {"_id": 0}).to_list(9),
-						 self.application.db.followers.find_one({"user_id": ObjectId(user_id)}, {"_id": 0}),
-						 self.application.db.following.find_one({"user_id": ObjectId(user_id)}, {"_id": 0}),]
-
-			questions, votes, user_followers, user_following = ret
-
-			following_this_user  = self.current_user and user_followers and self.current_user["_id"] in user_followers["followers"]
-			user_followers_count = user_following_count = 0
-			if user_followers and user_following:
-				user_followers_count = user_followers["count"]
-				user_following_count = user_following["count"]
-				user_followers, user_following = yield [self.application.db.users.find({"_id": {"$in": user_followers["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(6),
-														self.application.db.users.find({"_id": {"$in": user_following["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(6)]
-			else:
-				if user_followers:
-					user_followers_count = user_followers["count"]
-					user_followers = yield self.application.db.users.find({"_id": {"$in": user_followers["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(6)
-				if user_following:
-					user_following_count = user_following["count"]
-					user_following = yield self.application.db.users.find({"_id": {"$in": user_following["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(6)
-
-			recent_answers = answered_questions = None
-			if votes:
-				answered_questions = yield self.application.db.questions.find({"_id": {"$in": [vote["question_id"] for vote in votes[0]["votes"]]}}).to_list(None)
-				recent_answers = [v["vote_index"] for q in answered_questions for v in votes[0]["votes"] if q["_id"] == v["question_id"]]
-
-			self.render("user_profile.html", profile=target_user, own_profile=own_profile, following_this_user=following_this_user, recent_answers=recent_answers,
-				 							 answered_questions=answered_questions, questions=questions, user_followers=user_followers, user_following=user_following,
-				 							 user_following_count=user_following_count, user_followers_count=user_followers_count)
-
 def process_questions(current_user, questions, temp1, temp2, temp3, askers_temp, votes_temp):
 	favorites = []
 	shares    = []
@@ -907,60 +971,6 @@ class TopicHandler(BaseHandler):
 
 		self.render("newsfeed.html", current_user=self.current_user, title=topic_name, topic=topic_name, following_topic=following_topic, askers=askers, questions=questions,
 									 votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True, datetime=datetime)
-
-# handler to follow or hate a user
-class FollowHateHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def post(self, target_id):
-		if not self.current_user:
-			self.redirect("/")
-		else:
-			target_id = ObjectId(target_id)
-			if self.get_argument("action") == "follow":
-				if (yield self.application.db.followers.find_one({"user_id": target_id, "followers": self.current_user["_id"]}, fields={"_id": 1})):
-					ret = yield [self.application.db.followers.find_and_modify({"user_id": target_id}, {"$inc": {"count": -1}, "$pull": {"followers": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, new=True),
-							     self.application.db.following.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": -1}, "$pull": {"following": target_id}})]
-					self.write({"followers": ret[0]["count"], "display_text": "Follow"})
-				else:
-					ret = yield [self.application.db.followers.find_and_modify({"user_id": target_id}, {"$inc": {"count": 1}, "$addToSet": {"followers": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, upsert=True, new=True),
-							     self.application.db.following.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": 1}, "$addToSet": {"following": target_id}}, upsert=True)]
-					self.write({"followers": ret[0]["count"], "display_text": "Following"})
-			else:
-				if (yield self.application.db.haters.find_one({"user_id": target_id, "haters": self.current_user["_id"]}, fields={"_id": 1})):
-					ret = yield [self.application.db.haters.find_and_modify({"user_id": target_id}, {"$inc": {"count": -1}, "$pull": {"haters": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, new=True),
-					             self.application.db.hating.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": -1}, "$pull": {"hating": target_id}})]
-					self.write({"haters": ret[0]["count"], "display_text": "Hate"})
-				else:
-					ret = yield [self.application.db.haters.find_and_modify({"user_id": target_id}, {"$inc": {"count": 1}, "$addToSet": {"haters": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, upsert=True, new=True),
-					             self.application.db.hating.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": 1}, "$addToSet": {"hating": target_id}}, upsert=True)]
-					self.write({"haters": ret[0]["count"], "display_text": "Hating"})
-
-			self.redirect("/users/" + str(target_id))
-
-# handler to display a user's followers
-class GetRelationshipsHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get(self, target_id):
-		target_id = ObjectId(target_id)
-		relation  = self.get_argument("relationship")
-		if relation == "follower":
-			relation_list = yield self.application.db.followers.find_one({"user_id": target_id}, {"_id": 0, "followers": 1})
-			if relation_list:
-				relation_list = yield self.application.db.users.find({"_id": {"$in": relation_list["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
-		elif relation == "following":
-			relation_list = yield self.application.db.following.find_one({"user_id": target_id}, {"_id": 0, "following": 1})
-			if relation_list:
-				relation_list = yield self.application.db.users.find({"_id": {"$in": relation_list["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
-		else:
-			relation_list = yield self.application.db.haters.find_one({"user_id": target_id}, {"_id": 0, "haters": 1})
-			if relation_list:
-				relation_list = yield self.application.db.users.find({"_id": {"$in": relation_list["haters"]}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
-
-		if relation_list:
-			for user in relation_list:
-				user["_id"] = str(user["_id"])
-
-		self.render("relationship.html", relation_list=relation_list, relation=relation)
 
 # handler to add a topic to a user's feed
 class AddTopicToFeed(BaseHandler):

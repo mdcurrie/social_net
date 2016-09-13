@@ -69,20 +69,19 @@
                                 <div class="question">
                                     <a href="/questions/{{ str(answered_questions[idx]["_id"]) }}">
                                         <div class="background-image" style="background-image: url({{ answered_questions[idx]["image_link"] }})">
-                                            <div class="background-image-overlay">
-                                            </div>
+                                            <div class="background-image-overlay"></div>
                                             <div class="question-title">
                                                 {{ answered_questions[idx]["question"] }}
                                             </div>
                                         </div>
-                                        <div class="user-answer">
-                                            A: {{ answered_questions[idx]["data"][answer]["label"] }}
-                                        </div>
                                     </a>
+                                    <div class="user-answer">
+                                        A: {{ answered_questions[idx]["data"][answer]["label"] }}
+                                    </div>  
                                 </div>
                             {% end %}
                         {% else %}
-                            No answers yet.
+                            <div class="none-text">No answers yet.</div>
                         {% end %}
                     </div>
                     <div id="recent-questions">
@@ -112,7 +111,7 @@
                                 {% end %}
                             {% end %}
                         {% else %}
-                            No questions yet.
+                            <div class="none-text">No questions yet.</div>
                         {% end %}
                     </div>
                 </div>

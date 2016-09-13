@@ -9,8 +9,12 @@
                 <div class="nav-links-header-text">MAIN</div>
                 <div class="nav-links top">
                     <ul>
-                        <li {% if title == 'Feed' %}class="active"{% end %}>Feed</li>
-                        <li {% if title == 'Favorites' %}class="active"{% end %}>Favorites</li>
+                        <a href="/feed">
+                            <li {% if title == 'Feed' %}class="active"{% end %}>Feed</li>
+                        </a>
+                        <a href="/favorites">
+                            <li {% if title == 'Favorites' %}class="active"{% end %}>Favorites</li>
+                        </a>
                     </ul>
                 </div>
             </div>
