@@ -49,6 +49,7 @@
 	.nav-links li {
 		color: white;
 		padding: 8px 20px 8px 34px;
+		transition: background 0.3s;
 	}
 	.nav-links li.active {
 		background: #868686;

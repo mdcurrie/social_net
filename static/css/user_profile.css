@@ -131,11 +131,12 @@ a {
 		display: none;
 		border-top: 1px solid rgba(0,0,0,.1);
 		margin-top: 12px;
-		padding-top: 10px;
+		padding-top: 15px;
+		overflow: hidden;
 	}
 	#relation-header {
 		font-size: 1.1em;
-		margin-bottom: 10px;
+		margin-bottom: 20px;
 		padding-left: 5px;
 	}
 	#relation-header span {
@@ -147,25 +148,30 @@ a {
 	#relation-header span:hover {
 		cursor: pointer;
 	}
-	.user-profile-pic img {
+	.user {
+		float: left;
 		width: 12.5%;
 		padding: 0 5px;
+		margin-bottom: 10px;
 	}
-	#none-text {
+	.user-profile-pic img {
+		width: 100%;
+	}
+	.none-text {
 		padding-left: 5px;
 	}
 	#recent-answers {
 		border-top: 1px solid rgba(0,0,0,.1);
 		border-bottom: 1px solid rgba(0,0,0,.1);
 		margin: 0 auto;
-		margin-top: 12px;
-		margin-bottom: 12px;
-		padding: 10px 0 12px 0;
-		overflow: auto;
+		margin-top: 15px;
+		margin-bottom: 15px;
+		padding: 15px 0;
+		overflow: hidden;
 	}
 	#recent-answers-header {
 		font-size: 1.1em;
-		margin-bottom: 10px;
+		margin-bottom: 20px;
 		padding-left: 5px;
 	}
 	#recent-answers-header span {
@@ -191,11 +197,11 @@ a {
 		word-break: break-word;
 	}
 	#recent-questions {
-		overflow: auto;
+		overflow: hidden;
 	}
 	#recent-questions-header {
 		font-size: 1.1em;
-		margin-bottom: 10px;
+		margin-bottom: 20px;
 		padding-left: 5px;
 	}
 	#recent-questions-header span {
@@ -207,13 +213,14 @@ a {
 	#recent-questions-header span:hover {
 		cursor: pointer;
 	}
-	a:hover .background-image-overlay {
+	.background-image:hover .background-image-overlay {
 		background: rgba(0,0,0,.1);
 	}
 	.question {
 		float: left;
 		padding: 0 5px;
 		width: 33.3%;
+		margin-bottom: 15px;
 	}
 	.background-image {
 		height: 180px;

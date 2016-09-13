@@ -81,7 +81,8 @@
 	.comment-time {
 		color: #95909a;
 		font-size: 0.8em;
-		transform: translate(8px, 2px);
+		display: inline-block;
+		transform: translateX(8px);
 	}
 	.comment-form {
 		height: 60px;
