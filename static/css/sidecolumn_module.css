@@ -136,12 +136,18 @@
 		font-size: 2em;
 		margin-bottom: 40px;
 	}
+	.question-form-error {
+		font-size: 0.85em;
+		margin-top: 4px;
+		color: #e64c65;
+	}
 	.input-section {
 		margin: 20px 0;
 	}
 	.input-label {
 		margin-bottom: 4px;
 		font-size: 1.1em;
+		color: #2eb398;
 	}
 	.input-section input {
 	    font-family: Gotham;

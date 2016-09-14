@@ -118,12 +118,14 @@ $(function() {
 
 		if (!(/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/i.test(email))) {
 			$('#email-error').text('That is not a valid email address.');
+			$('.row:first-of-type input').eq(1).focus();
 			return;
 		}
 
 		$.post('/settings/updateEmail', {_xsrf: getCookie('_xsrf'), email: email}, function(data) {
 			if (data.error) {
 				$('#email-error').text(data.error);
+				$('.row:first-of-type input').eq(1).focus();
 			}
 			else {
 				$('#email-error').remove();
@@ -154,12 +156,15 @@ $(function() {
 
 		if (new_password.length < 6) {
 			$('#reset-password-error').text("Your new password must contain at least 6 characters.");
+			$('.row:nth-of-type(2) input').eq(2).focus();
 			return;
 		}
 
 		$.post('/settings/updatePassword', {_xsrf: getCookie('_xsrf'), "old-password": old_password, "new-password": new_password}, function(data) {
 			if (data.error) {
 				$('#reset-password-error').text(data.error);
+				$('.row:nth-of-type(2) input').eq(1).val('').focus();
+				$('.row:nth-of-type(2) input').eq(2).val('');
 			}
 			else {
 				$('#reset-password-error').remove();
@@ -188,20 +193,24 @@ $(function() {
 
 		if (custom_url.length >= 1 && custom_url.length < 6) {
 			$('#custom-url-error').text("Your custom URL must contain at least 6 characters.");
+			$('.row:nth-of-type(3) input').eq(1).focus();
 			return;
 		}
 		if (custom_url == "signup" || custom_url == "login" || custom_url == "feed" || custom_url == "settings") {
 			$('#custom-url-error').text("Sorry, but that custom URL is not allowed.");
+			$('.row:nth-of-type(3) input').eq(1).focus();
 			return;
 		}
 		if (custom_url != '' && !(/^[a-zA-Z0-9_]+$/i.test(custom_url))) {
 			$('#custom-url-error').text("Your custom URL can only contain letters, numbers, and, underscores.");
+			$('.row:nth-of-type(3) input').eq(1).focus();
 			return;
 		}
 
 		$.post('/settings/updateURL', {_xsrf: getCookie('_xsrf'), "custom-url": custom_url}, function(data) {
 			if (data.error) {
 				$('#custom-url-error').text(data.error);
+				$('.row:nth-of-type(3) input').eq(1).focus();
 			}
 			else {
 				$('#custom-url-error').remove();

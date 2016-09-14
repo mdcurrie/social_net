@@ -47,21 +47,82 @@ $(function() {
 
 	$('#question-form-wrapper form').on('submit', function(e) {
 		e.preventDefault();
-		if ($('#question-title').val() == '')
-			return;
-		if ($('#image-link').val() == '')
-			return;
-		if ($('#choice-a').val() == '')
-			return;
-		if ($('#choice-b').val() == '')
-			return;
-		if ($('#topics-input').val() == '')
-			return;
-		if (!(/^[a-zA-Z0-9 \-]+$/i.test($('#topics-input').val()))) {
+		if ($('#question-title').val() == '') {
+			if (!$('.input-section:first-of-type .question-form-error').length)
+				$('.input-section:first-of-type').append('<div class="question-form-error">Please enter a title for your question.</div>');
+			else
+				$('.input-section:first-of-type .question-form-error').text('Please enter a title for your question.');
+			
+			$('#question-title').focus();
 			return;
 		}
-		if ($('#choice-a').val() == $('#choice-b').val())
+		$('.input-section:first-of-type .question-form-error').remove();
+
+		if ($('#image-link').val() == '') {
+			if (!$('.input-section:nth-of-type(2) .question-form-error').length)
+				$('.input-section:nth-of-type(2)').append('<div class="question-form-error">Please enter a link to an image.</div>');
+			else
+				$('.input-section:nth-of-type(2) .question-form-error').text('Please enter a link to an image.');
+			
+			$('#image-link').focus();
 			return;
+		}
+		$('.input-section:nth-of-type(2) .question-form-error').remove();
+
+		if ($('#choice-a').val() == '') {
+			if (!$('.input-section:nth-of-type(3) .question-form-error').length)
+				$('.input-section:nth-of-type(3)').append('<div class="question-form-error">Please enter a choice for voting.</div>');
+			else
+				$('.input-section:nth-of-type(3) .question-form-error').text('Please enter a choice for voting.');
+			
+			$('#choice-a').focus();
+			return;
+		}
+		$('.input-section:nth-of-type(3) .question-form-error').remove();
+
+		if ($('#choice-b').val() == '') {
+			if (!$('.input-section:nth-of-type(4) .question-form-error').length)
+				$('.input-section:nth-of-type(4)').append('<div class="question-form-error">Please enter a choice for voting.</div>');
+			else
+				$('.input-section:nth-of-type(4) .question-form-error').text('Please enter a choice for voting.');
+			
+			$('#choice-b').focus();
+			return;
+		}
+		$('.input-section:nth-of-type(4) .question-form-error').remove();
+
+		if ($('#topics-input').val() == '') {
+			if (!$('.input-section:nth-of-type(8) .question-form-error').length)
+				$('.input-section:nth-of-type(8)').append('<div class="question-form-error">Please enter at least 1 topic.</div>');
+			else
+				$('.input-section:nth-of-type(8) .question-form-error').text('Please enter at least 1 topic.');
+			
+			$('#topics-input').focus();
+			return;
+		}
+		$('.input-section:nth-of-type(8) .question-form-error').remove();
+
+		if (!(/^[a-zA-Z0-9 \-]+$/i.test($('#topics-input').val()))) {
+			if (!$('.input-section:nth-of-type(8) .question-form-error').length)
+				$('.input-section:nth-of-type(8)').append('<div class="question-form-error">Topics can only contain letters, numbers, and hyphens.</div>');
+			else
+				$('.input-section:nth-of-type(8) .question-form-error').text('Topics can only contain letters, numbers, and hyphens.');
+			
+			$('#topics-input').focus();
+			return;
+		}
+		$('.input-section:nth-of-type(8) .question-form-error').remove();
+
+		if ($('#choice-a').val() == $('#choice-b').val()) {
+			if (!$('.input-section:nth-of-type(4) .question-form-error').length)
+				$('.input-section:nth-of-type(4)').append('<div class="question-form-error">Choice B must be different from Choice A.</div>');
+			else
+				$('.input-section:nth-of-type(4) .question-form-error').text('Choice B must be different from Choice A.');
+			
+			$('#choice-b').focus();
+			return;
+		}
+		$('.input-section:nth-of-type(4) .question-form-error').remove();
 
 		$("<img>", {
 			src: $('#image-link').val(),
