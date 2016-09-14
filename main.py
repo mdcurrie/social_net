@@ -420,6 +420,96 @@ class GetRelationshipsHandler(BaseHandler):
 
 			self.render("relationship.html", relation_list=relation_list, relation=relation)
 
+# handler for user to modify account settings
+class SettingsHandler(BaseHandler):
+	def get(self):
+		# redirect user to login page if not logged in
+		if not self.current_user:
+			self.redirect("/login")
+		else:
+			self.render("settings.html", current_user=self.current_user)
+
+	# command indicates which field the user wants to modify
+	# AJAX response with an error message if user sends invalid parameters
+	@tornado.gen.coroutine
+	def post(self, command):
+		if not self.current_user:
+			self.redirect("/login")
+		else:
+			if command == "updatePicture":
+				new_picture = self.get_argument("profile-picture")
+				# check if link is an actual image format using imghdr
+				http_client = tornado.httpclient.AsyncHTTPClient()
+				response    = yield http_client.fetch(new_picture)
+				if not imghdr.what(response.buffer):
+					self.write({"error": "You must enter a link to an image."})
+				else:
+					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"profile_pic_link": new_picture}})
+
+			elif command == "updateUsername":		
+				new_username = self.get_argument("username")
+				if len(new_username) < 6 or len(new_username) > 25:
+					self.write({"error": "Your username must be between 6 and 25 characters long."})
+				elif re.compile("^[a-zA-Z0-9_ ]+$").match(new_username) == None:
+					self.write({"error": "Your username can only contain letters, numbers, spaces, and underscores."})
+				else:
+					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"username": new_username}})
+
+			# bio is limited to 140 characters
+			elif command == "updateBio":
+				new_bio = self.get_argument("bio")[:140]
+				yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"bio": new_bio}})
+
+			elif command == "updateEmail":
+				new_email = self.get_argument("email")
+				if new_email == self.current_user["email"]:
+					pass
+				elif re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(new_email) == None:
+					self.write({"error": "That is not a valid email address."})
+				elif (yield self.application.db.users.find_one({"email": new_email})) != None:
+					self.write({"error": "An account is already registered with that email address."})
+				else:
+					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"email": new_email}})
+
+			elif command == "updatePassword":
+				old_password = self.get_argument("old-password")
+				new_password = self.get_argument("new-password")
+
+				if (len(new_password) < 6):
+					self.write({"error": "Your new password must contain at least 6 characters."})
+				else:
+					user = yield self.application.db.users.find_one({"_id": self.current_user["_id"]}, {"salt": 1, "password": 1})
+					if user == None:
+						self.redirect("/")
+					else:
+						if bcrypt.hashpw(old_password.encode('utf-8'), user["salt"]) != user["password"]:
+							self.write({"error": "The password you entered was incorrect."})
+						else:
+							salt     = bcrypt.gensalt()
+							password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
+							yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"password": password, "salt": salt}})
+
+			elif command == "updateURL":
+				custom_url = self.get_argument("custom-url")
+				if 1 <= len(custom_url) < 6:
+					self.write({"error": "Your custom URL must contain at least 6 characters."})
+				elif custom_url != '' and re.compile("^[a-zA-Z0-9_]+$").match(custom_url) == None:
+					self.write({"error": "Your custom URL can only contain letters, numbers, and underscores."})
+				# some URLS are off-limits
+				elif custom_url in {"signup", "login", "feed", "settings"}:
+					self.write({"error": "Sorry, but that custom URL is not allowed."})
+				else:
+					found_user = yield self.application.db.users.find_one({"custom_url": custom_url}, {"custom_url": 1})
+					if found_user and found_user["_id"] != self.current_user["_id"]:
+						self.write({"error": "Sorry, but someone else is already using that custom URL."})
+					elif found_user and found_user["_id"] == self.current_user["_id"]:
+						pass
+					else:
+						yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"custom_url": custom_url}})
+
+			else:
+				pass
+
 # handler for the home page
 class IndexHandler(BaseHandler):
 	# redirect to /feed if already logged in
@@ -499,93 +589,6 @@ class IndexHandler(BaseHandler):
 						askers.append(y)
 
 			self.render("index.html", askers=askers, questions=questions, groups=groups, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=False,)
-
-# handler for user to modify account settings
-class SettingsHandler(BaseHandler):
-	def get(self):
-		# redirect user to login page if not logged in
-		if not self.current_user:
-			self.redirect("/login")
-		else:
-			self.render("settings.html", current_user=self.current_user)
-
-	# command indicates which field the user wants to modify
-	# AJAX response with an error message if user sends invalid parameters
-	@tornado.gen.coroutine
-	def post(self, command):
-		if not self.current_user:
-			self.redirect("/login")
-		else:
-			if command == "updatePicture":
-				new_picture = self.get_argument("profile-picture")
-				# check if link is an actual image format using imghdr
-				http_client = tornado.httpclient.AsyncHTTPClient()
-				response    = yield http_client.fetch(new_picture)
-				if not imghdr.what(response.buffer):
-					self.write({"error": "You must enter a link to an image."})
-				else:
-					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"profile_pic_link": new_picture}})
-
-			elif command == "updateUsername":		
-				new_username = self.get_argument("username")
-				if len(new_username) < 6 or len(new_username) > 25:
-					self.write({"error": "Your username must be between 6 and 25 characters long."})
-				elif re.compile("^[a-zA-Z0-9_ ]+$").match(new_username) == None:
-					self.write({"error": "Your username can only contain letters, numbers, spaces, and underscores."})
-				else:
-					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"username": new_username}})
-
-			# bio is limited to 140 characters
-			elif command == "updateBio":
-				new_bio = self.get_argument("bio")[:140]
-				yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"bio": new_bio}})
-
-			elif command == "updateEmail":
-				new_email = self.get_argument("email")
-				if new_email == self.current_user["email"]:
-					pass
-				elif re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(new_email) == None:
-					self.write({"error": "That is not a valid email address."})
-				elif (yield self.application.db.users.find_one({"email": new_email})) != None:
-					self.write({"error": "An account is already registered with that email address."})
-				else:
-					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"email": new_email}})
-
-			elif command == "updatePassword":
-				old_password = self.get_argument("old-password")
-				new_password = self.get_argument("new-password")
-
-				if (len(new_password) < 6):
-					self.write({"error": "Your new password must contain at least 6 characters."})
-				else:
-					user = yield self.application.db.users.find_one({"_id": self.current_user["_id"]}, {"salt": 1, "password": 1})
-					if user == None:
-						self.redirect("/")
-					else:
-						if bcrypt.hashpw(old_password.encode('utf-8'), user["salt"]) != user["password"]:
-							self.write({"error": "The password you entered was incorrect."})
-							self.redirect("/feed")
-						else:
-							salt     = bcrypt.gensalt()
-							password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
-							yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"password": password, "salt": salt}})
-
-			elif command == "updateURL":
-				custom_url = self.get_argument("custom-url")
-				if 1 <= len(custom_url) < 6:
-					self.write({"error": "Your custom URL must contain at least 6 characters."})
-				elif custom_url != '' and re.compile("^[a-zA-Z0-9_]+$").match(custom_url) == None:
-					self.write({"error": "Your custom URL can only contain letters, numbers, and underscores."})
-				# some URLS are off-limits
-				elif custom_url in {"signup", "login", "feed", "settings"}:
-					self.write({"error": "Sorry, but that custom URL is not allowed."})
-				elif (yield self.application.db.users.find_one({"custom_url": custom_url})) != None:
-					self.write({"error": "Sorry, but someone else is already using that custom URL."})
-				else:
-					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"custom_url": custom_url}})
-
-			else:
-				pass
 			
 # handler for user to create a question
 class CreateQuestionHandler(BaseHandler):
@@ -602,34 +605,30 @@ class CreateQuestionHandler(BaseHandler):
 			# check for errors in question
 			http_client = tornado.httpclient.AsyncHTTPClient()
 			if question_title == '':
-				pass
+				self.write({"title_error": "Please enter a title for your question."})
 			elif len(choices) < 2:
-				pass
+				self.write({"choice_error": "Please enter at least 2 different choices."})
 			elif re.compile("^[a-zA-Z0-9 \-]+$").match(topics) == None:
-				pass
+				self.write({"topics_error": "Topics can only contain letters, numbers, and hyphens."})
 			elif not imghdr.what((yield http_client.fetch(image_link)).buffer):
-				pass
+				self.write({"image_error": "Please enter a link to an image."})
 			else:
-				topics   = topics.lower().split(' ')
+				topics   = topics.lower().split(' ')[:10]
 				data     = [{'label': label, 'votes': 0} for label in choices]
 
-				# yield self.application.db.questions.insert({
-				# 		"asker":      self.current_user["_id"],
-				# 		"question":   question_title,
-				# 		"date":       datetime.utcnow(),
-				# 		"image_link": image_link,
-				# 		"data":       data,
-				# 		"topics":     topics,
-				# 	})
+				yield self.application.db.questions.insert({
+						"asker":      self.current_user["_id"],
+						"question":   question_title,
+						"date":       datetime.utcnow(),
+						"image_link": image_link,
+						"data":       data,
+						"topics":     topics,
+					})
 
-				topic_relations = []
+				topics = topics.lower().split(' ')[:10]
 				for topic in topics:
 					topics_subset = set(topics) - set([topic])
-					topic_relations.append([topic, list(topics_subset)])
-
-				yield [self.application.db.topics.find_and_modify({"name": topic_relations[0][0]},) ]
-
-			self.redirect("/feed")
+					yield self.application.db.topics.find_and_modify({"name": topic}, {"$inc": {"related_topics." + related_topic: 1 for related_topic in topics_subset}}, upsert=True)
 
 # handler to display individual question page
 class QuestionHandler(BaseHandler):
@@ -989,5 +988,5 @@ class AddTopicToFeed(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
