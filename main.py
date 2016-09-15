@@ -327,8 +327,8 @@ class ProfileHandler(BaseHandler):
 			else:
 				own_profile = self.current_user and self.current_user["_id"] == user_id
 
-				ret = yield [self.application.db.questions.find({"asker": user_id}).sort("_id", 1).to_list(None),
-							 self.application.db.votes.find({"user_id": user_id}, {"_id": 0}).to_list(9),
+				ret = yield [self.application.db.questions.find({"asker": user_id}).sort("_id", 1).to_list(18),
+							 self.application.db.votes.find({"user_id": user_id}, {"_id": 0}).to_list(18),
 							 self.application.db.followers.find_one({"user_id": user_id}, {"_id": 0}),
 							 self.application.db.following.find_one({"user_id": user_id}, {"_id": 0}),]
 
@@ -339,19 +339,19 @@ class ProfileHandler(BaseHandler):
 				if user_followers and user_following:
 					user_followers_count = user_followers["count"]
 					user_following_count = user_following["count"]
-					user_followers, user_following = yield [self.application.db.users.find({"_id": {"$in": user_followers["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(6),
-															self.application.db.users.find({"_id": {"$in": user_following["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(6)]
+					user_followers, user_following = yield [self.application.db.users.find({"_id": {"$in": user_followers["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(12),
+															self.application.db.users.find({"_id": {"$in": user_following["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(12)]
 				else:
 					if user_followers:
 						user_followers_count = user_followers["count"]
-						user_followers = yield self.application.db.users.find({"_id": {"$in": user_followers["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(6)
+						user_followers = yield self.application.db.users.find({"_id": {"$in": user_followers["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(12)
 					if user_following:
 						user_following_count = user_following["count"]
-						user_following = yield self.application.db.users.find({"_id": {"$in": user_following["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(6)
+						user_following = yield self.application.db.users.find({"_id": {"$in": user_following["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(12)
 
 				recent_answers = answered_questions = None
 				if votes:
-					answered_questions = yield self.application.db.questions.find({"_id": {"$in": [vote["question_id"] for vote in votes[0]["votes"]]}}).to_list(None)
+					answered_questions = yield self.application.db.questions.find({"_id": {"$in": [vote["question_id"] for vote in votes[0]["votes"]]}}).to_list(18)
 					recent_answers = [v["vote_index"] for q in answered_questions for v in votes[0]["votes"] if q["_id"] == v["question_id"]]
 
 				self.render("user_profile.html", profile=target_user, own_profile=own_profile, following_this_user=following_this_user, recent_answers=recent_answers,
@@ -606,17 +606,23 @@ class CreateQuestionHandler(BaseHandler):
 			http_client = tornado.httpclient.AsyncHTTPClient()
 			if question_title == '':
 				self.write({"title_error": "Please enter a title for your question."})
+			elif len(question_title) > 140:
+				self.write({"title_error": "Question titles must be 120 characters or less."})
 			elif len(choices) < 2:
 				self.write({"choice_error": "Please enter at least 2 different choices."})
+			elif not all(len(choice) <= 40 for choice in list(choices)):
+				self.write({"choice_error": "Choices must be 40 characters or less."})
+			elif not topics:
+				self.write({"topics_error": "Please enter at least 1 topic."})
 			elif re.compile("^[a-zA-Z0-9 \-]+$").match(topics) == None:
 				self.write({"topics_error": "Topics can only contain letters, numbers, and hyphens."})
 			elif not imghdr.what((yield http_client.fetch(image_link)).buffer):
 				self.write({"image_error": "Please enter a link to an image."})
 			else:
-				topics   = topics.lower().split(' ')[:10]
-				data     = [{'label': label, 'votes': 0} for label in choices]
+				topics = topics.lower().split(' ')[:10]
+				data   = [{'label': label, 'votes': 0} for label in choices]
 
-				yield self.application.db.questions.insert({
+				question = yield self.application.db.questions.insert({
 						"asker":      self.current_user["_id"],
 						"question":   question_title,
 						"date":       datetime.utcnow(),
@@ -625,10 +631,14 @@ class CreateQuestionHandler(BaseHandler):
 						"topics":     topics,
 					})
 
-				topics = topics.lower().split(' ')[:10]
-				for topic in topics:
-					topics_subset = set(topics) - set([topic])
-					yield self.application.db.topics.find_and_modify({"name": topic}, {"$inc": {"related_topics." + related_topic: 1 for related_topic in topics_subset}}, upsert=True)
+				if len(topics) == 1:
+					yield self.application.db.topics.find_and_modify({"name": topics[0]}, {"$set": {"name": topics[0]}}, upsert=True)
+				else:
+					for topic in topics:
+						topics_subset = set(topics) - set([topic])
+						yield self.application.db.topics.find_and_modify({"name": topic}, {"$inc": {"related_topics." + related_topic: 1 for related_topic in topics_subset}}, upsert=True)
+
+				self.write({"question_link": "/questions/" + str(question)})
 
 # handler to display individual question page
 class QuestionHandler(BaseHandler):
