@@ -47,7 +47,7 @@
 			        </div>
 			        <div id="feed">
 			        	{% for idx, question in enumerate(questions) %}
-			        		{% module Question(askers[idx], question, votes[idx], favorites[idx], shares[idx], comments[idx]) %}
+			        		{% module Question(askers[idx], question, votes[idx], favorites[idx], comments[idx]) %}
 						{% end %}
 					</div>
 				</div>

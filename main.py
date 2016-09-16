@@ -321,7 +321,7 @@ class ProfileHandler(BaseHandler):
 		except:
 			self.redirect("/")
 		else:
-			target_user = yield self.application.db.users.find_one({"_id": user_id}, {"password": 0, "salt": 0, "hating": 0})
+			target_user = yield self.application.db.users.find_one({"_id": user_id}, {"password": 0, "salt": 0})
 			if not target_user:
 				self.redirect("/")
 			else:
@@ -336,18 +336,10 @@ class ProfileHandler(BaseHandler):
 
 				following_this_user  = self.current_user and user_followers and self.current_user["_id"] in user_followers["followers"]
 				user_followers_count = user_following_count = 0
-				if user_followers and user_following:
+				if user_followers:
 					user_followers_count = user_followers["count"]
+				if user_following:
 					user_following_count = user_following["count"]
-					user_followers, user_following = yield [self.application.db.users.find({"_id": {"$in": user_followers["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(12),
-															self.application.db.users.find({"_id": {"$in": user_following["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(12)]
-				else:
-					if user_followers:
-						user_followers_count = user_followers["count"]
-						user_followers = yield self.application.db.users.find({"_id": {"$in": user_followers["followers"]}}, {"username": 1, "profile_pic_link": 1}).to_list(12)
-					if user_following:
-						user_following_count = user_following["count"]
-						user_following = yield self.application.db.users.find({"_id": {"$in": user_following["following"]}}, {"username": 1, "profile_pic_link": 1}).to_list(12)
 
 				recent_answers = answered_questions = None
 				if votes:
@@ -355,8 +347,8 @@ class ProfileHandler(BaseHandler):
 					recent_answers = [v["vote_index"] for q in answered_questions for v in votes[0]["votes"] if q["_id"] == v["question_id"]]
 
 				self.render("user_profile.html", profile=target_user, own_profile=own_profile, following_this_user=following_this_user, recent_answers=recent_answers,
-					 							 answered_questions=answered_questions, questions=questions, user_followers=user_followers, user_following=user_following,
-					 							 user_following_count=user_following_count, user_followers_count=user_followers_count)
+					 							 answered_questions=answered_questions, questions=questions, user_following_count=user_following_count,
+					 							 user_followers_count=user_followers_count)
 
 # handler to follow or hate a user
 class FollowHateHandler(BaseHandler):
@@ -368,7 +360,7 @@ class FollowHateHandler(BaseHandler):
 			try:
 				target_id = ObjectId(target_id)
 			except:
-				self.redirect("/")
+				self.write({"redirect", "/"})
 			else:
 				if self.get_argument("action") == "follow":
 					if (yield self.application.db.followers.find_one({"user_id": target_id, "followers": self.current_user["_id"]}, fields={"_id": 1})):
@@ -388,8 +380,6 @@ class FollowHateHandler(BaseHandler):
 						ret = yield [self.application.db.haters.find_and_modify({"user_id": target_id}, {"$inc": {"count": 1}, "$addToSet": {"haters": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, upsert=True, new=True),
 						             self.application.db.hating.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": 1}, "$addToSet": {"hating": target_id}}, upsert=True)]
 						self.write({"haters": ret[0]["count"], "display_text": "Hating"})
-
-				self.redirect("/users/" + str(target_id))
 
 # handler to display a user's followers
 class GetRelationshipsHandler(BaseHandler):
@@ -510,6 +500,128 @@ class SettingsHandler(BaseHandler):
 			else:
 				pass
 
+# handler for user to create a question
+class CreateQuestionHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def post(self):
+		# redirect user to login page if not logged in 
+		if not self.current_user:
+			self.write({"redirect": "/login"})
+		else:
+			question_title = self.get_argument("question-title")
+			image_link     = self.get_argument("image-link")
+			choices        = set([self.get_argument("choice-" + x) for x in 'abcde']) - set([''])
+			topics         = self.get_argument("topics")
+
+			# check for errors in question
+			http_client = tornado.httpclient.AsyncHTTPClient()
+			if question_title == '':
+				self.write({"title_error": "Please enter a title for your question."})
+			elif len(question_title) > 140:
+				self.write({"title_error": "Question titles must be 120 characters or less."})
+			elif len(choices) < 2:
+				self.write({"choice_error": "Please enter at least 2 different choices."})
+			elif not all(len(choice) <= 40 for choice in list(choices)):
+				self.write({"choice_error": "Choices must be 40 characters or less."})
+			elif not topics:
+				self.write({"topics_error": "Please enter at least 1 topic."})
+			elif re.compile("^[a-zA-Z0-9 \-]+$").match(topics) == None:
+				self.write({"topics_error": "Topics can only contain letters, numbers, and hyphens."})
+			elif not imghdr.what((yield http_client.fetch(image_link)).buffer):
+				self.write({"image_error": "Please enter a link to an image."})
+			else:
+				topics = topics.lower().split(' ')[:10]
+				if not all(len(topic) <= 40 for topic in list(topics)):
+					self.write({"topics_error": "Each topic must be 40 characters or less."})
+				else:
+					data   = [{'label': label, 'votes': 0} for label in choices]
+
+					question = yield self.application.db.questions.insert({
+							"asker":      self.current_user["_id"],
+							"question":   question_title,
+							"date":       datetime.utcnow(),
+							"image_link": image_link,
+							"data":       data,
+							"topics":     topics,
+						})
+
+					if len(topics) == 1:
+						yield self.application.db.topics.find_and_modify({"name": topics[0]}, {"$set": {"name": topics[0]}}, upsert=True)
+					else:
+						for topic in topics:
+							topics_subset = set(topics) - set([topic])
+							yield self.application.db.topics.find_and_modify({"name": topic}, {"$inc": {"related_topics." + related_topic: 1 for related_topic in topics_subset}}, upsert=True)
+
+					self.write({"redirect": "/questions/" + str(question)})
+
+# handler to display individual question page
+class QuestionHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self, question_id):
+		try:
+			question_id = ObjectId(question_id)
+		except:
+			self.redirect("/")
+		else:
+			question = yield self.application.db.questions.find_one({"_id": question_id})
+			if not question:
+				self.redirect("/")
+			else:
+				if self.current_user:
+					db_favorites, db_comments, asker, vote = yield [self.application.db.favorites.find_one({"question_id": question_id}),
+																    self.application.db.comments.find_one({"question_id": question_id}),
+																    self.application.db.users.find_one({"_id": question["asker"]}, {"email": 0, "bio": 0, "password": 0, "salt": 0}),
+																    self.application.db.votes.find_one({"user_id": self.current_user["_id"], "votes.question_id": question_id}, {"_id": 0, "votes.$.vote_index": 1})]
+				else:
+					vote = None
+					db_favorites, db_comments, asker = yield [self.application.db.favorites.find_one({"question_id": question_id}),
+														      self.application.db.comments.find_one({"question_id": question_id}),
+														      self.application.db.users.find_one({"_id": question["asker"]}, {"email": 0, "bio": 0, "password": 0, "salt": 0})]
+				
+				if not asker:
+					self.redirect("/")
+
+				commenters = None
+				if db_comments:
+					commenters = []
+					# get 50 most recent comments
+					db_comments["comments"] = db_comments["comments"][-50:]
+					unsorted_commenters     = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in db_comments["comments"]]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)
+					for temp1 in db_comments["comments"]:
+						for temp2 in unsorted_commenters:
+							if temp2["_id"] == temp1["user_id"]:
+								commenters.append(temp2)
+								break
+
+				favorited_this_question = self.current_user and db_favorites and self.current_user["_id"] in db_favorites["user_ids"]
+				favorite_count          = 0
+				if db_favorites:
+					favorite_count = db_favorites["count"]
+
+				comment_count = 0
+				comments      = None
+				if db_comments:
+					comment_count = db_comments["count"]
+					comments      = db_comments["comments"]
+
+				if vote:
+					vote = vote["votes"][0]['vote_index']
+
+				self.render("question.html", current_user=self.current_user, asker=asker, question=question, vote=vote, favorite_count=favorite_count, favorited_this_question=favorited_this_question,
+											 comment_count=comment_count, comments=comments, commenters=commenters, datetime=datetime)
+
+# module to render a question card
+class QuestionModule(tornado.web.UIModule):
+	def render(self, asker, question, vote, favorite_count, favorited_this_question, comment_count):
+		return self.render_string("question_module.html", asker=asker, question=question, vote=vote, favorite_count=favorite_count, favorited_this_question=favorited_this_question,
+											              comment_count=comment_count, datetime=datetime, json=json)
+
+	def css_files(self):
+		return self.handler.static_url("css/question_module.css")
+
+	def javascript_files(self):
+		return self.handler.static_url("js/question_module.js")
+
 # handler for the home page
 class IndexHandler(BaseHandler):
 	# redirect to /feed if already logged in
@@ -589,123 +701,6 @@ class IndexHandler(BaseHandler):
 						askers.append(y)
 
 			self.render("index.html", askers=askers, questions=questions, groups=groups, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=False,)
-			
-# handler for user to create a question
-class CreateQuestionHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def post(self):
-		if not self.current_user:
-			self.redirect("/")
-		else:
-			question_title = self.get_argument("question-title")
-			image_link     = self.get_argument("image-link")
-			choices        = set([self.get_argument("choice-" + x) for x in 'abcde']) - set([''])
-			topics         = self.get_argument("topics")
-
-			# check for errors in question
-			http_client = tornado.httpclient.AsyncHTTPClient()
-			if question_title == '':
-				self.write({"title_error": "Please enter a title for your question."})
-			elif len(question_title) > 140:
-				self.write({"title_error": "Question titles must be 120 characters or less."})
-			elif len(choices) < 2:
-				self.write({"choice_error": "Please enter at least 2 different choices."})
-			elif not all(len(choice) <= 40 for choice in list(choices)):
-				self.write({"choice_error": "Choices must be 40 characters or less."})
-			elif not topics:
-				self.write({"topics_error": "Please enter at least 1 topic."})
-			elif re.compile("^[a-zA-Z0-9 \-]+$").match(topics) == None:
-				self.write({"topics_error": "Topics can only contain letters, numbers, and hyphens."})
-			elif not imghdr.what((yield http_client.fetch(image_link)).buffer):
-				self.write({"image_error": "Please enter a link to an image."})
-			else:
-				topics = topics.lower().split(' ')[:10]
-				data   = [{'label': label, 'votes': 0} for label in choices]
-
-				question = yield self.application.db.questions.insert({
-						"asker":      self.current_user["_id"],
-						"question":   question_title,
-						"date":       datetime.utcnow(),
-						"image_link": image_link,
-						"data":       data,
-						"topics":     topics,
-					})
-
-				if len(topics) == 1:
-					yield self.application.db.topics.find_and_modify({"name": topics[0]}, {"$set": {"name": topics[0]}}, upsert=True)
-				else:
-					for topic in topics:
-						topics_subset = set(topics) - set([topic])
-						yield self.application.db.topics.find_and_modify({"name": topic}, {"$inc": {"related_topics." + related_topic: 1 for related_topic in topics_subset}}, upsert=True)
-
-				self.write({"question_link": "/questions/" + str(question)})
-
-# handler to display individual question page
-class QuestionHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get(self, question_id):
-		question_id = ObjectId(question_id)
-		question = yield self.application.db.questions.find_one({"_id": question_id})
-		if not question:
-			self.redirect("/")
-		else:
-			vote = None
-			if self.current_user:
-				temp1, temp2, temp3, asker, vote = yield [self.application.db.favorites.find_one({"question_id": ObjectId(question_id)}),
-														  self.application.db.shares.find_one({"question_id": ObjectId(question_id)}),
-														  self.application.db.comments.find_one({"question_id": ObjectId(question_id)}),
-														  self.application.db.users.find_one({"_id": question["asker"]}, {"email": 0, "bio": 0, "password": 0, "salt": 0}),
-														  self.application.db.votes.find_one({"user_id": self.current_user["_id"], "votes.question_id": question_id}, {"_id": 0, "votes.$.vote_index": 1})]
-			else:
-				temp1, temp2, temp3, asker = yield [self.application.db.favorites.find_one({"question_id": ObjectId(question_id)}),
-														  self.application.db.shares.find_one({"question_id": ObjectId(question_id)}),
-														  self.application.db.comments.find_one({"question_id": ObjectId(question_id)}),
-														  self.application.db.users.find_one({"_id": question["asker"]}, {"email": 0, "bio": 0, "password": 0, "salt": 0})]
-			
-
-			commenters = None
-			if temp3:
-				commenters = []
-				x = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in temp3["comments"]]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)
-				for q in temp3["comments"]:
-					for y in x:
-						if y["_id"] == q["user_id"]:
-							commenters.append(y)
-							break
-
-			favorited = self.current_user and temp1 and self.current_user["_id"] in temp1["user_ids"]
-			if temp1: count = temp1["count"]
-			else: count = 0
-			favorites = [favorited, count]
-
-			shared = self.current_user and temp2 and self.current_user["_id"] in temp2["user_ids"]
-			if temp2: count = temp2["count"]
-			else: count = 0
-			shares = [shared, count]
-
-			commented = self.current_user and temp3 and self.current_user["_id"] in [comment["user_id"] for comment in temp3["comments"]]
-			if temp3: count = temp3["count"]
-			else: count = 0
-			if temp3:
-				comments = [commented, count, temp3["comments"]]
-			else:
-				comments = [commented, count, None]
-
-			if vote:
-				vote = vote["votes"][0]['vote_index']
-
-			self.render("question.html", asker=asker, current_user=self.current_user, question=question, vote=vote, favorites=favorites, shares=shares, comments=comments, commenters=commenters, datetime=datetime)
-
-# module to render a question card
-class QuestionModule(tornado.web.UIModule):
-	def render(self, asker, question, vote, favorites, shares, comments):
-		return self.render_string("question_module.html", question=question, asker=asker, vote=vote, favorites=favorites, shares=shares, comments=comments, datetime=datetime, json=json)
-
-	def css_files(self):
-		return self.handler.static_url("css/question_module.css")
-
-	def javascript_files(self):
-		return self.handler.static_url("js/question_module.js")
 
 # handler for adding comments to a question
 class CommentHandler(BaseHandler):
@@ -853,7 +848,7 @@ class FavoriteShareHandler(BaseHandler):
 						count = str(round(action_list["count"])/1000000, 1) + 'M'
 					self.write({action: True, "count": count})
 
-def process_questions(current_user, questions, temp1, temp2, temp3, askers_temp, votes_temp):
+def process_questions(current_user, questions, temp1, temp3, askers_temp, votes_temp):
 	favorites = []
 	shares    = []
 	comments  = []
@@ -872,19 +867,6 @@ def process_questions(current_user, questions, temp1, temp2, temp3, askers_temp,
 			favorites.append((favorited, count))
 		else:
 			favorites.append((False, 0))
-
-		shared = False
-		count  = 0
-		if temp2:
-			for y in temp2:
-				if x["_id"] == y["question_id"]:
-					count = y["count"]
-					if current_user and current_user["_id"] in y["user_ids"]:
-						shared = True
-					break
-			shares.append((shared, count))
-		else:
-			shares.append((False, 0))
 
 		commented = False
 		count     = 0
@@ -913,7 +895,7 @@ def process_questions(current_user, questions, temp1, temp2, temp3, askers_temp,
 			if y["_id"] == x["asker"]:
 				askers.append(y)
 
-	return favorites, shares, comments, askers, votes
+	return favorites, comments, askers, votes
 
 # handler for displaying a user's personalized newsfeed
 class FeedHandler(BaseHandler):
@@ -925,16 +907,15 @@ class FeedHandler(BaseHandler):
 			questions = yield self.application.db.questions.find().sort("_id", 1).to_list(10)
 
 			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-						 self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
 						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
 						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10),
 						 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
 
-			temp1, temp2, temp3, askers_temp, votes_temp = ret
-			favorites, shares, comments, askers, votes   = process_questions(self.current_user, questions, temp1, temp2, temp3, askers_temp, votes_temp)
+			temp1, temp3, askers_temp, votes_temp = ret
+			favorites, comments, askers, votes    = process_questions(self.current_user, questions, temp1, temp3, askers_temp, votes_temp)
 
 			self.render("newsfeed.html", current_user=self.current_user, title='Feed', topic=False, following_topic=False, askers=askers, questions=questions,
-										 votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True, datetime=datetime)
+										 votes=votes, favorites=favorites, comments=comments, controlled=True, datetime=datetime)
 
 class FavoritesHandler(BaseHandler):
 	@tornado.gen.coroutine
