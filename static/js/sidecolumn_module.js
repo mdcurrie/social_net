@@ -205,10 +205,10 @@ $(function() {
 						$('#topics-input').focus();
 						return;
 					}
-					$('.input-section:nth-of-type(8) .question-form-error').remove();
+					$('.input-section:nth-of-type(8) .questino-form-error').remove();
 
-					if (data.question_link) {
-						window.location.href = data.question_link;
+					if (data.redirect) {
+						window.location.href = data.redirect;
 					}
 				});
 			}
