@@ -61,9 +61,6 @@
 	#topics {
 		position: relative;
 	}
-	#topics li:first-of-type {
-		display: none;
-	}
 	#add-topics-button {
 		border: none;
 		outline: none;

@@ -96,7 +96,7 @@
 		width: calc(100% - 45px);
 		height: 40px;
 		font-size: 1em;
-		padding: 10px 20px;
+		padding: 10px;
 		float: left;
 		background-color: white;
 		font-family: Gotham;
@@ -110,6 +110,9 @@
 		border-left: 1px solid #f1f1f1;
 		float: left;
 		background: white;
+	}
+	.comment-form img:hover {
+		cursor: pointer;
 	}
 	.all-comments::-webkit-scrollbar {
 	    width: 6px;

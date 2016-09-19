@@ -113,11 +113,21 @@
 	.poll-answer:last-of-type {
 		padding-bottom: 25px;
 	}
+	.percent-and-bar:hover {
+		cursor: pointer;
+	}
+	.percent-and-bar:hover .poll-percentage-wrapper {
+		background-color: #2eb398;
+	}
+	.percent-and-bar:hover .poll-percentage {
+		color: white;
+	}
 	.poll-percentage-wrapper {
 		width: 50px;
 		height: 25px;
 		float: left;
-		text-align: center
+		text-align: center;
+		transition: background-color 0.3s;
 	}
 	.poll-percentage-wrapper.active {
 		background: #2eb39c;
@@ -128,6 +138,7 @@
 	.poll-percentage {
 		transform: translateY(5px);
 		font-size: 0.9em;
+		transition: color 0.3s
 	}
 	.bar-wrapper1 {
 		margin-left: 48px;

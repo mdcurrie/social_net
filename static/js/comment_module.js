@@ -13,14 +13,19 @@ $(function() {
 function submitForm() {
     var question_id = $('.comment-form form').attr('action').split('/')[2];
     var comment_val = $('.comment-form input').eq(1).val();
+
     if (comment_val) {
         $.post('/comments/' + question_id, {_xsrf: getCookie('_xsrf'), comment: comment_val}, function(data) {
-            data = data.slice(106, -387);
-            $('.all-comments').replaceWith(data);
-            $('.comment-form input').eq(1).val('');
-            $('.all-comments').scrollTop($('.all-comments')[0].scrollHeight);
-            $('#' + question_id).find('.comment-count .count-text').text($('.comment').size());
-            $('#' + question_id).find('.comment-count .icon-indicator').addClass('active');
+            if (data.redirect) {
+                window.location.href = data.redirect;
+            }
+            else {
+                data.replacement = data.replacement.slice(106, -387);
+                $('.all-comments').replaceWith(data.replacement);
+                $('.comment-form input').eq(1).val('');
+                $('.all-comments').scrollTop($('.all-comments')[0].scrollHeight);
+                $('#' + question_id).find('.comment-count .count-text').text(data.count);
+            }
         });
     }
 }

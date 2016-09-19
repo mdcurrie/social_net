@@ -31,4 +31,18 @@ $(function() {
 			});
 		});
 	});
+
+	$('#follow-topic-button').on('click', function(e) {
+		e.preventDefault();
+		var url = $('#follow-topic-button').attr('formaction');
+
+		$.post(url, {_xsrf: getCookie('_xsrf')}, function(data) {
+			
+		});
+	});
 });
+
+function getCookie(name) {
+    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+    return r ? r[1] : undefined;
+}

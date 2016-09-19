@@ -55,6 +55,34 @@ a {
 		font-size: 2em;
 		margin-bottom: 50px;
 	}
+	#main-content-title form {
+		display: inline-block;
+		transform: translate(10px, -3px);
+	}
+	#follow-topic-button {
+	    padding: 5px 10px;
+	    border: 1px solid #2eb398;
+	    outline: none;
+	    background: transparent;
+	    color: #2eb398;
+	    font-family: Gotham;
+	    font-size: 0.6em;
+	    border-radius: 3px;
+	}
+	#follow-topic-button:hover {
+		background: #2eb398;
+		color: white;
+		cursor: pointer;
+	}
+	#follow-topic-button.active {
+		background: #2eb398;
+		color: white;
+	}
+	#follow-topic-button.active:hover {
+		background: #23927c;
+		border: 1px solid #23927c;
+		color: white;
+	}
 	#main-content-selection {
 		border-top: 1px solid rgba(212, 210, 213, 0.7);
 		border-bottom: 1px solid rgba(212, 210, 213, 0.7);
