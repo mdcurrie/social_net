@@ -24,15 +24,17 @@
                 <!--<button id="add-topics-button">+</button>-->
                 <div class="nav-links">
                     <ul>
-                        <li>
+                        <!--<li>
                             <form action="/add_topic" method="post">
                                 {% raw xsrf_form_html() %}
                                 <input id="topic-name-input" name="topic-name" placeholder='Like "music" or "new-york"' autocomplete="off" maxlength="30">
                             </form>
-                        </li>
+                        </li>-->
                         {% if current_user.get("topics") %}
                             {% for topic in current_user["topics"] %}
-                                <li>#{{ topic }}</li>
+                                <a href="/topics/{{ topic }}">
+                                    <li>#{{ topic }}</li>
+                                </a>
                             {% end %}
                         {% end %}
                     </ul>

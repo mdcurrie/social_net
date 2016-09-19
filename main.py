@@ -215,12 +215,17 @@ class BaseHandler(tornado.web.RequestHandler):
 		auth_id = self.get_secure_cookie("auth_id")
 		self.current_user = None
 		if auth_id:
-			auth_id      = str(auth_id, "utf-8")
-			current_user = yield self.application.db.users.find_one({"_id": ObjectId(auth_id)}, {"salt": 0, "password": 0})
-			if current_user == None:
-				self.clear_cookie("auth_id")
+			auth_id = str(auth_id, "utf-8")
+			try:
+				auth_id = ObjectId(auth_id)
+			except:
+				return
 			else:
-				self.current_user = current_user
+				current_user = yield self.application.db.users.find_one({"_id": auth_id}, {"salt": 0, "password": 0})
+				if current_user == None:
+					self.clear_cookie("auth_id")
+				else:
+					self.current_user = current_user
 
 # handler for registering new users
 class SignupHandler(BaseHandler):
@@ -587,11 +592,7 @@ class QuestionHandler(BaseHandler):
 					# get 50 most recent comments
 					db_comments["comments"] = db_comments["comments"][-50:]
 					unsorted_commenters     = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in db_comments["comments"]]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)
-					for temp1 in db_comments["comments"]:
-						for temp2 in unsorted_commenters:
-							if temp2["_id"] == temp1["user_id"]:
-								commenters.append(temp2)
-								break
+					commenters              = [commenter for comment in db_comments["comments"] for commenter in unsorted_commenters if commenter["_id"] == comment["user_id"]]
 
 				favorited_this_question = self.current_user and db_favorites and self.current_user["_id"] in db_favorites["user_ids"]
 				favorite_count          = 0
@@ -621,6 +622,190 @@ class QuestionModule(tornado.web.UIModule):
 
 	def javascript_files(self):
 		return self.handler.static_url("js/question_module.js")
+
+# handler for viewing/adding comments to a question
+class CommentHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self, question_id):
+		try:
+			question_id = ObjectId(question_id)
+		except:
+			self.redirect("/")
+		else:
+			comments = yield self.application.db.comments.find_one({"question_id": question_id}, fields={"_id": 0, "comments": 1})
+			if comments:
+				comments   = comments["comments"][-50:]
+				user_list  = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in comments]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)	
+				commenters = [user for comment in comments for user in user_list if user["_id"] == comment["user_id"]]
+
+				self.render("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime)
+			
+			else:
+				self.render("comment_module.html", question_id=question_id, comments=None, commenters=None, datetime=datetime)
+
+	@tornado.gen.coroutine
+	def post(self, question_id):
+		if not self.current_user:
+			self.write({"redirect": "/login"})
+		else:
+			try:
+				question_id = ObjectId(question_id)
+			except:
+				self.write({"redirect": "/login"})
+			else:
+				comment  = self.get_argument("comment")
+				comments = yield self.application.db.comments.find_and_modify(
+						{"question_id": question_id},
+						{"$inc": {"count": 1}, "$push": {"comments": {"user_id": self.current_user["_id"], "date": datetime.utcnow(), "comment": comment}}},
+						fields={"_id": 0},
+						upsert=True,
+						new=True
+					)
+
+				# get list of all users that have left a comment
+				count      = comments["count"]
+				comments   = comments["comments"][-50:]
+				user_list  = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in comments]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)	
+				commenters = [user for comment in comments for user in user_list if user["_id"] == comment["user_id"]]
+
+				self.write({"count": count, "replacement": str(self.render_string("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime), "utf-8")})
+
+# handler for rendering comments
+class CommentModule(tornado.web.UIModule):
+	def render(self, question_id, comments, commenters):
+		return self.render_string("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime)
+
+	def css_files(self):
+		return self.handler.static_url("css/comment_module.css")
+
+	def javascript_files(self):
+		return self.handler.static_url("js/comment_module.js")
+
+# handler for voting on questions
+class VoteHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def post(self, question_id):
+		if not self.current_user:
+			self.write({"redirect": "/login"})
+		else:
+			try:
+				question_id = ObjectId(question_id)
+			except:
+				self.write({"redirect": "/"})
+			else:
+				vote_index  = int(self.get_argument("vote_index"))
+
+				# user has already voted on this question
+				removed_vote = False
+				if (yield self.application.db.votes.find_one({"user_id": self.current_user["_id"], "votes.question_id": question_id})):
+					user_vote = yield self.application.db.votes.find_and_modify(
+							{"user_id": self.current_user["_id"], "votes.question_id": question_id},
+							{"$set": {"votes.$.vote_index": vote_index}},
+							fields={"_id": 0, "votes": 1}
+						)
+
+					for vote_entry in user_vote["votes"]:
+						if vote_entry["question_id"] == question_id:
+							old_vote = vote_entry["vote_index"]
+							break
+					
+					# if user votes on same choice, then remove the user's vote
+					if old_vote == vote_index:
+						for idx, vote_entry in enumerate(user_vote["votes"][:]):
+							if vote_entry["question_id"] == question_id:
+								del user_vote["votes"][idx]
+								break
+
+						ret = yield [self.application.db.votes.update({"user_id": self.current_user["_id"]},{"$set": {"votes": user_vote["votes"]}}),
+									 self.application.db.questions.find_and_modify({"_id": question_id}, {"$inc": {"data."+str(old_vote)+".votes": -1, "data."+str(vote_index)+".votes": -1}}, new=True)]
+
+						question_data = ret[1]["data"]
+						removed_vote  = True
+
+					else:
+						question_data = (yield self.application.db.questions.find_and_modify(
+								{"_id": question_id},
+								{"$inc": {"data."+str(old_vote)+".votes": -1, "data."+str(vote_index)+".votes": 1}},
+								fields={"_id": 0, "data": 1},
+								new=True))["data"]
+				
+				# user has not voted on this question
+				else:
+					ret = yield [self.application.db.votes.update({"user_id": self.current_user["_id"]}, {"$addToSet": {"votes": {"question_id": question_id, "vote_index": vote_index}}}, upsert=True),
+							     self.application.db.questions.find_and_modify({"_id": question_id}, {"$inc": {"data."+str(vote_index)+".votes": 1}}, fields={"_id": 0, "data": 1}, new=True)]
+
+					question_data = ret[1]["data"]
+
+				vote_count = sum([data["votes"] for data in question_data])
+				if vote_count == 0:
+					vote_percentages = [0 for data in question_data]
+				else:
+					vote_percentages = [data["votes"] * 100/vote_count for data in question_data]
+					
+				if 1000 <= vote_count <= 999999:
+					vote_count = str(round(vote_count/1000, 1)) + 'K'
+				elif 1000000 < vote_count:
+					vote_count = str(round(vote_count/1000000, 1)) + 'M'
+
+				self.write({"removed_vote": removed_vote, "idx": vote_index, "votes": vote_count, "percentages": vote_percentages})
+
+# handler for favoriting or sharing a question
+class FavoriteShareHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def post(self, question_id):
+		if not self.current_user:
+			self.write({"redirect": "/login"})
+		else:
+			try:
+				question_id = ObjectId(question_id)
+			except:
+				self.write({"redirect": "/"})
+			else:
+				action = self.get_argument("action")
+				if action == "favorite":
+					action_list = yield self.application.db.favorites.find_one({"question_id": question_id}, fields={"user_ids": 1})
+					action_db   = self.application.db.favorites
+				else:
+					action_list = yield self.application.db.shares.find_one({"question_id": question_id}, fields={"user_ids": 1})
+					action_db   = self.application.db.shares
+
+				# first user to favorite or share this question
+				if not action_list:
+					yield action_db.update({"question_id": question_id}, {"$inc": {"count": 1}, "$addToSet": {"user_ids": self.current_user["_id"]}}, upsert=True)
+					self.write({action: True, "count": 1})
+				# not the first
+				else:
+					if self.current_user["_id"] in action_list["user_ids"]:
+						action_list = yield action_db.find_and_modify(
+								{"question_id": question_id},
+								{"$inc": {"count": -1}, "$pull": {"user_ids": self.current_user["_id"]}},
+								fields={"count": 1},
+								new=True)
+
+						if action_list["count"] < 1000:
+							count = action_list["count"]
+						elif action_list["count"] <= 999999:
+							count = str(round(action_list["count"])/1000, 1) + 'K'
+						else:
+							count = str(round(action_list["count"])/1000000, 1) + 'M'
+
+						self.write({action: False, "count": count})
+
+					else:
+						action_list = yield action_db.find_and_modify(
+								{"question_id": question_id},
+								{"$inc": {"count": 1}, "$push": {"user_ids": self.current_user["_id"]}},
+								fields={"count": 1},
+								new=True)
+
+						if action_list["count"] <= 1000:
+							count = action_list["count"]
+						elif action_list["count"] <= 999999:
+							count = str(round(action_list["count"])/1000, 1) + 'K'
+						else:
+							count = str(round(action_list["count"])/1000000, 1) + 'M'
+
+						self.write({action: True, "count": count})
 
 # handler for the home page
 class IndexHandler(BaseHandler):
@@ -702,200 +887,47 @@ class IndexHandler(BaseHandler):
 
 			self.render("index.html", askers=askers, questions=questions, groups=groups, votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=False,)
 
-# handler for adding comments to a question
-class CommentHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get (self, question_id):
-		comments = yield self.application.db.comments.find_one({"question_id": ObjectId(question_id)}, fields={"_id": 0, "comments": 1})
-		if comments:
-			comments = comments["comments"]
-			user_list  = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in comments]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)	
-			commenters = [user for comment in comments for user in user_list if user["_id"] == comment["user_id"]]
-
-			self.render("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime)
-		else:
-			self.render("comment_module.html", question_id=question_id, comments=None, commenters=None, datetime=datetime)
-
-	@tornado.gen.coroutine
-	def post(self, question_id):
-		if not self.current_user:
-			self.redirect("/signup")
-		else:
-			comment  = self.get_argument("comment")
-			comments = yield self.application.db.comments.find_and_modify(
-					{"question_id": ObjectId(question_id)},
-					{"$inc": {"count": 1}, "$push": {"comments": {"user_id": self.current_user["_id"], "date": datetime.utcnow(), "comment": comment}}},
-					fields={"_id": 0, "comments": 1},
-					upsert=True,
-					new=True
-				)
-
-			# get list of all users that have left a comment
-			comments   = comments["comments"]
-			user_list  = yield self.application.db.users.find({"_id": {"$in": [comment["user_id"] for comment in comments]}}, {"password": 0, "salt": 0, "email": 0, "bio": 0}).to_list(50)	
-			commenters = [user for comment in comments for user in user_list if user["_id"] == comment["user_id"]]
-
-			self.render("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime)
-
-# handler for rendering comments
-class CommentModule(tornado.web.UIModule):
-	def render(self, question_id, comments, commenters):
-		return self.render_string("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime)
-
-	def css_files(self):
-		return self.handler.static_url("css/comment_module.css")
-
-	def javascript_files(self):
-		return self.handler.static_url("js/comment_module.js")
-
-# handler for voting on questions
-class VoteHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get(self, question_id):
-		if not self.current_user:
-			self.redirect("/signup")
-		else:
-			question_id = ObjectId(question_id)
-			vote_index  = int(self.get_argument("vote_index"))
-
-			# user has already voted on this question
-			if (yield self.application.db.votes.find_one({"user_id": self.current_user["_id"], "votes.question_id": question_id})):
-				user_vote = yield self.application.db.votes.find_and_modify(
-						{"user_id": self.current_user["_id"], "votes.question_id": question_id},
-						{"$set": {"votes.$.vote_index": vote_index}},
-						fields={"_id": 0, "votes": 1})
-
-				for vote_entry in user_vote["votes"]:
-					if vote_entry["question_id"] == question_id:
-						old_vote = vote_entry["vote_index"]
-						break
-				
-				if old_vote == vote_index:
-					question_data = (yield self.application.db.questions.find_one({"_id": question_id}, fields={"_id": 0, "data": 1}))["data"]
-				else:
-					question_data = (yield self.application.db.questions.find_and_modify(
-							{"_id": question_id},
-							{"$inc": {"data."+str(old_vote)+".votes": -1, "data."+str(vote_index)+".votes": 1}},
-							fields={"_id": 0, "data": 1},
-							new=True))["data"]
-			
-			# user has not voted on this question
-			else:
-				ret = yield [self.application.db.votes.update({"user_id": self.current_user["_id"]}, {"$push": {"votes": {"question_id": ObjectId(question_id), "vote_index": vote_index}}}, upsert=True),
-						     self.application.db.questions.find_and_modify({"_id": question_id}, {"$inc": {"data."+str(vote_index)+".votes": 1}}, fields={"_id": 0, "data": 1}, new=True)]
-
-				question_data = ret[1]["data"]
-
-			vote_count       = sum([data["votes"] for data in question_data])
-			vote_percentages = [data["votes"] * 100/vote_count for data in question_data]
-			if 1000 <= vote_count <= 999999:
-				vote_count = str(round(vote_count/1000, 1)) + 'K'
-			elif 1000000 < vote_count:
-				vote_count = str(round(vote_count/1000000, 1)) + 'M'
-
-			self.write({"idx": vote_index, "votes": vote_count, "percentages": vote_percentages})
-
-# handler for favoriting or sharing a question
-class FavoriteShareHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get(self, question_id):
-		if not self.current_user:
-			self.redirect("/signup")
-		else:
-			question_id = ObjectId(question_id)
-			action      = self.get_argument("action")
-			if action == "favorite":
-				action_list = yield self.application.db.favorites.find_one({"question_id": question_id}, fields={"user_ids": 1})
-				action_db   = self.application.db.favorites
-			else:
-				action_list = yield self.application.db.shares.find_one({"question_id": question_id}, fields={"user_ids": 1})
-				action_db   = self.application.db.shares
-
-			# first user to favorite or share this question
-			if not action_list:
-				yield action_db.update({"question_id": question_id}, {"$inc": {"count": 1}, "$addToSet": {"user_ids": self.current_user["_id"]}}, upsert=True)
-				self.write({action: True, "count": 1})
-			# not the first
-			else:
-				if self.current_user["_id"] in action_list["user_ids"]:
-					action_list = yield action_db.find_and_modify(
-							{"question_id": question_id},
-							{"$inc": {"count": -1}, "$pull": {"user_ids": self.current_user["_id"]}},
-							fields={"count": 1},
-							new=True)
-
-					if action_list["count"] < 1000:
-						count = action_list["count"]
-					elif action_list["count"] <= 999999:
-						count = str(round(action_list["count"])/1000, 1) + 'K'
-					else:
-						count = str(round(action_list["count"])/1000000, 1) + 'M'
-
-					self.write({action: False, "count": count})
-
-				else:
-					action_list = yield action_db.find_and_modify(
-							{"question_id": question_id},
-							{"$inc": {"count": 1}, "$push": {"user_ids": self.current_user["_id"]}},
-							fields={"count": 1},
-							new=True)
-
-					if action_list["count"] <= 1000:
-						count = action_list["count"]
-					elif action_list["count"] <= 999999:
-						count = str(round(action_list["count"])/1000, 1) + 'K'
-					else:
-						count = str(round(action_list["count"])/1000000, 1) + 'M'
-					self.write({action: True, "count": count})
-
-def process_questions(current_user, questions, temp1, temp3, askers_temp, votes_temp):
-	favorites = []
-	shares    = []
-	comments  = []
-	askers    = []
-	votes     = []
-	for x in questions:
+# processes bulk amount of questions for general newsfeed, favorite feed, and topic feed
+def process_questions(current_user, questions, favorites, comments, askers_temp, votes_temp):
+	favorited_this_question = []
+	favorite_count          = []
+	comment_count           = []
+	askers                  = []
+	votes                   = []
+	for question in questions:
 		favorited = False
 		count     = 0
-		if temp1:
-			for y in temp1:
-				if x["_id"] == y["question_id"]:
-					count = y["count"]
-					if current_user and current_user["_id"] in y["user_ids"]:
+		if favorites:
+			for favorite in favorites:
+				if question["_id"] == favorite["question_id"]:
+					count = favorite["count"]
+					if current_user and current_user["_id"] in favorite["user_ids"]:
 						favorited = True
 					break
-			favorites.append((favorited, count))
-		else:
-			favorites.append((False, 0))
+		favorited_this_question.append(favorited)
+		favorite_count.append(count)
 
-		commented = False
-		count     = 0
-		if temp3:
-			for y in temp3:
-				if x["_id"] == y["question_id"]:
-					count = y["count"]
-					if current_user and current_user["_id"] in [q["user_id"] for q in y["comments"]]:
-						commented = True
-					break	
-			comments.append((commented, count, y["comments"]))
-		else:
-			comments.append((commented, count, None))
-
-		vote = None
-		if votes_temp:
-			for y in votes_temp["votes"]:
-				if x["_id"] == y["question_id"]:
-					vote = y["vote_index"]
+		count = 0
+		if comments:
+			for comment in comments:
+				if question["_id"] == comment["question_id"]:
+					count = comment["count"]
 					break
-			votes.append(vote)
-		else:
-			votes.append(None)
+		comment_count.append(count)
 
-		for y in askers_temp:
-			if y["_id"] == x["asker"]:
-				askers.append(y)
+		for asker in askers_temp:
+			if asker["_id"] == question["asker"]:
+				askers.append(asker)
 
-	return favorites, comments, askers, votes
+		vote_index = None
+		if votes_temp:
+			for vote in votes_temp["votes"]:
+				if question["_id"] == vote["question_id"]:
+					vote_index = vote["vote_index"]
+					break
+		votes.append(vote_index)
+
+	return favorited_this_question, favorite_count, comment_count, askers, votes
 
 # handler for displaying a user's personalized newsfeed
 class FeedHandler(BaseHandler):
@@ -904,63 +936,59 @@ class FeedHandler(BaseHandler):
 		if not self.current_user:
 			self.redirect("/")
 		else:
-			questions = yield self.application.db.questions.find().sort("_id", 1).to_list(10)
+			questions = yield self.application.db.questions.find().sort("_id", 1).to_list(20)
 
-			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10),
+			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
+						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
+						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(20),
 						 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
 
-			temp1, temp3, askers_temp, votes_temp = ret
-			favorites, comments, askers, votes    = process_questions(self.current_user, questions, temp1, temp3, askers_temp, votes_temp)
+			favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
 
 			self.render("newsfeed.html", current_user=self.current_user, title='Feed', topic=False, following_topic=False, askers=askers, questions=questions,
-										 votes=votes, favorites=favorites, comments=comments, controlled=True, datetime=datetime)
+										 favorite_count=favorite_count, favorited_this_question=favorited_this_question, comment_count=comment_count, votes=votes)
 
+# handler for displaying a user's favorited questions
 class FavoritesHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self):
 		if not self.current_user:
 			self.redirect("/")
 		else:
-			favorited = yield self.application.db.favorites.find({"user_ids": self.current_user["_id"]}, {"_id": 0, "question_id": 1}).to_list(10)
-			questions = yield self.application.db.questions.find({"_id": {"$in": [fav["question_id"] for fav in favorited]}}).sort("_id", 1).to_list(10)
+			favorited = yield self.application.db.favorites.find({"user_ids": self.current_user["_id"]}, {"_id": 0, "question_id": 1}).to_list(20)
+			questions = yield self.application.db.questions.find({"_id": {"$in": [fav["question_id"] for fav in favorited]}}).sort("_id", 1).to_list(20)
 
-			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-						 self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10),
+			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
+						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
+						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(20),
 						 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
 
-			temp1, temp2, temp3, askers_temp, votes_temp = ret
-			favorites, shares, comments, askers, votes   = process_questions(self.current_user, questions, temp1, temp2, temp3, askers_temp, votes_temp)
+			favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
 
 			self.render("newsfeed.html", current_user=self.current_user, title='Favorites', topic=False, following_topic=False, askers=askers, questions=questions,
-										 votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True, datetime=datetime)	
+										 favorite_count=favorite_count, favorited_this_question=favorited_this_question, comment_count=comment_count, votes=votes)	
 
 # handler for displaying questions of a specific topic
 class TopicHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, topic_name):
-		questions = yield self.application.db.questions.find({"topics": topic_name}).sort("_id", 1).to_list(10)
+		questions = yield self.application.db.questions.find({"topics": topic_name}).sort("_id", 1).to_list(20)
 		if not questions:
 			self.redirect("/")
 
-		ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-					 self.application.db.shares.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-					 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(10),
-					 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(10),
+		ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
+					 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
+					 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(20),
 					 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
 
-		temp1, temp2, temp3, askers_temp, votes_temp = ret
-		favorites, shares, comments, askers, votes   = process_questions(self.current_user, questions, temp1, temp2, temp3, askers_temp, votes_temp)
+		favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
 
 		following_topic = False
-		if self.current_user and (yield self.application.db.topics.find_one({"topics": topic_name, "followers": self.current_user["_id"]}, {"_id": 1})):
+		if self.current_user and (yield self.application.db.topics.find_one({"name": topic_name, "followers": self.current_user["_id"]}, {"_id": 1})):
 			following_topic = True
 
 		self.render("newsfeed.html", current_user=self.current_user, title=topic_name, topic=topic_name, following_topic=following_topic, askers=askers, questions=questions,
-									 votes=votes, favorites=favorites, shares=shares, comments=comments, controlled=True, datetime=datetime)
+									 favorite_count=favorite_count, favorited_this_question=favorited_this_question, comment_count=comment_count, votes=votes)	
 
 # handler to add a topic to a user's feed
 class AddTopicToFeed(BaseHandler):
@@ -971,10 +999,21 @@ class AddTopicToFeed(BaseHandler):
 		else:
 			# topic will be added to the user's feed only if the topic already exists
 			topic_name = self.get_argument("topic-name")
-			if re.compile("^[a-zA-Z0-9\-]+$").match(topic_name) != None:
-				topic_name = topic_name.lower()
-				yield self.application.db.topics.find_and_modify({"name": topic_name}, {"$addToSet": {"followers": self.current_user["_id"]}})
-				self.redirect("/feed")
+			topic      = yield self.application.db.topics.find_one({"name": topic_name})
+			if not topic:
+				pass
+			else:
+				if self.current_user["_id"] in topic.get("followers", []):
+					following          = False
+					topic_data, unused = yield [self.application.db.topics.find_and_modify({"name": topic_name}, {"$inc": {"count": -1}, "$pull": {"followers": self.current_user["_id"]}}, fields={"count": 1}, new=True),
+						   						self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$pull": {"topics": topic_name}})]
+
+				else:
+					following          = True
+					topic_data, unused = yield [self.application.db.topics.find_and_modify({"name": topic_name}, {"$inc": {"count": 1}, "$addToSet": {"followers": self.current_user["_id"]}}, fields={"count": 1}, new=True),
+						   						self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$addToSet": {"topics": topic_name}})]
+
+				self.write({"count": topic_data["count"], "following": following})
 
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
