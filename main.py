@@ -11,7 +11,7 @@ import imghdr
 import bcrypt
 import re
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 
 # imghdr patch to recognize jpeg format
@@ -26,6 +26,7 @@ define("port", default=8000, help="run on the given port", type=int)
 class Application(tornado.web.Application):
 	def __init__(self):
 		handlers = [(r"/feed", FeedHandler),
+					(r"/feed/recent", RecentFeedHandler),
 					(r"/", IndexHandler),
 					(r"/login", LoginHandler),
 					(r"/logout", LogoutHandler),
@@ -43,7 +44,10 @@ class Application(tornado.web.Application):
 					(r"/create_question", CreateQuestionHandler),
 					(r"/add_topic", AddTopicToFeed),
 					(r"/topics/(\w+)", TopicHandler),
+					(r"/topics/(\w+)/recent", RecentTopicHandler),
+					(r"/topics/(\w+)/get_followers", GetTopicFollowersHandler),
 					(r"/favorites", FavoritesHandler),
+					(r"/favorites/recent", RecentFavoritesHandler),
 		]
 		settings = dict(
 			template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -150,30 +154,6 @@ class Application(tornado.web.Application):
 		# 		callback=insert_questions
 		# 	)
 
-		# self.db.groups.insert(
-		# 		[{
-		# 			"name":			  "Music",
-		# 			"pic_link":		  "http://i.imgur.com/2RrtWCM.jpg",
-		# 			"posts":		  2,
-		# 			"followers":      [],
-		# 			"bio":		      "The official music group of Hive. Discuss your favorite music and discover new sounds."
-		# 		},
-		# 		{
-		# 			"name":			  "Sports",
-		# 			"pic_link":		  "http://i.imgur.com/Lky0iUM.png",
-		# 			"posts":		  0,
-		# 			"followers":	  [],
-		# 			"bio":		      "The official sports group of Hive. Discuss your favorite sports team. Remember to keep it civil."
-		# 		},
-		# 		{
-		# 			"name":			  "Anime",
-		# 			"pic_link":		  "http://i.imgur.com/dNWrYKa.png",
-		# 			"posts":		  0,
-		# 			"followers":	  [],
-		# 			"bio":		      "The official anime group of Hive. Discuss your favorite anime and try not to start any wars."
-		# 		}]
-		# 	)
-
 		# self.db.comments.ensure_index("question_id", unique=True)
 		# self.db.shares.ensure_index("question_id", unique=True)
 		# self.db.favorites.ensure_index("question_id", unique=True)
@@ -267,7 +247,8 @@ class SignupHandler(BaseHandler):
 					"password":         password,
 					"salt":             salt,
 					"bio":              "I'm new here!",
-					"profile_pic_link": "http://i.imgur.com/pq88IQx.png"})
+					"profile_pic_link": "http://i.imgur.com/pq88IQx.png",
+					"join_date":		datetime.utcnow()})
 
 			self.set_secure_cookie("auth_id", str(user), httponly=True)
 			self.redirect("/feed")
@@ -339,6 +320,7 @@ class ProfileHandler(BaseHandler):
 
 				questions, votes, user_followers, user_following = ret
 
+				question_count       = target_user.get("question_count", 0)
 				following_this_user  = self.current_user and user_followers and self.current_user["_id"] in user_followers["followers"]
 				user_followers_count = user_following_count = 0
 				if user_followers:
@@ -352,7 +334,7 @@ class ProfileHandler(BaseHandler):
 					recent_answers = [v["vote_index"] for q in answered_questions for v in votes[0]["votes"] if q["_id"] == v["question_id"]]
 
 				self.render("user_profile.html", profile=target_user, own_profile=own_profile, following_this_user=following_this_user, recent_answers=recent_answers,
-					 							 answered_questions=answered_questions, questions=questions, user_following_count=user_following_count,
+					 							 answered_questions=answered_questions, questions=questions, question_count=question_count, user_following_count=user_following_count,
 					 							 user_followers_count=user_followers_count)
 
 # handler to follow or hate a user
@@ -439,7 +421,7 @@ class SettingsHandler(BaseHandler):
 				if not imghdr.what(response.buffer):
 					self.write({"error": "You must enter a link to an image."})
 				else:
-					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"profile_pic_link": new_picture}})
+					yield self.application.db.users.update({"_id": self.current_user["_id"]}, {"$set": {"profile_pic_link": new_picture}})
 
 			elif command == "updateUsername":		
 				new_username = self.get_argument("username")
@@ -448,12 +430,12 @@ class SettingsHandler(BaseHandler):
 				elif re.compile("^[a-zA-Z0-9_ ]+$").match(new_username) == None:
 					self.write({"error": "Your username can only contain letters, numbers, spaces, and underscores."})
 				else:
-					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"username": new_username}})
+					yield self.application.db.users.update({"_id": self.current_user["_id"]}, {"$set": {"username": new_username}})
 
 			# bio is limited to 140 characters
 			elif command == "updateBio":
 				new_bio = self.get_argument("bio")[:140]
-				yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"bio": new_bio}})
+				yield self.application.db.users.update({"_id": self.current_user["_id"]}, {"$set": {"bio": new_bio}})
 
 			elif command == "updateEmail":
 				new_email = self.get_argument("email")
@@ -464,7 +446,7 @@ class SettingsHandler(BaseHandler):
 				elif (yield self.application.db.users.find_one({"email": new_email})) != None:
 					self.write({"error": "An account is already registered with that email address."})
 				else:
-					yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"email": new_email}})
+					yield self.application.db.users.update({"_id": self.current_user["_id"]}, {"$set": {"email": new_email}})
 
 			elif command == "updatePassword":
 				old_password = self.get_argument("old-password")
@@ -482,7 +464,7 @@ class SettingsHandler(BaseHandler):
 						else:
 							salt     = bcrypt.gensalt()
 							password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
-							yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"password": password, "salt": salt}})
+							yield self.application.db.users.update({"_id": self.current_user["_id"]}, {"$set": {"password": password, "salt": salt}})
 
 			elif command == "updateURL":
 				custom_url = self.get_argument("custom-url")
@@ -500,7 +482,7 @@ class SettingsHandler(BaseHandler):
 					elif found_user and found_user["_id"] == self.current_user["_id"]:
 						pass
 					else:
-						yield self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$set": {"custom_url": custom_url}})
+						yield self.application.db.users.update({"_id": self.current_user["_id"]}, {"$set": {"custom_url": custom_url}})
 
 			else:
 				pass
@@ -541,21 +523,23 @@ class CreateQuestionHandler(BaseHandler):
 				else:
 					data   = [{'label': label, 'votes': 0} for label in choices]
 
-					question = yield self.application.db.questions.insert({
-							"asker":      self.current_user["_id"],
-							"question":   question_title,
-							"date":       datetime.utcnow(),
-							"image_link": image_link,
-							"data":       data,
-							"topics":     topics,
-						})
+					ret = yield [self.application.db.questions.insert({"asker": self.current_user["_id"], "question": question_title,"date": datetime.utcnow(), "image_link": image_link, "data": data, "topics": topics}),
+								 self.application.db.users.update({"_id": self.current_user["_id"]}, {"$inc": {"question_count": 1}}, fields={"question_count"})]
+
+					question = ret[0]
 
 					if len(topics) == 1:
-						yield self.application.db.topics.find_and_modify({"name": topics[0]}, {"$set": {"name": topics[0]}}, upsert=True)
+						ret = yield self.application.db.topics.find_and_modify({"name": topics[0]}, {"$inc": {"question_count": 1}}, upsert=True)
+						if not ret:
+							yield self.application.db.topics.update({"name": topics[0]}, {"$set": {"created_by": self.current_user["_id"], "creation_date": datetime.utcnow()}})
 					else:
 						for topic in topics:
 							topics_subset = set(topics) - set([topic])
-							yield self.application.db.topics.find_and_modify({"name": topic}, {"$inc": {"related_topics." + related_topic: 1 for related_topic in topics_subset}}, upsert=True)
+							update_dict   = {"related_topics." + related_topic: 1 for related_topic in topics_subset}
+							update_dict["question_count"] = 1
+							ret = yield self.application.db.topics.find_and_modify({"name": topic}, {"$inc": update_dict}, upsert=True)
+							if not ret:
+								yield self.application.db.topics.update({"name": topic}, {"$set": {"created_by": self.current_user["_id"], "creation_date": datetime.utcnow()}})
 
 					self.write({"redirect": "/questions/" + str(question)})
 
@@ -934,9 +918,24 @@ class FeedHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self):
 		if not self.current_user:
+
 			self.redirect("/")
 		else:
-			questions = yield self.application.db.questions.find().sort("_id", 1).to_list(20)
+			days       = 7
+			time_span  = datetime.utcnow() - timedelta(days=days)
+			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
+
+			searches = 0
+			while len(questions) < 20 and searches < 5:
+				days      = days + 14
+				old_span  = time_span
+				time_span = datetime.utcnow() - timedelta(days=days)
+				more_qs   = yield self.application.db.questions.find({"date": {"$gt": time_span, "$lt": old_span}}).to_list(20 - len(questions))
+				questions = questions + more_qs
+				searches  = searches + 1
+
+			if questions:
+				questions.sort(key=lambda question: sum([q["votes"] for q in question["data"]]), reverse=True)
 
 			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
 						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
@@ -945,7 +944,40 @@ class FeedHandler(BaseHandler):
 
 			favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
 
-			self.render("newsfeed.html", current_user=self.current_user, title='Feed', topic=False, following_topic=False, askers=askers, questions=questions,
+			self.render("newsfeed.html", current_user=self.current_user, title='Feed', topic=False, following_topic=False, selection='Top', askers=askers, questions=questions,
+										 favorite_count=favorite_count, favorited_this_question=favorited_this_question, comment_count=comment_count, votes=votes)
+
+class RecentFeedHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self):
+		if not self.current_user:
+
+			self.redirect("/")
+		else:
+			days       = 7
+			time_span  = datetime.utcnow() - timedelta(days=days)
+			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
+
+			searches = 0
+			while len(questions) < 20 and searches < 5:
+				days      = days + 14
+				old_span  = time_span
+				time_span = datetime.utcnow() - timedelta(days=days)
+				more_qs   = yield self.application.db.questions.find({"date": {"$gt": time_span, "$lt": old_span}}).to_list(20 - len(questions))
+				questions = questions + more_qs
+				searches  = searches + 1
+
+			if questions:
+				questions.sort(key=lambda question: question["date"], reverse=True)
+
+			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
+						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
+						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(20),
+						 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
+
+			favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
+
+			self.render("newsfeed.html", current_user=self.current_user, title='Feed', topic=False, following_topic=False, selection='Recent', askers=askers, questions=questions,
 										 favorite_count=favorite_count, favorited_this_question=favorited_this_question, comment_count=comment_count, votes=votes)
 
 # handler for displaying a user's favorited questions
@@ -955,40 +987,131 @@ class FavoritesHandler(BaseHandler):
 		if not self.current_user:
 			self.redirect("/")
 		else:
-			favorited = yield self.application.db.favorites.find({"user_ids": self.current_user["_id"]}, {"_id": 0, "question_id": 1}).to_list(20)
-			questions = yield self.application.db.questions.find({"_id": {"$in": [fav["question_id"] for fav in favorited]}}).sort("_id", 1).to_list(20)
+			favorited = yield self.application.db.favorites.find({"user_ids": self.current_user["_id"]}, {"_id": 0, "question_id": 1}).to_list(None)
+			questions = yield self.application.db.questions.find({"_id": {"$in": [fav["question_id"] for fav in favorited]}}).to_list(None)
 
-			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
-						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
-						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(20),
+			if questions:
+				questions.sort(key=lambda question: sum([q["votes"] for q in question["data"]]), reverse=True)
+
+			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(None),
+						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(None),
+						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(None),
 						 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
 
 			favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
 
-			self.render("newsfeed.html", current_user=self.current_user, title='Favorites', topic=False, following_topic=False, askers=askers, questions=questions,
-										 favorite_count=favorite_count, favorited_this_question=favorited_this_question, comment_count=comment_count, votes=votes)	
+			self.render("newsfeed.html", current_user=self.current_user, title='Favorites', topic=False, following_topic=False, selection='Top', askers=askers, questions=questions,
+										 favorite_count=favorite_count, favorited_this_question=favorited_this_question, comment_count=comment_count, votes=votes)
+
+class RecentFavoritesHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self):
+		if not self.current_user:
+			self.redirect("/")
+		else:
+			favorited = yield self.application.db.favorites.find({"user_ids": self.current_user["_id"]}, {"_id": 0, "question_id": 1}).to_list(None)
+			questions = yield self.application.db.questions.find({"_id": {"$in": [fav["question_id"] for fav in favorited]}}).to_list(None)
+
+			if questions:
+				questions.sort(key=lambda question: question["date"], reverse=True)
+
+			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(None),
+						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(None),
+						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(None),
+						 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
+
+			favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
+
+			self.render("newsfeed.html", current_user=self.current_user, title='Favorites', topic=False, following_topic=False, selection='Recent', askers=askers, questions=questions,
+										 favorite_count=favorite_count, favorited_this_question=favorited_this_question, comment_count=comment_count, votes=votes)
 
 # handler for displaying questions of a specific topic
 class TopicHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, topic_name):
-		questions = yield self.application.db.questions.find({"topics": topic_name}).sort("_id", 1).to_list(20)
-		if not questions:
-			self.redirect("/")
+		days       = 7
+		time_span  = datetime.utcnow() - timedelta(days=days)
+		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(20)
 
-		ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
-					 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
-					 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(20),
-					 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
+		searches = 0
+		while len(questions) < 20 and searches < 5:
+			days      = days + 14
+			old_span  = time_span
+			time_span = datetime.utcnow() - timedelta(days=days)
+			more_qs   = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span, "$lt": old_span}}).to_list(20 - len(questions))
+			questions = questions + more_qs
+			searches  = searches + 1
+
+		if questions:
+			questions.sort(key=lambda question: sum([q["votes"] for q in question["data"]]), reverse=True)
+
+		*ret, topic = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
+							 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
+							 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(20),
+							 self.application.db.votes.find_one({"user_id": self.current_user["_id"]}),
+							 self.application.db.topics.find_one({"name": topic_name}, {"created_by": 1, "question_count": 1, "follower_count": 1})]
 
 		favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
+
+		question_count, follower_count = topic.get("question_count", 0), topic.get("follower_count", 0)
 
 		following_topic = False
 		if self.current_user and (yield self.application.db.topics.find_one({"name": topic_name, "followers": self.current_user["_id"]}, {"_id": 1})):
 			following_topic = True
 
-		self.render("newsfeed.html", current_user=self.current_user, title=topic_name, topic=topic_name, following_topic=following_topic, askers=askers, questions=questions,
-									 favorite_count=favorite_count, favorited_this_question=favorited_this_question, comment_count=comment_count, votes=votes)	
+		self.render("newsfeed.html", current_user=self.current_user, title=topic_name, topic=topic_name, following_topic=following_topic, selection='Top',
+									 askers=askers, questions=questions, favorite_count=favorite_count, favorited_this_question=favorited_this_question,
+									 comment_count=comment_count, votes=votes, topic_question_count=question_count, topic_follower_count=follower_count)
+
+class RecentTopicHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self, topic_name):
+		days       = 7
+		time_span  = datetime.utcnow() - timedelta(days=days)
+		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(20)
+
+		searches = 0
+		while len(questions) < 20 and searches < 5:
+			days      = days + 14
+			old_span  = time_span
+			time_span = datetime.utcnow() - timedelta(days=days)
+			more_qs   = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span, "$lt": old_span}}).to_list(20 - len(questions))
+			questions = questions + more_qs
+			searches  = searches + 1
+
+		if questions:
+			questions.sort(key=lambda question: question["date"], reverse=True)
+
+		*ret, topic = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
+							 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
+							 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(20),
+							 self.application.db.votes.find_one({"user_id": self.current_user["_id"]}),
+							 self.application.db.topics.find_one({"name": topic_name}, {"created_by": 1, "question_count": 1, "follower_count": 1})]
+
+		favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
+
+		question_count, follower_count = topic.get("question_count", 0), topic.get("follower_count", 0)
+
+		following_topic = False
+		if self.current_user and (yield self.application.db.topics.find_one({"name": topic_name, "followers": self.current_user["_id"]}, {"_id": 1})):
+			following_topic = True
+
+		self.render("newsfeed.html", current_user=self.current_user, title=topic_name, topic=topic_name, following_topic=following_topic, selection='Recent',
+									 askers=askers, questions=questions, favorite_count=favorite_count, favorited_this_question=favorited_this_question,
+									 comment_count=comment_count, votes=votes, topic_question_count=question_count, topic_follower_count=follower_count)
+
+# handler to display a topic's followers
+class GetTopicFollowersHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self, topic_name):
+		topic_follower_ids = yield self.application.db.topics.find_one({"name": topic_name}, {"followers": 1})
+		if not topic_follower_ids:
+			self.redirect("/")
+
+		topic_follower_ids = topic_follower_ids.get("followers", None)
+		topic_followers    = yield self.application.db.users.find({"_id": {"$in": topic_follower_ids}}, {"username": 1, "profile_pic_link": 1}).to_list(20)
+
+		self.render("relationship.html", relation_list=topic_followers, relation="follower")
 
 # handler to add a topic to a user's feed
 class AddTopicToFeed(BaseHandler):
@@ -1005,15 +1128,15 @@ class AddTopicToFeed(BaseHandler):
 			else:
 				if self.current_user["_id"] in topic.get("followers", []):
 					following          = False
-					topic_data, unused = yield [self.application.db.topics.find_and_modify({"name": topic_name}, {"$inc": {"count": -1}, "$pull": {"followers": self.current_user["_id"]}}, fields={"count": 1}, new=True),
+					topic_data, unused = yield [self.application.db.topics.find_and_modify({"name": topic_name}, {"$inc": {"follower_count": -1}, "$pull": {"followers": self.current_user["_id"]}}, fields={"follower_count": 1}, new=True),
 						   						self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$pull": {"topics": topic_name}})]
 
 				else:
 					following          = True
-					topic_data, unused = yield [self.application.db.topics.find_and_modify({"name": topic_name}, {"$inc": {"count": 1}, "$addToSet": {"followers": self.current_user["_id"]}}, fields={"count": 1}, new=True),
+					topic_data, unused = yield [self.application.db.topics.find_and_modify({"name": topic_name}, {"$inc": {"follower_count": 1}, "$addToSet": {"followers": self.current_user["_id"]}}, fields={"follower_count": 1}, new=True),
 						   						self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$addToSet": {"topics": topic_name}})]
 
-				self.write({"count": topic_data["count"], "following": following})
+				self.write({"name": topic_name, "count": topic_data["follower_count"], "following": following})
 
 if __name__ == "__main__":
 	tornado.options.parse_command_line()

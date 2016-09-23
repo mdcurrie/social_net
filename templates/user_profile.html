@@ -42,74 +42,88 @@
                         </div>
                         <div id="metrics">
                             <div id="question-count">
-                                {% if not questions %}
-                                    <span>0</span> questions
-                                {% else %}
-                                    <span>{{ len(questions) }}</span> questions
-                                {% end %}
+                                <span>
+                                    {% if question_count <= 1000 %}
+                                        {{ question_count }}
+                                    {% elif question_count <= 999999 %}
+                                        {{ round(question_count/1000, 1) }}K
+                                    {% else %}
+                                        {{ round(question_count/1000000, 1) }}M
+                                    {% end %}
+                                </span> questions
                             </div>
                             <div id="followers-count" class="/users/{{ profile["_id"] }}/get_relationships?relationship=follower">
-                                <span>{{ user_followers_count }}</span> followers
+                                <span>
+                                    {% if user_followers_count <= 1000 %}
+                                        {{ user_followers_count }}
+                                    {% elif user_followers_count <= 999999 %}
+                                        {{ round(user_followers_count/1000, 1) }}K
+                                    {% else %}
+                                        {{ round(user_followers_count/1000000, 1) }}M
+                                    {% end %}
+                                </span> followers
                             </div>
                             <div id="following-count" class="/users/{{ profile["_id"] }}/get_relationships?relationship=following">
-                                <span>{{ user_following_count }}</span> following
+                                <span>
+                                    {% if user_following_count <= 1000 %}
+                                        {{ user_following_count }}
+                                    {% elif user_following_count <= 999999 %}
+                                        {{ round(user_following_count/1000, 1) }}K
+                                    {% else %}
+                                        {{ round(user_following_count/1000000, 1) }}M
+                                    {% end %}
+                                </span> following
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="misc">
-                    <div id="relation">
-                    </div>
-                    <div id="recent-answers">
-                        <div id="recent-answers-header">
-                            Recent Answers <span>See More</span>
+                    <div class="profile-questions" id="recent-answers">
+                        <div class="header">
+                            Recent Answers
                         </div>
                         {% if recent_answers %}
-                            {% for idx, answer in enumerate(recent_answers) %}
-                                <div class="question">
-                                    <a href="/questions/{{ str(answered_questions[idx]["_id"]) }}">
-                                        <div class="background-image" style="background-image: url({{ answered_questions[idx]["image_link"] }})">
-                                            <div class="background-image-overlay"></div>
-                                            <div class="question-title">
-                                                {{ answered_questions[idx]["question"] }}
+                            <div class="questions-wrapper">
+                                {% for idx, answer in enumerate(recent_answers) %}
+                                    <div class="question">
+                                        <a href="/questions/{{ str(answered_questions[idx]["_id"]) }}">
+                                            <div class="background-image" style="background-image: url({{ answered_questions[idx]["image_link"] }})">
+                                                <div class="background-image-overlay"></div>
+                                                <div class="question-title">
+                                                    {{ answered_questions[idx]["question"] }}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                    <div class="user-answer">
-                                        A: {{ answered_questions[idx]["data"][answer]["label"] }}
-                                    </div>  
-                                </div>
-                            {% end %}
+                                        </a>
+                                        <div class="user-answer">
+                                            A: {{ answered_questions[idx]["data"][answer]["label"] }}
+                                        </div>  
+                                    </div>
+                                {% end %}
+                            </div>
                         {% else %}
                             <div class="none-text">No answers yet.</div>
                         {% end %}
                     </div>
-                    <div id="recent-questions">
-                        <div id="recent-questions-header">
-                            Submitted Questions <span>See More</span>
+                    <div class="profile-questions" id="recent-questions">
+                        <div class="header">
+                            Submitted Questions
                         </div>
                         {% if questions %}
-                            {% set column = "left-column" %}
-                            {% for question in questions %}
-                                <div class="question {{ column }}">
-                                    <a href="/questions/{{ str(question["_id"]) }}">
-                                        <div class="background-image" style="background-image: url({{ question["image_link"] }})">
-                                            <div class="background-image-overlay">
+                            <div class="questions-wrapper">
+                                {% for question in questions %}
+                                    <div class="question">
+                                        <a href="/questions/{{ str(question["_id"]) }}">
+                                            <div class="background-image" style="background-image: url({{ question["image_link"] }})">
+                                                <div class="background-image-overlay">
+                                                </div>
+                                                <div class="question-title">
+                                                    {{ question["question"] }}
+                                                </div>
                                             </div>
-                                            <div class="question-title">
-                                                {{ question["question"] }}
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                {% if column == "left-column" %}
-                                    {% set column = "mid-column" %}
-                                {% elif column == "mid-column" %}
-                                    {% set column = "right-column" %}
-                                {% else %}
-                                    {% set column = "left-column" %}
+                                        </a>
+                                    </div>
                                 {% end %}
-                            {% end %}
+                            </div>
                         {% else %}
                             <div class="none-text">No questions yet.</div>
                         {% end %}

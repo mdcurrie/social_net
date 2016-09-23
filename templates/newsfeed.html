@@ -25,7 +25,7 @@
 			        		{% if not topic %}
 			        			{{ title }}
 			        		{% else %}
-			        			#{{ topic }}
+			        			<span id="topic-title">#{{ topic }}</span>
 			        			<form action="/add_topic?topic-name={{ topic }}" method="post">
 			        				{% raw xsrf_form_html() %}
 				        			{% if following_topic %}
@@ -34,15 +34,55 @@
 				        				<button formaction="/add_topic?topic-name={{ topic }}" formmethod="post" id="follow-topic-button">Follow</button>
 				        			{% end %}
 				        		</form>
+				        		{% if topic %}
+				        			<div id="topic-metrics">
+					        			<div id="topic-question-count">
+					        				<span>
+					        					{% if topic_question_count <= 1000 %}
+								                    {{ topic_question_count }}
+								                {% elif topic_question_count <= 999999 %}
+								                    {{ round(topic_question_count/1000, 1) }}K
+								                {% else %}
+								                    {{ round(topic_question_count/1000000, 1) }}M
+								                {% end %}
+					        				</span> questions
+					        			</div>
+					        			<div id="topic-follower-count">
+					        				<span>
+					        					{% if topic_follower_count <= 1000 %}
+								                    {{ topic_follower_count }}
+								                {% elif topic_follower_count <= 999999 %}
+								                    {{ round(topic_follower_count/1000, 1) }}K
+								                {% else %}
+								                    {{ round(topic_follower_count/1000000, 1) }}M
+								                {% end %}
+					        				</span> followers
+					        			</div>
+					        		</div>
+				        		{% end %}
 			        		{% end %}
 			        	</div>
 			        	<div id="main-content-selection">
-			        		<div class="selection">
-			        			Top
-			        		</div>
-			        		<div class="selection">
-			        			Recent
-			        		</div>
+			        		{% if title == 'Feed' %}
+			        			{% set top_selection    = '/feed' %}
+			        			{% set recent_selection = '/feed/recent' %}
+			        		{% elif title == 'Favorites' %}
+			        			{% set top_selection    = '/favorites' %}
+			        			{% set recent_selection = '/favorites/recent' %}
+			        		{% else %}
+			        			{% set top_selection    = '/topics/' + title %}
+			        			{% set recent_selection = '/topics/' + title + '/recent' %}
+			        		{% end %}
+			        		<a href={{ top_selection }}>
+				        		<div class="selection {% if selection == 'Top' %}active{% end %}">
+				        			Top
+				        		</div>
+				        	</a>
+				        	<a href={{ recent_selection }}>
+				        		<div class="selection {% if selection == 'Recent' %}active{% end %}">
+				        			Recent
+				        		</div>
+				        	</a>
 			        	</div>
 			        </div>
 			        <div id="feed">

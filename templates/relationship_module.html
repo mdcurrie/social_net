@@ -6,11 +6,13 @@
 			Following
 		{% end %}
 	</div>
-	{% for user in relation_list %}
-		<div class="user">
-			<div class="user-profile-pic">
-				<img src="{{ user["profile_pic_link"] }}" alt="{{ user["username"] }}'s profile picture">
+	<div class="users">
+		{% for user in relation_list %}
+			<div class="user">
+				<div class="user-profile-pic">
+					<img src="{{ user["profile_pic_link"] }}" alt="{{ user["username"] }}'s profile picture">
+				</div>
 			</div>
-		</div>
-	{% end %}
+		{% end %}
+	</div>
 </div>
