@@ -21,20 +21,30 @@ $(function() {
 		timer_password = setTimeout(validatePassword, 1000);
 	});
 
-	$('form').on('submit', function(e) {
-		e.preventDefault();
-		validateUsername();
-		validateEmail(false);
-		validatePassword();
-		if (valid_username && valid_email && valid_password) {
-			$('form').unbind('submit').submit();
+	jQuery.fn.preventDoubleSubmission = function() {
+		$(this).on('submit', function(e) {
+			var $form = $(this);
 
-			/* prevent double submission of form */
-			$('form').on('submit', function(e) {
+			if ($form.data('submitted') === true) {
 				e.preventDefault();
-			});
-		}
-	});
+			}
+			else {
+				validateUsername();
+				validateEmail(false);
+				validatePassword();
+				if (!valid_username || !valid_email || !valid_password) {
+					e.preventDefault();
+				}
+				else {
+					$form.data('submitted', true);
+				}
+			}
+		});
+
+		return this;
+	};
+
+	$('form').preventDoubleSubmission();
 });
 
 function validateUsername() {

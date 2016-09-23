@@ -71,7 +71,7 @@
 		min-width: 23px;
 		text-align: center;
 		float: left;
-		transform: translateY(4px);
+		transform: translateY(3px);
 	}
 	.svg-image {
 		float: left;
@@ -85,7 +85,7 @@
 	.question-title {
 		position: absolute;
 		bottom: 15px;
-		left: 15px;
+		padding: 0 15px;
 	}
 	.question-title a {
 		word-wrap: break-word;

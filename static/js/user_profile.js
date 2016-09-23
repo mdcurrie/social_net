@@ -2,16 +2,18 @@ $(function() {
 	$('#followers-count').on('click', function() {
 		var url = $(this).attr('class');
 		$.get(url, function(data) {
-			$('#relation').html(data);
-			$('#relation').css({"display": "block", "height": "initial"});
+			$('#relation-wrapper').remove();
+			$('#misc').prepend(data);
+			$('.user img').css({"height": $('.user img').eq(0).width() + 'px'});
 		});
 	});
 
 	$('#following-count').on('click', function() {
 		var url = $(this).attr('class');
 		$.get(url, function(data) {
-			$('#relation').html(data);
-			$('#relation').css({"display": "block"});
+			$('#relation-wrapper').remove();
+			$('#misc').prepend(data);
+			$('.user img').css({"height": $('.user img').eq(0).width() + 'px'});
 		});
 	});
 

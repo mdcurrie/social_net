@@ -5,15 +5,45 @@ $(function() {
 			$('#off-canvas-comments').html(data);
 			$('.all-comments').scrollTop($('.all-comments')[0].scrollHeight);
 
-			$('.comment-form form').off('submit');
-			$('.comment-form form').on('submit', function(e) {
-		        e.preventDefault();
-		        submitForm();
-		    });
+			jQuery.fn.preventDoubleSubmission = function() {
+		        $(this).on('submit', function(e) {
+		            var $form = $(this);
 
-			$('.comment-form img').off('click');
+		            if ($form.data('submitted') === true) {
+		                e.preventDefault();
+		            }
+		            else {
+		                e.preventDefault();
+
+		                var question_id = $('.comment-form form').attr('action').split('/')[2];
+		                var comment_val = $('.comment-form input').eq(1).val();
+
+		                if (comment_val) {
+		                    $form.data('submitted', true);
+		                    $.post('/comments/' + question_id, {_xsrf: getCookie('_xsrf'), comment: comment_val}, function(data) {
+		                        if (data.redirect) {
+		                            window.location.href = data.redirect;
+		                        }
+		                        else {
+		                            data.replacement = data.replacement.slice(106, -387);
+		                            $('.all-comments').replaceWith(data.replacement);
+		                            $('.comment-form input').eq(1).val('');
+		                            $('.all-comments').scrollTop($('.all-comments')[0].scrollHeight);
+		                            $('#' + question_id).find('.comment-count .count-text').text(data.count);
+		                            $form.data('submitted', false);
+		                        }
+		                    });
+		                }
+		            }
+		        });
+
+		        return this;
+		    }
+
+		    $('.comment-form form').preventDoubleSubmission();
+		    
 		    $('.comment-form img').on('click', function() {
-		        submitForm();
+		        $('.comment-form form').submit();
 		    });
 		});
 
@@ -37,7 +67,25 @@ $(function() {
 		var url = $('#follow-topic-button').attr('formaction');
 
 		$.post(url, {_xsrf: getCookie('_xsrf')}, function(data) {
-			
+			$('#topic-follower-count span').text(data.count);
+			if (data.following) {
+				$('#follow-topic-button').addClass('active').text('Following');
+				$('#topics ul').append('<a href="/topics/' + data.name + '"><li class="active">#' + data.name + '</li></a>');
+			}
+			else {
+				$('#follow-topic-button').removeClass('active').text('Follow');
+				$('#topics .active').parent().remove();
+			}
+		});
+	});
+
+	$('#topic-follower-count').on('click', function() {
+		var topic = $('#topic-title').text().substring(1);
+		var url   = '/topics/' + topic + '/get_followers';
+		$.get(url, function(data) {
+			$('#relation-wrapper').remove();
+			$('#main-content-title').append(data);
+			$('.user img').css({"height": $('.user img').eq(0).width() + 'px'});
 		});
 	});
 });
