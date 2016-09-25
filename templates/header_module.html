@@ -1,46 +1,42 @@
 <header role="banner">
-    <div id="header-wrapper">
-        {% if search %}
-            <div id="search-form">
-                <form>
-                    <input placeholder="Search all..." style="background-image: url({{ static_url("images/magnifying-glass-white.svg") }})">
-                </form>
-            </div>
-        {% end %}
-        <div id="logo">
-            <a href={% if current_user %}"/feed"{% else %}"/"{% end %}>
-                &middot;HIVE&middot;
-            </a>
+    {% if search %}
+        <div id="search-form">
+            <form action="/search" method="get">
+                <input name="search-term" placeholder="Search all..." style="background-image: url({{ static_url("images/magnifying-glass-white.svg") }})" autocomplete="off">
+            </form>
         </div>
-        {% if current_user %}
-            <div id="header-icon-area">
-                <div id="notification-icon">
-                    <a href="/notifications">
-                        <img src="{{ static_url("images/bell-white.svg") }}" alt="icon for user notifications">
-                    </a>
-                </div>
-                <div id="current-user-profile-pic">
-                    <div class="dropdown">
-                        <img class="dropbtn" src="{{ current_user["profile_pic_link"] }}" alt="{{ current_user["username"] }}'s profile picture">
-                        <div class="dropdown-content">
-                            <ul>
-                                <li>
-                                    <a href="{{ '/users/' + str(current_user["_id"]) }}">View Profile</a>
-                                </li>
-                                <li>
-                                    <a href="/settings">Settings</a>
-                                </li>
-                                <li>
-                                    <form action="/logout" method="post">
-                                        {% raw xsrf_form_html() %}
-                                        <button formaction="/logout" formmethod="post">Logout</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
+    {% end %}
+    <div id="logo">
+        <a href={% if current_user %}"/feed"{% else %}"/"{% end %}>
+            &middot;HIVE&middot;
+        </a>
+    </div>
+    {% if current_user %}
+        <div id="header-icon-area">
+            <div id="notification-icon">
+                <img src="{{ static_url("images/bell-white.svg") }}" alt="icon for user notifications">
+            </div>
+            <div id="current-user-profile-pic">
+                <div class="dropdown">
+                    <img class="dropbtn" src="{{ current_user["profile_pic_link"] }}" alt="{{ current_user["username"] }}'s profile picture">
+                    <div class="dropdown-content">
+                        <ul>
+                            <li>
+                                <a href="{{ '/users/' + str(current_user["_id"]) }}">View Profile</a>
+                            </li>
+                            <li>
+                                <a href="/settings">Settings</a>
+                            </li>
+                            <li>
+                                <form action="/logout" method="post">
+                                    {% raw xsrf_form_html() %}
+                                    <button formaction="/logout" formmethod="post">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        {% end %}
-    </div>
+        </div>
+    {% end %}
 </header>

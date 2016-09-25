@@ -48,6 +48,7 @@ class Application(tornado.web.Application):
 					(r"/topics/(\w+)/get_followers", GetTopicFollowersHandler),
 					(r"/favorites", FavoritesHandler),
 					(r"/favorites/recent", RecentFavoritesHandler),
+					(r"/search", SearchHandler),
 		]
 		settings = dict(
 			template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -162,7 +163,23 @@ class Application(tornado.web.Application):
 		# self.db.haters.ensure_index("user_id", unique=True)
 		# self.db.hating.ensure_index("user_id", unique=True)
 		# self.db.votes.ensure_index("user_id", unique=True)
-		self.db.topics.ensure_index("name", unique=True)
+		#self.db.topics.ensure_index("name", unique=True)
+		#self.db.topics.ensure_index()
+
+		#self.db.users.drop_indexes()
+		#self.db.questions.drop_indexes()
+		#self.db.topics.drop_indexes()
+
+		#self.db.users.create_index([("email", 1), ("username_search", 1)])
+		#self.db.questions.create_index([("question_search", 1)])
+		#self.db.topics.create_index([("name", 1), ("name_search", 1)])
+
+		#self.db.users.find_and_modify({"username": "BasedGod"}, {"$set": {"username_search": "basedgod"}})
+		#self.db.users.find_and_modify({"username": "marcus"}, {"$set": {"username_search": "marcus"}})
+		#self.db.users.find_and_modify({"username": "KayceLove"}, {"$set": {"username_search": "kaycelove"}})
+		#self.db.users.find_and_modify({"username": "thereallannis"}, {"$set": {"username_search": "thereallannis"}})
+		#self.db.users.find_and_modify({"username": "MegaTech"}, {"$set": {"username_search": "megatech"}})
+		#self.db.users.find_and_modify({"username": "example"}, {"$set": {"username_search": "example"}})
 
 		tornado.web.Application.__init__(self, handlers, **settings)	
 
@@ -189,23 +206,25 @@ class SideColumnModule(tornado.web.UIModule):
 		return self.handler.static_url("js/sidecolumn_module.js")
 
 # get user's information if logged in
+# prepare() runs at the start of each request
 class BaseHandler(tornado.web.RequestHandler):
 	@tornado.gen.coroutine
 	def prepare(self):
-		auth_id = self.get_secure_cookie("auth_id")
 		self.current_user = None
+		auth_id           = self.get_secure_cookie("auth_id")
 		if auth_id:
 			auth_id = str(auth_id, "utf-8")
 			try:
 				auth_id = ObjectId(auth_id)
 			except:
-				return
+				self.clear_cookie("auth_id")
+				self.redirect("/login")
 			else:
-				current_user = yield self.application.db.users.find_one({"_id": auth_id}, {"salt": 0, "password": 0})
-				if current_user == None:
-					self.clear_cookie("auth_id")
-				else:
+				current_user = yield self.application.db.users.find_one({"_id": auth_id}, {"salt": 0, "password": 0, "question_count": 0, "username_search": 0})
+				if current_user:
 					self.current_user = current_user
+				else:
+					self.clear_cookie("auth_id")
 
 # handler for registering new users
 class SignupHandler(BaseHandler):
@@ -219,14 +238,12 @@ class SignupHandler(BaseHandler):
 	# get info from signup form and register new user
 	@tornado.gen.coroutine
 	def post(self):
-		username = self.get_argument("username")
-		email    = self.get_argument("email")
-		password = self.get_argument("password")
+		username, email, password = self.get_argument("username"), self.get_argument("email"), self.get_argument("password")
 
 		# basic checks on password/email
 		if len(username) < 6 or len(username) > 25:
 			self.render("signup.html", username_error='Your username must be 6-25 characters long.', email_error='', password_error='')
-		elif re.compile("^[a-zA-Z0-9_ ]+$").match(username) == None:
+		elif re.compile("^[a-zA-Z0-9_. ]+$").match(username) == None:
 			self.render("signup.html", username_error='Letters, numbers, spaces, and underscores only.', email_error='', password_error='')
 		elif re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(email) == None:
 			self.render("signup.html", username_error='', email_error='Please enter a valid email address.', password_error='')
@@ -243,6 +260,7 @@ class SignupHandler(BaseHandler):
 			password = bcrypt.hashpw(password.encode('utf-8'), salt)
 			user     = yield self.application.db.users.insert({
 					"username":         username,
+					"username_search":  username.lower(),
 					"email":            email, 
 					"password":         password,
 					"salt":             salt,
@@ -252,6 +270,16 @@ class SignupHandler(BaseHandler):
 
 			self.set_secure_cookie("auth_id", str(user), httponly=True)
 			self.redirect("/feed")
+
+# handler to check if email from signup form is already in use
+class EmailHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self):
+		email = self.get_argument("email")
+		if (yield self.application.db.users.find_one({"email": email}, {"_id": 1})):
+			self.write({"email_taken": True})
+		else:
+			self.write({"email_taken": False})
 
 # handler for logging in registered users
 class LoginHandler(BaseHandler):
@@ -264,8 +292,7 @@ class LoginHandler(BaseHandler):
 
 	@tornado.gen.coroutine
 	def post(self):
-		email    = self.get_argument("email")
-		password = self.get_argument("password")
+		email, password = self.get_argument("email"), self.get_argument("password")
 
 		# verify email/password combo
 		if re.compile("^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$").match(email) == None:
@@ -274,7 +301,7 @@ class LoginHandler(BaseHandler):
 			self.render("login.html", email=email, email_error='', password_error='The password you entered is incorrect.')
 		else:
 			user = yield self.application.db.users.find_one({"email": email}, {"salt": 1, "password": 1})
-			if user == None:
+			if not user:
 				self.render("login.html", email=email, email_error='The email you entered does not match any account.', password_error='')
 			elif bcrypt.hashpw(password.encode('utf-8'), user["salt"]) != user["password"]:
 				self.render("login.html", email=email, email_error='', password_error='The password you entered is incorrect.')
@@ -287,16 +314,6 @@ class LogoutHandler(BaseHandler):
 	def post(self):
 		self.clear_cookie("auth_id")
 		self.redirect("/login")
-
-# handler to check if email from signup form is already in use
-class EmailHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get(self):
-		email = self.get_argument("email")
-		if (yield self.application.db.users.find_one({"email": email}, {"_id": 1})):
-			self.write({"email_taken": True})
-		else:
-			self.write({"email_taken": False})
 
 # handler for displaying a user's profile page
 class ProfileHandler(BaseHandler):
@@ -427,10 +444,10 @@ class SettingsHandler(BaseHandler):
 				new_username = self.get_argument("username")
 				if len(new_username) < 6 or len(new_username) > 25:
 					self.write({"error": "Your username must be between 6 and 25 characters long."})
-				elif re.compile("^[a-zA-Z0-9_ ]+$").match(new_username) == None:
+				elif re.compile("^[a-zA-Z0-9_. ]+$").match(new_username) == None:
 					self.write({"error": "Your username can only contain letters, numbers, spaces, and underscores."})
 				else:
-					yield self.application.db.users.update({"_id": self.current_user["_id"]}, {"$set": {"username": new_username}})
+					yield self.application.db.users.update({"_id": self.current_user["_id"]}, {"$set": {"username": new_username, "username_search": new_username.lower()}})
 
 			# bio is limited to 140 characters
 			elif command == "updateBio":
@@ -521,9 +538,9 @@ class CreateQuestionHandler(BaseHandler):
 				if not all(len(topic) <= 40 for topic in list(topics)):
 					self.write({"topics_error": "Each topic must be 40 characters or less."})
 				else:
-					data   = [{'label': label, 'votes': 0} for label in choices]
+					data = [{'label': label, 'votes': 0} for label in choices]
 
-					ret = yield [self.application.db.questions.insert({"asker": self.current_user["_id"], "question": question_title,"date": datetime.utcnow(), "image_link": image_link, "data": data, "topics": topics}),
+					ret = yield [self.application.db.questions.insert({"asker": self.current_user["_id"], "question": question_title, "question_search": question_title.lower(), "date": datetime.utcnow(), "image_link": image_link, "data": data, "topics": topics}),
 								 self.application.db.users.update({"_id": self.current_user["_id"]}, {"$inc": {"question_count": 1}}, fields={"question_count"})]
 
 					question = ret[0]
@@ -531,7 +548,7 @@ class CreateQuestionHandler(BaseHandler):
 					if len(topics) == 1:
 						ret = yield self.application.db.topics.find_and_modify({"name": topics[0]}, {"$inc": {"question_count": 1}}, upsert=True)
 						if not ret:
-							yield self.application.db.topics.update({"name": topics[0]}, {"$set": {"created_by": self.current_user["_id"], "creation_date": datetime.utcnow()}})
+							yield self.application.db.topics.update({"name": topics[0]}, {"$set": {"name_search": topics[0].lower(), "created_by": self.current_user["_id"], "creation_date": datetime.utcnow()}})
 					else:
 						for topic in topics:
 							topics_subset = set(topics) - set([topic])
@@ -539,7 +556,7 @@ class CreateQuestionHandler(BaseHandler):
 							update_dict["question_count"] = 1
 							ret = yield self.application.db.topics.find_and_modify({"name": topic}, {"$inc": update_dict}, upsert=True)
 							if not ret:
-								yield self.application.db.topics.update({"name": topic}, {"$set": {"created_by": self.current_user["_id"], "creation_date": datetime.utcnow()}})
+								yield self.application.db.topics.update({"name": topic}, {"$set": {"name_search": topics[0].lower(), "created_by": self.current_user["_id"], "creation_date": datetime.utcnow()}})
 
 					self.write({"redirect": "/questions/" + str(question)})
 
@@ -918,7 +935,6 @@ class FeedHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self):
 		if not self.current_user:
-
 			self.redirect("/")
 		else:
 			days       = 7
@@ -1137,6 +1153,18 @@ class AddTopicToFeed(BaseHandler):
 						   						self.application.db.users.find_and_modify({"_id": self.current_user["_id"]}, {"$addToSet": {"topics": topic_name}})]
 
 				self.write({"name": topic_name, "count": topic_data["follower_count"], "following": following})
+
+# handler to search for users, questions, or topics
+class SearchHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self):
+		search_term = self.get_argument("search-term").lower()
+
+		ret = yield [self.application.db.users.find({"username_search": {"$regex": search_term}}, {"username": 1, "profile_pic_link": 1, "bio": 1}).to_list(20),
+			   		 self.application.db.questions.find({"question_search": {"$regex": search_term}}).to_list(20),
+			   		 self.application.db.topics.find({"name_search": {"$regex": search_term}}, {"name": 1}).to_list(20)]
+
+		logging.info(ret)
 
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
