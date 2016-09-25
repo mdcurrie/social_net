@@ -58,7 +58,7 @@ $(function() {
 			$('#username-error').text("You must enter a username.");
 			return;
 		}
-		if (!(/^[a-zA-Z0-9_ ]+$/i.test(username))) {
+		if (!(/^[a-zA-Z0-9_. ]+$/i.test(username))) {
 			$('#username-error').text("Your username can only contain letters, numbers, spaces, and underscores.");
 			return;
 		}

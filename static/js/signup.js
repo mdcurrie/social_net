@@ -57,7 +57,7 @@ function validateUsername() {
 		error.text('');
 		return;
 	}
-	if (!(/^[a-zA-Z0-9_ ]+$/i.test(username))) {
+	if (!(/^[a-zA-Z0-9_. ]+$/i.test(username))) {
 		error.text('Letters, numbers, spaces, and underscores only.');
 		error.css({"display": "block", "color": "#e64c65"});
 	}
