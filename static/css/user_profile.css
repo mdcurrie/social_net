@@ -10,6 +10,7 @@
 }
 html {
 	font-family: Gotham, sans-serif;
+	background: #f1f1f1;
 }
 a {
 	text-decoration: none;
@@ -19,25 +20,164 @@ a {
 	box-sizing: border-box;
 }
 
-@media only screen and (min-width: 1200px) {
-	html, body, section, article {
-		height: 100%;
-	}
-}
-
 /*=================== GENERAL STYLING END ====================*/
 
+main {
+	padding-top: 45px;
+}
+#user-profile {
+	background: white;
+}
+#profile-picture img {
+	height: 360px;
+    width: 100%;
+    object-fit: cover;
+}
+#profile-info-text {
+	padding: 10px 20px;
+}
+#username-and-button {
+	margin-bottom: 5px;
+}
+#username {
+	float: left;
+	margin-right: 20px;
+	font-size: 1.5em;
+}
+#username-and-button form {
+	transform: translateY(-2px);
+}
+#username-and-button button {
+    padding: 5px 10px;
+    border: 1px solid #2eb398;
+    outline: none;
+    background: transparent;
+    color: #2eb398;
+    font-family: Gotham;
+    font-size: 1.1em;
+    border-radius: 3px;
+}
+#username-and-button button.active {
+	background: #2eb398;
+	color: white;
+	border: none;
+}
+#username-and-button button:hover {
+	cursor: pointer;
+}
+#username-and-button button.active:hover {
+	background: #23927c;
+}
+#username-and-button button:not(.active):hover {
+	background: #2eb398;
+	color: white;
+}
+#bio {
+	font-size: 0.85em;
+	line-height: 1.2em;
+	margin-bottom: 20px;
+}
+#metrics {
+	overflow: auto;
+}
+#metrics > div {
+	float: left;
+	margin-right: 35px;
+    font-size: 0.85em;
+}
+#metrics span {
+	font-weight: bold;
+}
+#followers-count, #following-count:hover {
+	cursor: pointer;
+}
+#misc {
+	width: calc(100% - 40px);
+	margin: 0 auto;
+}
+#relation-wrapper {
+	border-top: 1px solid rgba(0,0,0,.1);
+	margin: 0 auto;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	padding: 15px 0;
+	overflow: hidden;
+}
+#relation-header {
+	font-size: 1.1em;
+	margin-bottom: 20px;
+}
+#users {
+	column-count: 8;
+	column-gap: 5px;
+	column-fill: balance;
+}
+.user {
+	break-inside: avoid;
+}
+.user img {
+	width: 100%;
+	object-fit: cover;
+}
+.profile-questions {
+	border-top: 1px solid rgba(0,0,0,.1);
+	margin: 0 auto;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	padding: 15px 0;
+	overflow: hidden;
+}
+.header {
+	font-size: 1.1em;
+	margin-bottom: 20px;
+}
+.questions-wrapper {
+	column-count: 3;
+	column-gap: 10px;
+	column-fill: balance;
+}
+.question {
+	break-inside: avoid;
+}
+.question-title {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	padding: 10px;
+	color: white;
+	font-size: 1.2em;
+	line-height: 1.1em;
+	word-break: break-word;
+}
+.background-image {
+	height: 180px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 40%;
+	position: relative;
+}
+.background-image:hover .background-image-overlay {
+	background: rgba(0,0,0,.1);
+}
+.background-image-overlay {
+	background: rgba(0,0,0,.4);
+	transition: background 0.3s;
+	height: 100%;
+}
+.user-answer {
+	margin-top: 8px;
+	font-size: 0.9em;
+	padding: 0 10px;
+	word-break: break-word;
+}
+
 @media only screen and (min-width: 1200px) {
-	body {
-		background: #f1f1f1;
-	}
 	main {
 		padding-top: 130px;
 	}
 	#user-profile {
 		padding: 20px 0;
 		max-width: 1010px;
-		background: white;
 		border-radius: 5px;
 		margin: 0 auto;
 		margin-bottom: 40px;

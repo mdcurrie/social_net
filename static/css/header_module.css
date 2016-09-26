@@ -22,6 +22,7 @@ header * {
 	display: inline-block;
 }
 #search-form {
+	display: none;
 	width: 240px;
 	height: 100%;
 	float: left;
@@ -50,6 +51,7 @@ header * {
 	color: white;
 }
 #header-icon-area {
+	display: none;
 	float: right;
 	height: 100%;
 	margin-right: 34px;
@@ -115,6 +117,12 @@ header .dropdown-content a:hover {
 }
 
 @media only screen and (min-width: 1200px) {
+	#search-form {
+		display: block;
+	}
+	#header-icon-area {
+		display: block;
+	}
 	header {
 		height: 80px;
 	}
