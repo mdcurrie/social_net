@@ -324,14 +324,17 @@ class ProfileHandler(BaseHandler):
 		except:
 			self.redirect("/")
 		else:
-			target_user = yield self.application.db.users.find_one({"_id": user_id}, {"password": 0, "salt": 0})
+			target_user = yield self.application.db.users.find_one({"_id": user_id}, {"username_search": 0, "email": 0, "topics": 0, "password": 0, "salt": 0})
 			if not target_user:
-				self.redirect("/")
+				if self.current_user:
+					self.redirect("/feed")
+				else:
+					self.redirect("/")
 			else:
 				own_profile = self.current_user and self.current_user["_id"] == user_id
 
-				ret = yield [self.application.db.questions.find({"asker": user_id}).sort("_id", 1).to_list(18),
-							 self.application.db.votes.find({"user_id": user_id}, {"_id": 0}).to_list(18),
+				ret = yield [self.application.db.questions.find({"asker": user_id}, {"date": 0, "asker": 0, "topics": 0, "question_search": 0}).sort("_id", -1).to_list(18),
+							 self.application.db.votes.find({"user_id": user_id}, {"_id": 0}).sort("_id", -1).to_list(18),
 							 self.application.db.followers.find_one({"user_id": user_id}, {"_id": 0}),
 							 self.application.db.following.find_one({"user_id": user_id}, {"_id": 0}),]
 
@@ -347,8 +350,8 @@ class ProfileHandler(BaseHandler):
 
 				recent_answers = answered_questions = None
 				if votes:
-					answered_questions = yield self.application.db.questions.find({"_id": {"$in": [vote["question_id"] for vote in votes[0]["votes"]]}}).to_list(18)
-					recent_answers = [v["vote_index"] for q in answered_questions for v in votes[0]["votes"] if q["_id"] == v["question_id"]]
+					answered_questions = yield self.application.db.questions.find({"_id": {"$in": [vote["question_id"] for vote in votes[0]["votes"]]}}).to_list(None)
+					recent_answers     = [v["vote_index"] for q in answered_questions for v in votes[0]["votes"] if q["_id"] == v["question_id"]]
 
 				self.render("user_profile.html", profile=target_user, own_profile=own_profile, following_this_user=following_this_user, recent_answers=recent_answers,
 					 							 answered_questions=answered_questions, questions=questions, question_count=question_count, user_following_count=user_following_count,
