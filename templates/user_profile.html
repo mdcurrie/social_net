@@ -40,39 +40,41 @@
                         <div id="bio">
                             {{ profile["bio"] }}
                         </div>
-                        <div id="metrics">
-                            <div id="question-count">
-                                <span>
-                                    {% if question_count <= 1000 %}
-                                        {{ question_count }}
-                                    {% elif question_count <= 999999 %}
-                                        {{ round(question_count/1000, 1) }}K
-                                    {% else %}
-                                        {{ round(question_count/1000000, 1) }}M
-                                    {% end %}
-                                </span> questions
-                            </div>
-                            <div id="followers-count" class="/users/{{ profile["_id"] }}/get_relationships?relationship=follower">
-                                <span>
-                                    {% if user_followers_count <= 1000 %}
-                                        {{ user_followers_count }}
-                                    {% elif user_followers_count <= 999999 %}
-                                        {{ round(user_followers_count/1000, 1) }}K
-                                    {% else %}
-                                        {{ round(user_followers_count/1000000, 1) }}M
-                                    {% end %}
-                                </span> followers
-                            </div>
-                            <div id="following-count" class="/users/{{ profile["_id"] }}/get_relationships?relationship=following">
-                                <span>
-                                    {% if user_following_count <= 1000 %}
-                                        {{ user_following_count }}
-                                    {% elif user_following_count <= 999999 %}
-                                        {{ round(user_following_count/1000, 1) }}K
-                                    {% else %}
-                                        {{ round(user_following_count/1000000, 1) }}M
-                                    {% end %}
-                                </span> following
+                        <div id="metrics-wrapper">
+                            <div id="metrics">
+                                <div id="question-count">
+                                    <span>
+                                        {% if question_count <= 1000 %}
+                                            {{ question_count }}
+                                        {% elif question_count <= 999999 %}
+                                            {{ round(question_count/1000, 1) }}K
+                                        {% else %}
+                                            {{ round(question_count/1000000, 1) }}M
+                                        {% end %}
+                                    </span> questions
+                                </div>
+                                <div id="followers-count" class="/users/{{ profile["_id"] }}/get_relationships?relationship=follower">
+                                    <span>
+                                        {% if user_followers_count <= 1000 %}
+                                            {{ user_followers_count }}
+                                        {% elif user_followers_count <= 999999 %}
+                                            {{ round(user_followers_count/1000, 1) }}K
+                                        {% else %}
+                                            {{ round(user_followers_count/1000000, 1) }}M
+                                        {% end %}
+                                    </span> followers
+                                </div>
+                                <div id="following-count" class="/users/{{ profile["_id"] }}/get_relationships?relationship=following">
+                                    <span>
+                                        {% if user_following_count <= 1000 %}
+                                            {{ user_following_count }}
+                                        {% elif user_following_count <= 999999 %}
+                                            {{ round(user_following_count/1000, 1) }}K
+                                        {% else %}
+                                            {{ round(user_following_count/1000000, 1) }}M
+                                        {% end %}
+                                    </span> following
+                                </div>
                             </div>
                         </div>
                     </div>
