@@ -24,25 +24,35 @@ a {
 
 main {
 	padding-top: 45px;
+	overflow-x: hidden;
 }
 #user-profile {
 	background: white;
 }
+#profile-info {
+	background: #2eb398;
+	padding-top: 50px;
+}
+#profile-picture {
+	text-align: center;
+	margin-bottom: 25px;
+}
 #profile-picture img {
-	height: 360px;
-    width: 100%;
-    object-fit: cover;
+	object-fit: cover;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 5px rgba(255, 255, 255, .4);
 }
 #profile-info-text {
-	padding: 10px 20px;
+	text-align: center;
 }
 #username-and-button {
 	margin-bottom: 5px;
 }
 #username {
-	float: left;
-	margin-right: 20px;
 	font-size: 1.5em;
+	color: white;
 }
 #username-and-button form {
 	transform: translateY(-2px);
@@ -73,71 +83,61 @@ main {
 	color: white;
 }
 #bio {
-	font-size: 0.85em;
+	font-size: 0.75em;
 	line-height: 1.2em;
+	color: white;
 	margin-bottom: 20px;
+	padding: 0 20px;
 }
 #metrics {
 	overflow: auto;
+	background: white;
+	padding: 20px 0;
 }
 #metrics > div {
 	float: left;
-	margin-right: 35px;
+	width: 33.3%;
     font-size: 0.85em;
+    text-align: center;
 }
 #metrics span {
-	font-weight: bold;
+	font-size: 1.5em;
+    margin-bottom: 2px;
+    display: block;
 }
 #followers-count, #following-count:hover {
 	cursor: pointer;
 }
-#misc {
-	width: calc(100% - 40px);
-	margin: 0 auto;
-}
-#relation-wrapper {
-	border-top: 1px solid rgba(0,0,0,.1);
-	margin: 0 auto;
-	margin-top: 15px;
-	margin-bottom: 15px;
-	padding: 15px 0;
-	overflow: hidden;
-}
 #relation-header {
-	font-size: 1.1em;
-	margin-bottom: 20px;
+	font-size: .75em;
+	padding: 10px;
+	text-transform: uppercase;
 }
 #users {
-	column-count: 8;
-	column-gap: 5px;
-	column-fill: balance;
+	overflow: auto;
+    width: calc(100% + 4px);
+    transform: translateX(-2px);	
 }
 .user {
-	break-inside: avoid;
+	width: calc(25% - 4px);
+    margin: 0 2px 2px 2px;
+    float: left;
 }
 .user img {
 	width: 100%;
 	object-fit: cover;
 }
-.profile-questions {
-	border-top: 1px solid rgba(0,0,0,.1);
-	margin: 0 auto;
-	margin-top: 15px;
-	margin-bottom: 15px;
-	padding: 15px 0;
-	overflow: hidden;
+#misc {
+	background: #f1f1f1;
 }
 .header {
-	font-size: 1.1em;
-	margin-bottom: 20px;
-}
-.questions-wrapper {
-	column-count: 3;
-	column-gap: 10px;
-	column-fill: balance;
+	font-size: .75em;
+	padding: 10px;
+	text-transform: uppercase;
 }
 .question {
-	break-inside: avoid;
+	margin-bottom: 20px;
+	background: white;
 }
 .question-title {
 	position: absolute;
@@ -145,12 +145,12 @@ main {
 	left: 0;
 	padding: 10px;
 	color: white;
-	font-size: 1.2em;
+	font-size: 1em;
 	line-height: 1.1em;
 	word-break: break-word;
 }
 .background-image {
-	height: 180px;
+	height: 150px;
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 50% 40%;
@@ -166,9 +166,87 @@ main {
 }
 .user-answer {
 	margin-top: 8px;
-	font-size: 0.9em;
-	padding: 0 10px;
+	font-size: 0.75em;
+	padding: 0 10px 10px 10px;
 	word-break: break-word;
+}
+
+@media only screen and (min-width: 380px) {
+	.question-title {
+		font-size: 1.1em;
+		line-height: 1.2em;
+	}
+	.background-image {
+		height: 180px;
+	}
+	.user-answer {
+		font-size: 0.85em;
+	}
+}
+
+@media only screen and (min-width: 480px) {
+	.user {
+		width: calc(20% - 4px);
+	}
+	.question-title {
+		font-size: 1.2em;
+		line-height: 1.3em;
+	}
+	.background-image {
+		height: 200px;
+	}
+	.user-answer {
+		font-size: 1em;
+	}
+}
+
+@media only screen and (min-width: 600px) {
+	#profile-picture img {
+		width: 130px;
+		height: 130px;
+	}
+	#username {
+		font-size: 2em;
+	}
+	#bio {
+		font-size: 1em;
+	}
+	#metrics-wrapper {
+		background: white;
+	}
+	#metrics {
+		width: 67%;
+		margin: 0 auto;
+	}
+	#metrics > div {
+		font-size: 1em;
+	}
+	#relation-header {
+		font-size: 0.85em;
+	}
+	.user {
+		width: calc(12.5% - 4px);
+	}
+	.header {
+		font-size: 0.85em;
+	}
+	.questions-wrapper {
+		overflow: auto;
+		width: calc(100% + 20px);
+		transform: translateX(-5px);
+	}
+	.question {
+		width: calc(50% - 10px);
+	    margin: 0 5px 10px 5px;
+	    float: left;
+	}
+}
+
+@media only screen and (min-width: 700px) {
+	#profile-picture img {
+		width: 150px;
+		height: 150px;
+	}
 }
 
 @media only screen and (min-width: 1200px) {
@@ -249,6 +327,7 @@ main {
 		line-height: 1.4em;
 	}
 	#metrics {
+		overflow: hidden;
 		position: absolute;
 		bottom: 10px;
 		width: 100%;

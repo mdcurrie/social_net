@@ -36,6 +36,10 @@ $(function() {
 			}
 		});
 	});
+
+	$(window).resize(function() {
+		$('.user img').css({"height": $('.user img').eq(0).width() + 'px'});
+	});
 });
 
 function getCookie(name) {
