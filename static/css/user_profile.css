@@ -113,6 +113,9 @@ main {
 	padding: 10px;
 	text-transform: uppercase;
 }
+.none-text {
+	padding: 0 0 10px 10px;
+}
 #users {
 	overflow: auto;
     width: calc(100% + 4px);
@@ -249,102 +252,88 @@ main {
 	}
 }
 
-@media only screen and (min-width: 1200px) {
+@media only screen and (min-width: 900px) {
 	main {
-		padding-top: 130px;
+		padding-top: 86px;
 	}
 	#user-profile {
 		padding: 20px 0;
-		max-width: 1010px;
+		width: calc(100% - 80px);
 		border-radius: 5px;
 		margin: 0 auto;
 		margin-bottom: 40px;
 	}
+	#profile-info {
+		width: 65%;
+		overflow: auto;
+		margin: 0 auto;
+		padding-top: 0;
+		background: transparent;
+	}
 	#profile-picture {
 		float: left;
 		margin-right: 50px;
+		margin-bottom: 0;
 	}
 	#profile-picture img {
-		border-radius: 50%;
-		width: 150px;
-		height: 150px;
-		object-fit: cover;
-	}
-	#profile-info {
-		width: 60%;
-		height: 156px;
-		margin: 0 auto;
+		box-shadow: none;
 	}
 	#profile-info-text {
 		float: left;
-		height: 100%;
+		height: 150px;
 		width: calc(100% - 200px);
 		position: relative;
+		text-align: initial;
 	}
 	#username-and-button {
 		position: absolute;
 		top: 5px;
+		margin-bottom: 0;
 	}
 	#username {
 		float: left;
 		margin-right: 20px;
-		font-size: 2em;
+		color: #353436;
 	}
 	#username-and-button form {
-		float: left;
-		transform: translateY(1px);
-	}
-	#username-and-button button {
-	    padding: 5px 10px;
-	    border: 1px solid #2eb398;
-	    outline: none;
-	    background: transparent;
-	    color: #2eb398;
-	    font-family: Gotham;
-	    font-size: 1.1em;
-	    border-radius: 3px;
-	}
-	#username-and-button button.active {
-		background: #2eb398;
-		color: white;
-		border: none;
-	}
-	#username-and-button button:hover {
-		cursor: pointer;
-	}
-	#username-and-button button.active:hover {
-		background: #23927c;
-	}
-	#username-and-button button:not(.active):hover {
-		background: #2eb398;
-		color: white;
+	    transform: translateY(2px);
+	    float: left;
 	}
 	#bio {
 		position: absolute;
 		top: calc(50% + 5px);
 		transform: translateY(-50%);
-		font-size: 0.9em;
-		line-height: 1.4em;
+		font-size: 1em;
+		line-height: 1.2em;
+		padding: 0;
+		margin-bottom: 0;
+		color: #353436;
 	}
-	#metrics {
-		overflow: hidden;
+	#metrics-wrapper {
+		background: transparent;
 		position: absolute;
 		bottom: 10px;
+	}
+	#metrics {
+		padding: 0;
 		width: 100%;
 	}
 	#metrics > div {
 		float: left;
-		margin-right: 35px;
+		margin-right: 25px;
+		font-size: 0.9em;
+		width: initial;
 	}
 	#metrics span {
 		font-weight: bold;
-	}
-	#followers-count, #following-count:hover {
-		cursor: pointer;
+		margin-bottom: 0;
+		display: initial;
+		font-size: initial;
 	}
 	#misc {
 		width: calc(100% - 40px);
 		margin: 0 auto;
+		background: white;
 	}
 	#relation-wrapper {
 		border-top: 1px solid rgba(0,0,0,.1);
@@ -357,18 +346,11 @@ main {
 	#relation-header {
 		font-size: 1.1em;
 		margin-bottom: 20px;
+		text-transform: initial;
+		padding: 0;
 	}
-	#users {
-		column-count: 8;
-		column-gap: 5px;
-		column-fill: balance;
-	}
-	.user {
-		break-inside: avoid;
-	}
-	.user img {
-		width: 100%;
-		object-fit: cover;
+	.none-text {
+		padding: 0;
 	}
 	.profile-questions {
 		border-top: 1px solid rgba(0,0,0,.1);
@@ -381,44 +363,35 @@ main {
 	.header {
 		font-size: 1.1em;
 		margin-bottom: 20px;
-	}
-	.questions-wrapper {
-		column-count: 3;
-		column-gap: 10px;
-		column-fill: balance;
+		text-transform: initial;
+		padding: 0;
 	}
 	.question {
-		break-inside: avoid;
+		width: calc(33.3% - 10px);
+		margin: 0 5px 20px 5px;
+		float: left;
 	}
 	.question-title {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		padding: 10px;
-		color: white;
-		font-size: 1.2em;
-		line-height: 1.1em;
-		word-break: break-word;
+		font-size: 1.1em;
+		line-height: 1.2em;
 	}
 	.background-image {
 		height: 180px;
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-position: 50% 40%;
-		position: relative;
-	}
-	.background-image:hover .background-image-overlay {
-		background: rgba(0,0,0,.1);
-	}
-	.background-image-overlay {
-		background: rgba(0,0,0,.4);
-		transition: background 0.3s;
-		height: 100%;
 	}
 	.user-answer {
-		margin-top: 8px;
 		font-size: 0.9em;
-		padding: 0 10px;
-		word-break: break-word;
+	}
+}
+
+@media only screen and (min-width: 1200px) {
+	main {
+		padding-top: 130px;
+	}
+	#user-profile {
+		padding: 20px 0;
+		max-width: 1010px;
+		border-radius: 5px;
+		margin: 0 auto;
+		margin-bottom: 40px;
 	}
 }

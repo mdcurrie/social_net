@@ -135,7 +135,7 @@ section h1 {
 	}
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 1200px) {
 	main {
 		padding-top: 130px;
 	}
