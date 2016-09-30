@@ -48,7 +48,7 @@ main {
 	text-align: center;
 }
 #username-and-button {
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 }
 #username {
 	font-size: 1.5em;
@@ -58,34 +58,26 @@ main {
 	transform: translateY(-2px);
 }
 #username-and-button button {
-    padding: 5px 10px;
-    border: 1px solid #2eb398;
+    padding: 5px 20px;
+    border: 3px solid white;
     outline: none;
     background: transparent;
-    color: #2eb398;
+    color: white;
     font-family: Gotham;
-    font-size: 1.1em;
-    border-radius: 3px;
+    font-size: 1em;
+    border-radius: 20px;
+    margin-top: 7px;
 }
 #username-and-button button.active {
-	background: #2eb398;
-	color: white;
-	border: none;
-}
-#username-and-button button:hover {
-	cursor: pointer;
-}
-#username-and-button button.active:hover {
-	background: #23927c;
-}
-#username-and-button button:not(.active):hover {
-	background: #2eb398;
-	color: white;
+	background: white;
+	color: #2eb398;
 }
 #bio {
 	font-size: 0.75em;
 	line-height: 1.2em;
 	color: white;
+	max-width: 500px;
+	margin: 0 auto;
 	margin-bottom: 20px;
 	padding: 0 20px;
 }
@@ -139,7 +131,7 @@ main {
 	text-transform: uppercase;
 }
 .question {
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 	background: white;
 }
 .question-title {
@@ -298,6 +290,32 @@ main {
 	#username-and-button form {
 	    transform: translateY(2px);
 	    float: left;
+	}
+	#username-and-button button {
+	    padding: 5px 10px;
+	    border: 1px solid #2eb398;
+	    outline: none;
+	    background: transparent;
+	    color: #2eb398;
+	    font-family: Gotham;
+	    font-size: 1.1em;
+	    border-radius: 3px;
+	    margin-top: 0;
+	}
+	#username-and-button button.active {
+		background: #2eb398;
+		color: white;
+		border: none;
+	}
+	#username-and-button button:hover {
+		cursor: pointer;
+	}
+	#username-and-button button.active:hover {
+		background: #23927c;
+	}
+	#username-and-button button:not(.active):hover {
+		background: #2eb398;
+		color: white;
 	}
 	#bio {
 		position: absolute;

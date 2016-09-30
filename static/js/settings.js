@@ -103,6 +103,7 @@ $(function() {
 	/* email section */
 	$('#email').on('click', function() {
 		$(this).css({"display": "none"});
+		$('.row:first-of-type .key').hide();
 		$('.row:first-of-type form').css({"display": "block"});
 		$('.row:first-of-type input').focus();
 	});
@@ -132,7 +133,8 @@ $(function() {
 				$('#email').text(email);
 				$('.row:first-of-type form').css({"display": "none"});
 				$('input[name="email"]').attr({"placeholder": email}).val('');
-				$('#email').css({"display": "block"});
+				$('#email').css({"display": "inline-block"});
+				$('.row:first-of-type .key').show();
 			}
 		});
 	});
@@ -140,6 +142,7 @@ $(function() {
 	/* password section */
 	$('#reset-password-button').on('click', function() {
 		$(this).css({"display": "none"});
+		$('.row:nth-of-type(2) .key').hide();
 		$('.row:nth-of-type(2) form').css({"display": "block"});
 		$('.row:nth-of-type(2) input').eq(1).focus();
 	});
@@ -171,7 +174,8 @@ $(function() {
 				$('.row:nth-of-type(2) form').css({"display": "none"});
 				$('input[name="old-password"]').val('');
 				$('input[name="new-password"]').val('');
-				$('#reset-password-button').css({"display": "block"});
+				$('#reset-password-button').css({"display": "inline-block"});
+				$('.row:nth-of-type(2) .key').show();
 			}
 		});
 	});
@@ -179,6 +183,7 @@ $(function() {
 	/* custom URL section */
 	$('#custom-url').on('click', function() {
 		$(this).css({"display": "none"});
+		$('.row:nth-of-type(3) .key').hide();
 		$('.row:nth-of-type(3) form').css({"display": "block"});
 		$('.row:nth-of-type(3) input').eq(1).focus();
 	});
@@ -218,6 +223,7 @@ $(function() {
 				$('.row:nth-of-type(3) form').css({"display": "none"});
 				$('input[name="custom-url"]').attr({"placeholder": custom_url}).val('');
 				$('#custom-url').css({"display": "block"});
+				$('.row:nth-of-type(3) .key').show();
 			}
 		});
 	});

@@ -21,17 +21,243 @@ a {
 
 /*=================== GENERAL STYLING END ====================*/
 
-@media only screen and (min-width: 1200px) {
+main {
+	padding-top: 45px;
+}
+#user-settings {
+	background: white;
+	padding-top: 50px;
+}
+#user-profile-pic {
+	text-align: center;
+	margin-bottom: 25px;
+	position: relative;
+}
+#user-profile-pic img {
+	border-radius: 50%;
+	height: 120px;
+	width: 120px;
+	transition: opacity 0.3s;
+	object-fit: cover;
+}
+#user-profile-pic img:hover {
+	cursor: pointer;
+	opacity: 0.2;
+}
+#user-profile-pic form {
+	display: none;
+	position: absolute;
+	width: calc(100% - 20px);
+	max-width: 250px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+#user-profile-pic input {
+	width: 100%;
+	font-size: 1em;
+	font-family: Gotham;
+	padding: 5px 20px;
+	border: none;
+	outline: none;
+	background: #f1f1f1;
+	text-align: center;
+	border-radius: 3px;
+}
+#profile-pic-error {
+	font-size: 0.85em;
+	color: #e64c65;
+}
+#username {
+	margin-bottom: 10px;
+	text-align: center;
+	position: relative;
+}
+#username .wrapper {
+	font-size: 1.5em;
+}
+#username form {
+	font-size: 1.5em;
+	display: none;
+	width: calc(100% - 20px);
+	max-width: 250px;
+}
+#username input {
+    background: #f1f1f1;
+    padding: 4px 0;
+    border-radius: 3px;
+    width: 100%;
+    font-size: 1em;
+    border: none;
+    outline: none;
+    text-align: center;
+    font-family: Gotham;
+}
+#username input:focus {
+	box-shadow: 0 0 4px 1px #2eb398;
+}
+#username-error {
+    text-align: left;
+    font-size: 0.75em;
+    color: #e64c65;
+    margin: 0 auto;
+    margin-top: 3px;
+    width: calc(100% - 20px);
+}
+#bio {
+	text-align: center;
+	margin-bottom: 40px;
+}
+#bio form {
+	display: none;
+	width: calc(100% - 20px);
+	max-width: 250px;
+}
+#bio input {
+    background: #f1f1f1;
+    padding: 4px 20px;
+    border-radius: 3px;
+    width: 100%;
+    font-size: 1em;
+    border: none;
+    outline: none;
+    text-align: center;
+    font-family: Gotham;
+}
+#bio input:focus {
+	box-shadow: 0 0 4px 1px #2eb398;
+}
+#user-settings .wrapper {
+	background: #f1f1f1;
+	padding: 5px 0;
+	border-radius: 3px;
+	width: calc(100% - 20px);
+	max-width: 250px;
+	margin: 0 auto;
+}
+#user-settings .wrapper:hover {
+	cursor: pointer;
+}
+#bio .wrapper {
+	min-height: 1.5em;
+}
+#row-settings {
+	width: calc(100% - 20px);
+	margin: 0 auto;
+}
+.row {
+	padding: 25px 0;
+	border-top: 1px solid rgba(0,0,0,.1);
+	overflow: auto;
+	position: relative;
+}
+.row:last-of-type {
+	border-bottom: 1px solid rgba(0,0,0,.1);
+	margin-bottom: 20px;
+}
+.row form {
+	display: none;
+    width: calc(100% - 20px);
+    max-width: 250px;
+    margin: 0 auto;
+}
+.key {
+	float: left;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 0.85em;
+}
+.value {
+    width: 100%;
+    text-align: right;
+    font-size: 0.85em;
+}
+.value > .form-button {
+	width: initial;
+}
+.form-input {
+    outline: none;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    background: #f1f1f1;
+    border-radius: 3px;
+    font-family: Gotham;
+    font-size: 1em;
+    width: 100%;
+    margin-bottom: 3px;
+}
+.form-button {
+    border: none;
+    outline: none;
+    background: #2eb398;
+    font-family: Gotham;
+    border-radius: 3px;
+    color: white;
+    padding: 5px;
+    width: 100%;
+}
+.form-button:hover {
+	cursor: pointer;
+	background: #23927c;
+}
+#url-prefix {
+	text-align: left;
+}
+#email {
+	padding: 5px 0;
+	color: #2eb398;
+	font-weight: bold;
+	display: inline-block;
+}
+#email:hover {
+	cursor: pointer;
+}
+#custom-url {
+	color: #2eb398;
+	font-weight: bold;
+}
+#custom-url:hover {
+	cursor: pointer;
+}
+.error-message {
+	font-size: 0.75em;
+	color: #e64c65;
+	width: calc(100% - 20px);
+	max-width: 250px;
+	margin: 0 auto;
+	margin-top: 5px;
+}
+
+@media only screen and (min-width: 600px) {
+	#user-profile-pic img {
+		height: 130px;
+		width: 130px;
+	}
+}
+
+@media only screen and (min-width: 700px) {
+	#user-profile-pic img {
+		width: 150px;
+		height: 150px;
+	}
+	#row-settings {
+		max-width: 600px;
+	}
+}
+
+@media only screen and (min-width: 900px) {
 	body {
 		background: #f1f1f1;
 	}
 	main {
-		padding-top: 130px;
+		padding-top: 86px;
 	}
 	#user-settings {
 		background: white;
+		width: calc(100% - 80px);
 		border-radius: 5px;
-		max-width: 1010px;
 		padding: 20px;
 		margin: 0 auto;
 	}
@@ -39,13 +265,6 @@ a {
 		text-align: center;
 		margin-bottom: 10px;
 		position: relative;
-	}
-	#user-profile-pic img {
-		border-radius: 50%;
-		height: 180px;
-		width: 180px;
-		transition: opacity 0.3s;
-		object-fit: cover;
 	}
 	#user-profile-pic img:hover {
 		cursor: pointer;
