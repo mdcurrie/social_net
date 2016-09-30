@@ -86,7 +86,8 @@
                             </div>
                             <form action="/settings/updateURL" method="post">
                                 {% raw xsrf_form_html() %}
-                                https://hive.com/<input class="form-input" name="custom-url" autocomplete="off" placeholder="{% if current_user.get("custom_url") %}{{ current_user["custom_url"] }}{% end %}">
+                                <div id="url-prefix">https://hive.com/</div>
+                                <input class="form-input" name="custom-url" autocomplete="off" placeholder="{% if current_user.get("custom_url") %}{{ current_user["custom_url"] }}{% end %}">
                                 <button class="form-button" formaction="/settings/updateURL" formmethod="post">Save</button>
                             </form>
                         </div>
