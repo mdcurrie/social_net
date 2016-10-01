@@ -1172,5 +1172,5 @@ class SearchHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
