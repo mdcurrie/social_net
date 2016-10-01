@@ -73,7 +73,7 @@ main {
 	color: #2eb398;
 }
 #bio {
-	font-size: 0.75em;
+	font-size: 0.85em;
 	line-height: 1.2em;
 	color: white;
 	max-width: 500px;
@@ -129,6 +129,10 @@ main {
 	font-size: .75em;
 	padding: 10px;
 	text-transform: uppercase;
+}
+.questions-wrapper {
+	margin: 0 auto;
+	width: calc(100% - 20px);
 }
 .question {
 	margin-bottom: 10px;
