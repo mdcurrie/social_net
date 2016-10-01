@@ -331,6 +331,9 @@ main {
 	#email:hover {
 		cursor: pointer;
 	}
+	#custom-url-button {
+		width: initial;
+	}
 	#custom-url:hover {
 		cursor: pointer;
 	}
