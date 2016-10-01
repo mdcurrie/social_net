@@ -93,9 +93,6 @@ main {
     text-align: center;
     font-family: Gotham;
 }
-#username input:focus {
-	box-shadow: 0 0 4px 1px #2eb398;
-}
 #username-error {
     text-align: left;
     font-size: 0.75em;
@@ -103,6 +100,7 @@ main {
     margin: 0 auto;
     margin-top: 3px;
     width: calc(100% - 20px);
+    max-width: 250px;
 }
 #bio {
 	text-align: center;
@@ -123,9 +121,6 @@ main {
     outline: none;
     text-align: center;
     font-family: Gotham;
-}
-#bio input:focus {
-	box-shadow: 0 0 4px 1px #2eb398;
 }
 #user-settings .wrapper {
 	background: #f1f1f1;
@@ -235,15 +230,15 @@ main {
 		height: 130px;
 		width: 130px;
 	}
+	#row-settings {
+		max-width: 600px;
+	}
 }
 
 @media only screen and (min-width: 700px) {
 	#user-profile-pic img {
 		width: 150px;
 		height: 150px;
-	}
-	#row-settings {
-		max-width: 600px;
 	}
 }
 
@@ -255,28 +250,19 @@ main {
 		padding-top: 86px;
 	}
 	#user-settings {
-		background: white;
 		width: calc(100% - 80px);
+		max-width: 1010px;
 		border-radius: 5px;
 		padding: 20px;
 		margin: 0 auto;
-	}
-	#user-profile-pic {
-		text-align: center;
-		margin-bottom: 10px;
-		position: relative;
+		margin-bottom: 40px;
 	}
 	#user-profile-pic img:hover {
 		cursor: pointer;
 		opacity: 0.2;
 	}
 	#user-profile-pic form {
-		display: none;
-		position: absolute;
 		width: 30%;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
 	}
 	#user-profile-pic input {
 		width: 100%;
@@ -289,9 +275,6 @@ main {
 		text-align: center;
 		border-radius: 3px;
 	}
-	#user-profile-pic input:focus {
-		box-shadow: 0 0 4px 1px #2eb398;
-	}
 	#profile-pic-error {
 		position: absolute;
 		top: 50%;
@@ -301,127 +284,40 @@ main {
 		font-size: 0.85em;
 		color: #e64c65;
 	}
-	#username {
-		margin-bottom: 10px;
-		text-align: center;
-		position: relative;
-	}
-	#username .wrapper {
-		font-size: 2em;
-	}
 	#username form {
-		font-size: 2em;
-		display: none;
 		width: 30%;
 	}
 	#username input {
-	    background: #f1f1f1;
 	    padding: 4px 20px;
-	    border-radius: 3px;
-	    width: 100%;
-	    font-size: 1em;
-	    border: none;
-	    outline: none;
-	    text-align: center;
-	    font-family: Gotham;
-	}
-	#username input:focus {
-		box-shadow: 0 0 4px 1px #2eb398;
 	}
 	#username-error {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		left: calc(65% + 10px);
-		text-align: left;
-		font-size: 0.85em;
-		color: #e64c65;
-	}
-	#bio {
-		text-align: center;
-		margin-bottom: 40px;
+	    position: absolute;
+	    top: 50%;
+	    transform: translateY(-50%);
+	    left: calc(65% + 10px);
+	    width: calc(35% - 10px);
+	    margin-top: 0;
 	}
 	#bio form {
-		display: none;
 		width: 30%;
-	}
-	#bio input {
-	    background: #f1f1f1;
-	    padding: 4px 20px;
-	    border-radius: 3px;
-	    width: 100%;
-	    font-size: 1em;
-	    border: none;
-	    outline: none;
-	    text-align: center;
-	    font-family: Gotham;
-	}
-	#bio input:focus {
-		box-shadow: 0 0 4px 1px #2eb398;
 	}
 	#user-settings .wrapper {
 		display: inline-block;
-		background: #f1f1f1;
 		padding: 5px 20px;
-		border-radius: 3px;
 		width: 30%;
 	}
 	#user-settings .wrapper:hover {
 		cursor: pointer;
 	}
-	#bio .wrapper {
-		min-height: 1.5em;
-	}
 	#row-settings {
-		width: calc(100% - 252px);
-		margin: 0 auto;
-	}
-	.row {
-		padding: 25px 0;
-		border-top: 1px solid rgba(0,0,0,.1);
-		overflow: auto;
-		position: relative;
-	}
-	.row:last-of-type {
-		border-bottom: 1px solid rgba(0,0,0,.1);
-		margin-bottom: 20px;
-	}
-	.row form {
-		display: none;
-	}
-	.key {
-		float: left;
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-	}
-	.value {
-		float: right;
+		max-width: 650px;
 	}
 	.form-input {
-		outline: none;
-		border: none;
-		padding: 5px 10px;
-		text-align: left;
-		background: #f1f1f1;
-		border-radius: 3px;
-		font-family: Gotham;
-		font-size: 1em;
-		max-width: 180px;
+		max-width: 250px;
 		margin-right: 5px;
 	}
-	.form-input:focus {
-		box-shadow: 0 0 4px 1px #2eb398;
-	}
 	.form-button {
-		border: none;
-		outline: none;
-		background: #2eb398;
-		font-family: Gotham;
-		border-radius: 3px;
-		color: white;
-		padding: 7px;
-		transform: translateY(-1px);
+		padding: 5px 10px;
 	}
 	.form-button:hover {
 		cursor: pointer;
@@ -435,19 +331,16 @@ main {
 	#email:hover {
 		cursor: pointer;
 	}
-	#custom-url {
-		padding: 5px 0;
-		color: #2eb398;
-		font-weight: bold;
-	}
 	#custom-url:hover {
 		cursor: pointer;
 	}
-	.error-message {
-		position: absolute;
-		right: 0;
-		bottom: 5px;
-		font-size: 0.85em;
-		color: #e64c65;
+	#url-prefix {
+		margin-bottom: 2px;
+	}
+}
+
+@media only screen and (min-width: 1200px) {
+	main {
+		padding-top: 130px;
 	}
 }
