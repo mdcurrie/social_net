@@ -77,9 +77,8 @@
     border-top: 1px solid #f1f1f1;
 }
 .comment-form input[name="comment"] {
-	width: calc(100% - 30px);
-	height: 30px;
-	font-size: 0.8em;
+	width: calc(100% - 45px);
+	height: 45px;
 	padding: 8px;
 	float: left;
 	background-color: white;
@@ -88,8 +87,8 @@
 	outline: none;
 }
 .comment-form img {
-	width: 30px;
-	height: 30px;
+	width: 45px;
+	height: 45px;
 	padding: 3px;
 	border-left: 1px solid #f1f1f1;
 	float: left;

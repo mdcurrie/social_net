@@ -96,7 +96,8 @@
 }
 .vote-count {
 	font-size: 0.75em;
-	color: #95909a;
+	/*color: #95909a;*/
+	color: #868686;
 	padding: 8px 10px;
 	text-align: right;
 }
