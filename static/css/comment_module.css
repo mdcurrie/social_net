@@ -1,3 +1,104 @@
+.comment-section-title div {
+	width: calc(100% - 20px);
+	margin: 0 auto;
+	font-size: 0.9em;
+}
+.all-comments {
+	padding-top: 14px;
+	padding-bottom: 45px;
+}
+.comment-wrapper {
+	position: relative;
+	width: calc(100% - 20px);
+	margin: 0 auto;
+	margin-top: 20px;
+}
+.comment-wrapper:first-of-type {
+	margin-top: 0;
+}
+.comment {
+	overflow: auto;
+	padding: 8px;
+	background-color: white;
+}
+.backer1 {
+	position: absolute;
+	width: 95%;
+	height: 4px;
+	background-color: #ececec;
+	left: 50%;
+	transform: translateX(-50%);
+	top: -4px;
+}
+.backer2 {
+	position: absolute;
+	width: 90%;
+	height: 4px;
+	background-color: #e4e4e4;
+	left: 50%;
+	transform: translateX(-50%);
+	top: -8px;
+}
+.profile-pic {
+	height: 30px;
+	width: 30px;
+	border-radius: 50%;
+	margin-right: 8px;
+	float: left;
+}
+.comment-text {
+	float: left;
+	width: calc(100% - 38px);
+}
+.comment-top-text {
+	margin-bottom: 4px;
+}
+.comment-bot-text {
+	word-break: break-word;
+	font-size: 0.75em;
+}
+.commenter-username {
+	font-weight: bold;
+	float: left;
+	font-size: 0.8em;
+}
+.comment-time {
+	color: #95909a;
+	font-size: 0.6em;
+	display: inline-block;
+	transform: translate(8px, -2px);
+}
+.comment-form {
+    width: 100%;
+    margin: 0 auto;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    border-top: 1px solid #f1f1f1;
+}
+.comment-form input[name="comment"] {
+	width: calc(100% - 30px);
+	height: 30px;
+	font-size: 0.8em;
+	padding: 8px;
+	float: left;
+	background-color: white;
+	font-family: Gotham;
+	border: none;
+	outline: none;
+}
+.comment-form img {
+	width: 30px;
+	height: 30px;
+	padding: 3px;
+	border-left: 1px solid #f1f1f1;
+	float: left;
+	background: white;
+}
+.comment-form img:hover {
+	cursor: pointer;
+}
+
 @media only screen and (min-width: 1200px) {
 	.comment-section {
 		height: 100%;

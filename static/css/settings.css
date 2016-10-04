@@ -216,6 +216,9 @@ main {
 #custom-url:hover {
 	cursor: pointer;
 }
+#custom-url-button {
+	width: initial;
+}
 .error-message {
 	font-size: 0.75em;
 	color: #e64c65;
@@ -330,9 +333,6 @@ main {
 	}
 	#email:hover {
 		cursor: pointer;
-	}
-	#custom-url-button {
-		width: initial;
 	}
 	#custom-url:hover {
 		cursor: pointer;

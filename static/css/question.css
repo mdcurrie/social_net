@@ -16,15 +16,18 @@ a {
 }
 * {
 	color: #353436;
-}
-
-@media only screen and (min-width: 1200px) {
-	html, body, section, article {
-		height: 100%;
-	}
+	box-sizing: border-box;
 }
 
 /*=================== GENERAL STYLING END ====================*/
+
+main {
+	background: #f1f1f1;
+	padding-top: 61px;
+}
+#question-content {
+	margin-bottom: 20px;
+}
 
 @media only screen and (min-width: 1200px) {
 	body {
@@ -36,10 +39,6 @@ a {
 		width: 100%;
 		max-width: 1010px;
 		margin: 0 auto;
-		box-sizing: border-box;
-	}
-	main * {
-		box-sizing: border-box;
 	}
 	#question-content {
 		width: 50%;

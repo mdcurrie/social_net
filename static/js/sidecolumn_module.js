@@ -165,6 +165,7 @@ $(function() {
 						var question_data = $('#question-form-wrapper form').serialize();
 						$form.data('submitted', true);
 						$.post('/create_question', question_data, function(data) {
+							console.log(data);
 							if (data.title_error) {
 								if (!$('.input-section:first-of-type .question-form-error').length)
 									$('.input-section:first-of-type').append('<div class="question-form-error">' + data.title_error + '</div>');
