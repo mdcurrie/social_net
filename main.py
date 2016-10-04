@@ -544,7 +544,7 @@ class CreateQuestionHandler(BaseHandler):
 					data = [{'label': label, 'votes': 0} for label in choices]
 
 					ret = yield [self.application.db.questions.insert({"asker": self.current_user["_id"], "question": question_title, "question_search": question_title.lower(), "date": datetime.utcnow(), "image_link": image_link, "data": data, "topics": topics}),
-								 self.application.db.users.update({"_id": self.current_user["_id"]}, {"$inc": {"question_count": 1}}, fields={"question_count"})]
+								 self.application.db.users.update({"_id": self.current_user["_id"]}, {"$inc": {"question_count": 1}}, fields={"question_count": 1})]
 
 					question = ret[0]
 
@@ -1172,5 +1172,5 @@ class SearchHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
