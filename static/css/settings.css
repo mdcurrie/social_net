@@ -190,7 +190,7 @@ main {
     font-family: Gotham;
     border-radius: 3px;
     color: white;
-    padding: 5px;
+    padding: 8px;
     width: 100%;
 }
 .form-button:hover {
@@ -228,6 +228,24 @@ main {
 	margin-top: 5px;
 }
 
+@media only screen and (min-width: 380px) {
+	.key {
+		font-size: 0.9em;
+	}
+	.value {
+		font-size: 0.9em;
+	}
+}
+
+@media only screen and (min-width: 480px) {
+	.key {
+		font-size: 0.95em;
+	}
+	.value {
+		font-size: 0.95em;
+	}
+}
+
 @media only screen and (min-width: 600px) {
 	#user-profile-pic img {
 		height: 130px;
@@ -235,6 +253,12 @@ main {
 	}
 	#row-settings {
 		max-width: 600px;
+	}
+	.key {
+		font-size: 1em;
+	}
+	.value {
+		font-size: 1em;
 	}
 }
 
