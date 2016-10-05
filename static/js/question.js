@@ -1,4 +1,6 @@
 $(function() {
-/*	var new_height = $('.question-wrapper').height() + 130 +'px';
-	$("main").css({"height": new_height});*/
+	if ($(window).width() >= 480) {
+		var new_height = $('.question-wrapper').height() +'px';
+		$(".comment-section").css({"height": new_height});
+	}
 });

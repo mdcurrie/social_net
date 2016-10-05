@@ -21,18 +21,35 @@ a {
 
 /*=================== GENERAL STYLING END ====================*/
 
-main {
+body {
 	background: #f1f1f1;
+}
+main {
 	padding-top: 61px;
 }
 #question-content {
 	margin-bottom: 20px;
 }
 
-@media only screen and (min-width: 1200px) {
-	body {
-		background: #f1f1f1;
+@media only screen and (min-width: 480px) {
+	main {
+		padding-top: 86px;
 	}
+}
+
+@media only screen and (min-width: 800px) {
+	#question-content {
+		width: 50%;
+		float: left;
+	}
+	#question-comments {
+		width: 50%;
+		height: 100%;
+		float: left;
+	}
+}
+
+@media only screen and (min-width: 1200px) {
 	main {
 		height: 100%;
 		padding-top: 130px;

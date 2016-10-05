@@ -96,8 +96,7 @@
 }
 .vote-count {
 	font-size: 0.75em;
-	/*color: #95909a;*/
-	color: #868686;
+	color: #95909a;
 	padding: 8px 10px;
 	text-align: right;
 }
@@ -203,7 +202,7 @@
 	.vote-count {
 		font-size: 0.8em;
 	}
-	.question-topics a {
+	.question-topic a {
 		font-size: 0.8em
 	}
 }
@@ -260,8 +259,74 @@
 	.vote-count {
 		font-size: 0.8em;
 	}
-	.question-topics a {
+	.question-topic a {
 		font-size: 0.8em
+	}
+}
+
+@media only screen and (min-width: 480px) {
+	.question-wrapper {
+		max-width: 505px;
+		margin: 0 auto;
+	}
+	.asker-username a {
+	    font-size: 1.05em;
+	}
+	.asker-text {
+		transform: translateY(2px);
+	}
+	.question-date {
+	    font-size: 0.85em;
+	}
+	.action-buttons {
+	    top: 26px;
+	}
+	.count-text {
+		font-size: 0.85em;
+	}
+	.question-image {
+		height: 250px;
+	}
+	.question-title {
+		bottom: 16px;
+		padding: 0 16px;
+	}
+	.poll-answer {
+		padding-top: 20px;
+	}
+	.poll-percentage-wrapper {
+		width: 45px;
+		height: 25px;
+	}
+	.poll-percentage {
+		transform: translateY(6px);
+	    font-size: 0.9em;
+	}
+	.bar-wrapper1 {
+		margin-left: 45px;
+		width: calc(100% - 45px);
+	}
+	.poll-bar {
+		height: 25px;
+	}
+	.poll-bar > div {
+		top: 7px;
+		font-size: 0.9em;
+	}
+	.vote-count {
+		font-size: 0.9em;
+	}
+	.topics-container {
+		padding: 3px 5px;
+	}
+	.question-topic a {
+		font-size: 0.9em
+	}
+}
+
+@media only screen and (min-width: 505px) {
+	.question-wrapper {
+		max-width: 485px;
 	}
 }
 
