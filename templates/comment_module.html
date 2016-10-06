@@ -1,7 +1,7 @@
 <div class="comment-section" id="comments">
-    <div class="comment-section-title">
+  <!--  <div class="comment-section-title">
         <div>Comments</div>
-    </div>
+    </div>-->
     <div class="all-comments">
         {% if comments %}
             {% for idx, comment in enumerate(comments) %}
@@ -35,8 +35,6 @@
                         <div class="comment-bot-text">{{ comment["comment"] }}</div>
                     </div>
                 </div>
-                <div class="backer1"></div>
-                <div class="backer2"></div>
             </div>
             {% end %}
         {% end %}
