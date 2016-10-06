@@ -6,17 +6,10 @@
 .all-comments {
 	padding-top: 14px;
 	padding-bottom: 58px;
-	border-top: 1px solid #f1f1f1;
-}
-.comment-wrapper {
-	margin-top: 20px;
-}
-.comment-wrapper:first-of-type {
-	margin-top: 0;
+	border-top: 2px solid #f1f1f1;
 }
 .comment {
 	overflow: auto;
-	padding: 10px 0;
 }
 .profile-pic {
 	height: 40px;
@@ -27,8 +20,9 @@
 .comment-text {
 	float: left;
     width: calc(100% - 55px);
-    padding-bottom: 20px;
-    border-bottom: 1px solid #f1f1f1;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #f1f1f1;
 }
 .comment-top-text {
 	padding-bottom: 9px;
