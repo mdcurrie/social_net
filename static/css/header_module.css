@@ -197,7 +197,8 @@ header .dropdown-content a:hover {
 	    top: 85px;
 	    background: white;
 	    min-width: 135px;
-	    box-shadow: 0 2px 5px rgba(0,0,0,.1);
+	    border-radius: 7px;
+	    box-shadow: initial;
 	}
 	header .dropdown-content a {
 	    color: #353436;
@@ -218,6 +219,8 @@ header .dropdown-content a:hover {
 		text-align: left;
 		border: none;
 		outline: none;
+		border-bottom-left-radius: 7px;
+		border-bottom-right-radius: 7px;
 	}
 	#current-user-profile-pic button:hover {
 		background: #f1f1f1;
