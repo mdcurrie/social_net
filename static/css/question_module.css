@@ -105,7 +105,7 @@
 	background: white;
 }
 .poll-answer {
-	padding-top: 12px;
+	padding-top: 14px;
 }
 .percent-and-bar:hover {
 	cursor: pointer;
@@ -233,59 +233,84 @@
 }
 
 @media only screen and (min-width: 420px) {
+	.question-title {
+		bottom: 57px;
+		padding: 0 18px;
+	}
+	.question-title a {
+		font-size: 1.3em;
+	}
 	.asker-info {
-		top: 20px;
+		bottom: -19px;
 		left: 20px;
 	}
 	.asker-profile-pic {
 		margin-right: 10px;
 	}
 	.asker-profile-pic img {
-		width: 40px;
-		height: 40px;
+		width: 55px;
+		height: 55px;
+	}
+	.asker-text {
+		transform: translateY(16px);
+	}
+	.asker-username {
+		margin-bottom: 9px;
 	}
 	.asker-username a {
 	    font-size: 1em;
-	}
-	.asker-text {
-		transform: translateY(3px);
 	}
 	.question-date {
 	    font-size: 0.8em;
 	}
 	.action-buttons {
-	    top: 27px;
-	    right: 20px;
+	    bottom: 0px;
+	    right: 18px;
+	}
+	.count-text {
+		font-size: 0.9em;
+		min-width: 25px;
 	}
 	.svg-image svg {
-		height: 23px;
+		height: 18px;
 	}
 	.question-image {
-		height: 240px;
+		height: 210px;
 	}
-	.question-title {
-		bottom: 16px;
-		padding: 0 16px;
-	}
-	.question-title a {
-		font-size: 1.2em;
+	.question-content {
+		padding-top: 20px;
 	}
 	.poll-answer {
-		padding-top: 15px;
+		padding-top: 18px;
+	}
+	.poll-percentage-wrapper {
+		height: 26px;
+		width: 45px;
 	}
 	.poll-percentage {
-		transform: translateY(3px);
-	    font-size: 0.8em;
+		transform: translateY(6px);
+	    font-size: 0.9em;
+	}
+	.bar-wrapper1 {
+		margin-left: 45px;
+		width: calc(100% - 45px);
+	}
+	.poll-bar {
+		height: 26px;
 	}
 	.poll-bar > div {
-		top: 3px;
-		font-size: 0.8em;
+		top: 6px;
+		font-size: 0.9em;
 	}
 	.vote-count {
-		font-size: 0.8em;
+		font-size: 0.9em;
+		padding: 5px 18px;
+	}
+	.topics-container {
+		padding: 1px 5px 4px 5px;
 	}
 	.question-topic a {
-		font-size: 0.8em
+		font-size: 0.9em
 	}
 }
 
