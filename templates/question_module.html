@@ -1,41 +1,41 @@
 <div class="question-wrapper" id="{{ str(question["_id"]) }}">
-    <div class="asker-info">
-        <div class="asker-profile-pic">
-            <a href="/users/{{ str(asker["_id"]) }}">
-                <img src="{{ asker["profile_pic_link"] }}">
-            </a>
-        </div>
-        <div class="asker-text">
-            <div class="asker-username">
-                <a href="/users/{{ str(asker["_id"]) }}"> by {{ asker["username"] }}</a>
-            </div>
-            <div class="question-date">
-                {% set total_seconds = (datetime.utcnow() - question["date"]).total_seconds() %}
-                {% if total_seconds < 30 %}
-                    Just now
-                {% elif total_seconds < 60 %}
-                    {{ int(total_seconds) }}s ago
-                {% elif total_seconds < 3600 %}
-                    {{ int(total_seconds * 0.0166667) }}m ago
-                {% elif total_seconds < 86400 %}
-                    {{ int(total_seconds * 0.000277778) }}h ago
-                {% elif total_seconds < 172800 %}
-                    Yesterday
-                {% elif total_seconds < 15770000 %}
-                    {{ question["date"].strftime("%B %d").replace(' 0', ' ') }}
-                {% else %}
-                    {{ question["date"].strftime("%B %d, %Y").replace(' 0', ' ') }}
-                {% end %}
-            </div>
-            <div class="question-title">
-                <a href="{{ "/questions/" + str(question["_id"]) }}">
-                    {{ question["question"] }}
-                </a>
-            </div>
-        </div>
-    </div>
     <div class="question-image" style="background-image: url({{ question["image_link"] }})">
         <div class="question-image-overlay"></div>
+        <div class="question-title">
+            <a href="{{ "/questions/" + str(question["_id"]) }}">
+                {{ question["question"] }}
+            </a>
+        </div>
+        <div class="asker-info">
+            <div class="asker-profile-pic">
+                <a href="/users/{{ str(asker["_id"]) }}">
+                    <img src="{{ asker["profile_pic_link"] }}">
+                </a>
+            </div>
+            <div class="asker-text">
+                <div class="asker-username">
+                    <a href="/users/{{ str(asker["_id"]) }}"> by {{ asker["username"] }}</a>
+                </div>
+                <div class="question-date">
+                    {% set total_seconds = (datetime.utcnow() - question["date"]).total_seconds() %}
+                    {% if total_seconds < 30 %}
+                        Just now
+                    {% elif total_seconds < 60 %}
+                        {{ int(total_seconds) }}s ago
+                    {% elif total_seconds < 3600 %}
+                        {{ int(total_seconds * 0.0166667) }}m ago
+                    {% elif total_seconds < 86400 %}
+                        {{ int(total_seconds * 0.000277778) }}h ago
+                    {% elif total_seconds < 172800 %}
+                        Yesterday
+                    {% elif total_seconds < 15770000 %}
+                        {{ question["date"].strftime("%B %d").replace(' 0', ' ') }}
+                    {% else %}
+                        {{ question["date"].strftime("%B %d, %Y").replace(' 0', ' ') }}
+                    {% end %}
+                </div>
+            </div>
+        </div>
         <div class="action-buttons">
             <div class="favorite-count">
                 <div class="count-text">
