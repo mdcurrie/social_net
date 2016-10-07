@@ -315,38 +315,59 @@
 }
 
 @media only screen and (min-width: 480px) {
-	.question-wrapper {
-		max-width: 505px;
-		margin: 0 auto;
+	.question-title {
+		bottom: 57px;
+		padding: 0 28px;
+	}
+	.question-title a {
+		font-size: 1.35em;
+	}
+	.asker-info {
+		bottom: -22px;
+		left: 30px;
+	}
+	.asker-profile-pic {
+		margin-right: 12px;
+	}
+	.asker-profile-pic img {
+		width: 60px;
+		height: 60px;
+	}
+	.asker-text {
+		transform: translateY(17px);
+	}
+	.asker-username {
+		margin-bottom: 10px;
 	}
 	.asker-username a {
 	    font-size: 1.05em;
-	}
-	.asker-text {
-		transform: translateY(2px);
 	}
 	.question-date {
 	    font-size: 0.85em;
 	}
 	.action-buttons {
-	    top: 26px;
+	    bottom: 1px;
+	    right: 28px;
 	}
 	.count-text {
-		font-size: 0.85em;
+		font-size: 0.95em;
+		min-width: 25px;
+	}
+	.svg-image svg {
+		height: 20px;
 	}
 	.question-image {
-		height: 250px;
+		height: 220px;
 	}
-	.question-title {
-		bottom: 16px;
-		padding: 0 16px;
+	.question-content {
+		padding-top: 25px;
 	}
 	.poll-answer {
-		padding-top: 20px;
+		padding-top: 18px;
 	}
 	.poll-percentage-wrapper {
+		height: 26px;
 		width: 45px;
-		height: 25px;
 	}
 	.poll-percentage {
 		transform: translateY(6px);
@@ -357,191 +378,21 @@
 		width: calc(100% - 45px);
 	}
 	.poll-bar {
-		height: 25px;
+		height: 26px;
 	}
 	.poll-bar > div {
-		top: 7px;
+		top: 6px;
 		font-size: 0.9em;
 	}
 	.vote-count {
 		font-size: 0.9em;
+		padding: 5px 18px;
 	}
 	.topics-container {
-		padding: 3px 5px;
+		padding: 1px 5px 4px 5px;
 	}
 	.question-topic a {
 		font-size: 0.9em
-	}
-}
-
-@media only screen and (min-width: 505px) {
-	.question-wrapper {
-		max-width: 485px;
-	}
-}
-
-@media only screen and (min-width: 1200px) {
-	.question-wrapper {
-		position: relative;
-	}
-	.question-image {
-		height: 290px;
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-position: 50% 40%;
-		border-bottom: none;
-		position: relative;
-	}
-	.question-image-overlay {
-		width: 100%;
-		height: 100%;
-		background: linear-gradient(180deg, rgba(0,0,0,.7), rgba(0,0,0,0), rgba(0,0,0,0), rgba(0,0,0,.7));
-	}
-	.asker-info {
-		position: absolute;
-		top: 20px;
-		left: 20px;
-		width: calc(100% - 40px);
-		z-index: 10;
-	}
-	.asker-profile-pic {
-		float: left;
-		margin-right: 10px;
-	}
-	.asker-profile-pic img {
-		width: 45px;
-		height: 45px;
-		border-radius: 50%;
-		box-shadow: 0 0 0 2px white;
-		object-fit: cover;
-	}
-	.asker-text {
-		display: inline-block;
-		transform: translateY(5px);
-	}
-	.asker-username {
-		float: left;
-		margin-bottom: 6px;
-	}
-	.asker-username a {
-		color: white;
-	}
-	.question-date {
-		color: white;
-		font-size: 0.8em;
-	}
-	.action-buttons {
-		position: absolute;
-		z-index: 10;
-		top: 32px;
-		right: 20px;
-	}
-	.favorite-count {
-		display: inline-block;
-	}
-	.comment-count {
-		display: inline-block;
-	}
-	.count-text {
-		color: white;
-		font-size: 0.85em;
-		min-width: 23px;
-		text-align: center;
-		float: left;
-		transform: translateY(3px);
-	}
-	.svg-image {
-		float: left;
-	}
-	.svg-image:hover {
-		cursor: pointer;
-	}
-	.svg-image svg {
-		height: 20px;
-	}
-	.question-title {
-		position: absolute;
-		bottom: 15px;
-		padding: 0 15px;
-	}
-	.question-title a {
-		word-wrap: break-word;
-		line-height: 1.1em;
-		font-size: 1.5em;
-		letter-spacing: 0.01em;
-		color: white;
-	}
-	.question-content {
-		border-top: none;
-		position: relative;
-	}
-	.vote-count {
-		font-size: 0.9em;
-		color: #353436;
-		padding: 8px 20px;
-		text-align: right;
-	}
-	.labels {
-		background: white;
-	}
-	.poll-answer {
-		padding-top: 25px;
-	}
-	.poll-answer:last-of-type {
-		padding-bottom: 25px;
-	}
-	.percent-and-bar:hover {
-		cursor: pointer;
-	}
-	.percent-and-bar:hover .poll-percentage-wrapper {
-		background-color: #2eb398;
-	}
-	.percent-and-bar:hover .poll-percentage {
-		color: white;
-	}
-	.poll-percentage-wrapper {
-		width: 50px;
-		height: 25px;
-		float: left;
-		text-align: center;
-		transition: background-color 0.3s;
-	}
-	.poll-percentage-wrapper.active {
-		background: #2eb39c;
-	}
-	.poll-percentage-wrapper.active * {
-		color: white;
-	}
-	.poll-percentage {
-		transform: translateY(5px);
-		font-size: 0.9em;
-		transition: color 0.3s
-	}
-	.bar-wrapper1 {
-		margin-left: 48px;
-		transform: translateX(0px);
-		width: calc(100% - 65px);
-	}
-	.bar-wrapper2 {
-		width: 100%;
-	}
-	.poll-bar {
-		height: 25px;
-		background-color: #2eb398;
-		width: 100%;
-	}
-	.poll-bar > div {
-		position: absolute;
-		top: 5px;
-		left: 5px;
-	}
-	.topics-container {
-		background: #e4e4e4;
-		padding: 5px;
-	}
-	.question-topic {
-		display: inline-block;
-		margin: 0 10px;
 	}
 }
 
