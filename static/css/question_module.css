@@ -91,6 +91,7 @@
 	color: white;
 }
 .question-content {
+	background: white;
 	border-top: none;
 	position: relative;
 	padding-top: 15px;
@@ -170,9 +171,6 @@
 		bottom: 40px;
 		padding: 0 18px;
 	}
-	.question-title a {
-		font-size: 1.2em;
-	}
 	.asker-info {
 		bottom: -18px;
 		left: 20px;
@@ -225,7 +223,7 @@
 		font-size: 0.85em;
 	}
 	.vote-count {
-		font-size: 0.85em;
+		font-size: 0.75em;
 	}
 	.question-topic a {
 		font-size: 0.85em
@@ -234,11 +232,11 @@
 
 @media only screen and (min-width: 420px) {
 	.question-title {
-		bottom: 57px;
+		bottom: 52px;
 		padding: 0 18px;
 	}
 	.question-title a {
-		font-size: 1.3em;
+		font-size: 1.15em;
 	}
 	.asker-info {
 		bottom: -19px;
@@ -248,27 +246,27 @@
 		margin-right: 10px;
 	}
 	.asker-profile-pic img {
-		width: 55px;
-		height: 55px;
+		width: 50px;
+		height: 50px;
 	}
 	.asker-text {
-		transform: translateY(16px);
+		transform: translateY(11px);
 	}
 	.asker-username {
-		margin-bottom: 9px;
+		margin-bottom: 10px;
 	}
 	.asker-username a {
-	    font-size: 1em;
+	    font-size: .85em;
 	}
 	.question-date {
-	    font-size: 0.8em;
+	    font-size: 0.65em;
 	}
 	.action-buttons {
 	    bottom: 0px;
 	    right: 18px;
 	}
 	.count-text {
-		font-size: 0.9em;
+		font-size: 0.8em;
 		min-width: 25px;
 	}
 	.svg-image svg {
@@ -303,7 +301,7 @@
 		font-size: 0.9em;
 	}
 	.vote-count {
-		font-size: 0.9em;
+		font-size: 0.8em;
 		padding: 5px 18px;
 	}
 	.topics-container {
@@ -314,13 +312,13 @@
 	}
 }
 
-@media only screen and (min-width: 480px) {
+/*@media only screen and (min-width: 480px) {
 	.question-title {
 		bottom: 57px;
 		padding: 0 28px;
 	}
 	.question-title a {
-		font-size: 1.35em;
+		font-size: 1.2em;
 	}
 	.asker-info {
 		bottom: -22px;
@@ -394,6 +392,6 @@
 	.question-topic a {
 		font-size: 0.9em
 	}
-}
+}*/
 
 /*=================== QUESTION STYLING END =================*/
