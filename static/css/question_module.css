@@ -312,56 +312,20 @@
 	}
 }
 
-/*@media only screen and (min-width: 480px) {
-	.question-title {
-		bottom: 57px;
-		padding: 0 28px;
-	}
-	.question-title a {
-		font-size: 1.2em;
-	}
-	.asker-info {
-		bottom: -22px;
-		left: 30px;
-	}
-	.asker-profile-pic {
-		margin-right: 12px;
-	}
-	.asker-profile-pic img {
-		width: 60px;
-		height: 60px;
-	}
-	.asker-text {
-		transform: translateY(17px);
-	}
-	.asker-username {
-		margin-bottom: 10px;
-	}
-	.asker-username a {
-	    font-size: 1.05em;
-	}
-	.question-date {
-	    font-size: 0.85em;
-	}
-	.action-buttons {
-	    bottom: 1px;
-	    right: 28px;
-	}
-	.count-text {
-		font-size: 0.95em;
-		min-width: 25px;
-	}
-	.svg-image svg {
-		height: 20px;
-	}
+@media only screen and (min-width: 480px) {
 	.question-image {
-		height: 220px;
+		border-top-left-radius: 6px;
+		border-top-right-radius: 6px;
+	}
+	.question-image-overlay {
+		border-top-left-radius: 6px;
+		border-top-right-radius: 6px;
 	}
 	.question-content {
-		padding-top: 25px;
+		padding-top: 20px;
 	}
 	.poll-answer {
-		padding-top: 18px;
+		padding-top: 25px;
 	}
 	.poll-percentage-wrapper {
 		height: 26px;
@@ -382,16 +346,6 @@
 		top: 6px;
 		font-size: 0.9em;
 	}
-	.vote-count {
-		font-size: 0.9em;
-		padding: 5px 18px;
-	}
-	.topics-container {
-		padding: 1px 5px 4px 5px;
-	}
-	.question-topic a {
-		font-size: 0.9em
-	}
-}*/
+}
 
 /*=================== QUESTION STYLING END =================*/
