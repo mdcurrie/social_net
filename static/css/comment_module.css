@@ -55,6 +55,7 @@
     position: fixed;
     bottom: 0px;
     left: 0px;
+    box-shadow: 0 0 20px rgba(46, 179, 152, .4);
 }
 .comment-form input[name="comment"] {
 	width: calc(100% - 45px);
@@ -66,13 +67,11 @@
 	font-size: 0.9em;
 	border: none;
 	outline: none;
-	border-top: 1px solid rgba(0,0,0,.1);
 }
 .comment-form img {
 	width: 45px;
 	height: 45px;
 	padding: 10px;
-	border-left: 1px solid rgba(0,0,0,.1);
 	float: left;
 	background: #2eb398;
 }
