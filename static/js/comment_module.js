@@ -21,7 +21,7 @@ $(function() {
                             window.location.href = data.redirect;
                         }
                         else {
-                            data.replacement = data.replacement.slice(106, -387);
+                            data.replacement = data.replacement.slice(106, -405);
                             $('.all-comments').replaceWith(data.replacement);
                             $('.comment-form input').eq(1).val('');
                             $('.all-comments').scrollTop($('.all-comments')[0].scrollHeight);
