@@ -22,9 +22,9 @@ $(function() {
         });
     });
 
-    $('.favorite-count .svg-image').on('click', function() {
-        var question_id = $(this).attr('class').split(' ')[1];
-        var clicked = $(this);
+    $('.favorite-count').on('click', function() {
+        var question_id = $(this).find('.svg-image').attr('class').split(' ')[1];
+        var clicked = $(this).find('.svg-image');
 
         $.post('/favorite_or_share/' + question_id, {_xsrf: getCookie('_xsrf'), action: "favorite"}, function(data) {
             if (data.redirect) {

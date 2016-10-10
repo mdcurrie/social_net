@@ -9,15 +9,16 @@
 .all-comments {
 	padding-top: 14px;
 	padding-bottom: 58px;
-	border-top: 2px solid #f1f1f1;
+	border-top: 1px solid rgba(0,0,0,.1);
 }
 .comment {
 	overflow: auto;
 }
 .profile-pic {
-	height: 40px;
-	width: 40px;
-	margin-right: 15px;
+	height: 35px;
+	width: 35px;
+	border-radius: 50%;
+	margin: 0 10px;
 	float: left;
 }
 .comment-wrapper:last-of-type .comment-text {
@@ -26,14 +27,12 @@
 .comment-text {
 	float: left;
     width: calc(100% - 55px);
-    padding-bottom: 25px;
-    margin-bottom: 25px;
-    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(0,0,0,.1);
 }
 .comment-top-text {
-	padding-bottom: 9px;
-    transform: translateY(-2px);
-    overflow: auto;
+	margin-bottom: 9px;
 }
 .comment-bot-text {
 	word-break: break-word;
@@ -47,8 +46,8 @@
 .comment-time {
 	color: #868686;
 	font-size: 0.6em;
-	transform: translate(-15px, 4px);
-	float: right;
+	display: inline-block;
+	transform: translate(8px, -2px);
 }
 .comment-form {
     width: 100%;
@@ -56,23 +55,24 @@
     position: fixed;
     bottom: 0px;
     left: 0px;
-    border-top: 1px solid #f1f1f1;
 }
 .comment-form input[name="comment"] {
 	width: calc(100% - 45px);
 	height: 45px;
-	padding: 8px;
+	padding-left: 8px;
 	float: left;
 	background-color: white;
 	font-family: Gotham;
+	font-size: 0.9em;
 	border: none;
 	outline: none;
+	border-top: 1px solid rgba(0,0,0,.1);
 }
 .comment-form img {
 	width: 45px;
 	height: 45px;
-	padding: 8px;
-	border-left: 1px solid #f1f1f1;
+	padding: 10px;
+	border-left: 1px solid rgba(0,0,0,.1);
 	float: left;
 	background: #2eb398;
 }
@@ -83,6 +83,13 @@
 @media only screen and (min-width: 380px) {
 	.comment-section-title div {
 		font-size: 0.95em;
+	}
+	.profile-pic {
+		margin: 0 10px 0 20px;
+		float: left;
+	}
+	.comment-text {
+	    width: calc(100% - 65px);
 	}
 	.comment-bot-text {
 		font-size: 0.8em;
@@ -102,21 +109,12 @@
 	.all-comments {
 		padding-top: 18px;
 	}
-	.backer1 {
-		height: 5px;
-		top: -5px;
-	}
-	.backer2 {
-		height: 5px;
-		top: -10px;
-	}
 	.profile-pic {
-		height: 35px;
-		width: 35px;
-		margin-right: 10px;
+		height: 40px;
+		width: 40px;
 	}
 	.comment-text {
-		width: calc(100% - 45px);
+	    width: calc(100% - 70px);
 	}
 	.comment-section-title div {
 		font-size: 1em;
@@ -129,28 +127,6 @@
 	}
 	.comment-time {
 		font-size: 0.7em;
-	}
-}
-
-@media only screen and (min-width: 480px) {
-	.comment-section {
-		max-width: 505px;
-		margin: 0 auto;
-	}
-	.comment-section-title div {
-		font-size: 1.2em;
-	}
-}
-
-@media only screen and (min-width: 505px) {
-	.comment-form {
-	    max-width: 505px;
-	    margin: 0 auto;
-	    left: initial;
-	}
-	.comment-form form {
-		width: calc(100% - 20px);
-		margin: 0 auto;
 	}
 }
 
