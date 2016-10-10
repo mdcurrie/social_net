@@ -42,7 +42,7 @@
     <div class="comment-form">
         <form method="post" action={{ "/comments/" + str(question_id) }} novalidate>
             {% raw xsrf_form_html() %}
-            <input type="text" name="comment" autocomplete="off" placeholder="Share your thoughts...">
+            <input type="text" name="comment" spellcheck="true" autocomplete="off" placeholder="Share your thoughts...">
             <img src="{{ static_url("images/paper-plane.svg") }}">
         </form>
     </div>
