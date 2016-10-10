@@ -118,17 +118,17 @@
                     {% end %}
                 {% end %}
             {% end %}
-            <div class="vote-count">
-                {% set vote_count = sum([q["votes"] for q in question["data"]]) %}
-                {% if vote_count <= 1000 %}
-                    {{ vote_count }}
-                {% elif vote_count <= 999999 %}
-                    {{ round(vote_count/1000, 1) }}K
-                {% else %}
-                    {{ round(vote_count/1000000, 1) }}M
-                {% end %}
-                Votes
-            </div>
+        </div>
+        <div class="vote-count">
+            {% set vote_count = sum([q["votes"] for q in question["data"]]) %}
+            {% if vote_count <= 1000 %}
+                {{ vote_count }}
+            {% elif vote_count <= 999999 %}
+                {{ round(vote_count/1000, 1) }}K
+            {% else %}
+                {{ round(vote_count/1000000, 1) }}M
+            {% end %}
+            Votes
         </div>
         <div class="topics-container">
             {% if question.get("topics") %}
