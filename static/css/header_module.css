@@ -3,9 +3,11 @@ header {
 	width: 100%;
 	z-index: 100;
 	height: 46px;
+	top: 0;
 	background: #353436;
 	box-shadow: 0 0 15px rgba(46, 179, 152, .4);
 	box-sizing: border-box;
+	transition: top 0.3s ease-in-out;
 }
 header * {
 	box-sizing: border-box;
@@ -117,6 +119,11 @@ header .dropdown-content a:hover {
 	background: #f1f1f1;
 	cursor: pointer;
 }
+.nav-up {
+    top: -46px;
+    box-shadow: none;
+}
+
 @media only screen and (min-width: 460px) {
 	header {
 		box-shadow: 0 0 7px rgba(46, 179, 152, .4);
