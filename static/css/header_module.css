@@ -7,7 +7,6 @@ header {
 	background: #353436;
 	box-shadow: 0 0 15px rgba(46, 179, 152, .4);
 	box-sizing: border-box;
-	transition: top 0.3s ease-in-out;
 }
 header * {
 	box-sizing: border-box;
@@ -120,7 +119,6 @@ header .dropdown-content a:hover {
 	cursor: pointer;
 }
 .nav-up {
-    top: -46px;
     box-shadow: none;
 }
 
