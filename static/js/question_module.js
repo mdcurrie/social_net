@@ -41,20 +41,6 @@ $(function() {
             }
         });
     });
-
-   /* $('.share-count .svg-image').on('click', function() {
-        var question_id = $(this).attr('class').split(' ')[1];
-        var clicked = $(this);
-        $.getJSON('/favorite_or_share/' + question_id, {action: "share"}, function(data) {
-            if (data.share) {
-                clicked.siblings('.icon-indicator').addClass('active');
-            }
-            else {
-                clicked.siblings('.icon-indicator').removeClass('active');
-            }
-            clicked.parents('.share-count').children('.count-text').text(data.count);
-        });
-    });*/
 });
 
 function getCookie(name) {
