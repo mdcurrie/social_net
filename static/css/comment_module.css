@@ -137,6 +137,9 @@
 	.comment-section {
 		border-radius: 6px;
 	}
+	.comment-form {
+	    box-shadow: 0 0 10px rgba(46, 179, 152, .4);
+	}
 }
 
 @media only screen and (min-width: 900px) {

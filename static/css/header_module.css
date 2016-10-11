@@ -117,6 +117,11 @@ header .dropdown-content a:hover {
 	background: #f1f1f1;
 	cursor: pointer;
 }
+@media only screen and (min-width: 460px) {
+	header {
+		box-shadow: 0 0 10px rgba(46, 179, 152, .4);
+	}
+}
 
 @media only screen and (min-width: 900px) {
 	header {
