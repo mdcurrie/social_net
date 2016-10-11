@@ -35,11 +35,20 @@ a {
 #off-canvas-question-form {
 	display: none;
 }
+#off-canvas-comments {
+	display: none;
+}
 #main-content-header {
 	display: none;
 }
+body {
+	background: #f1f1f1;
+}
 #main-content {
 	padding-top: 61px;
+}
+#feed {
+	padding-bottom: 46px;
 }
 .question-wrapper {
 	margin-bottom: 15px;
@@ -55,7 +64,7 @@ a {
     height: 46px;
     background: white;
     z-index: 20;
-    box-shadow: 0 0 20px rgba(46, 179, 152, .4);
+    box-shadow: 0 0 15px rgba(46, 179, 152, .4);
 }
 #mobile-tab-bar {
 	width: 100%;
@@ -93,9 +102,6 @@ a {
 	}
 	#mobile-tab-bar-wrapper {
 		display: none;
-	}
-	body {
-		background: #f1f1f1;
 	}
 	main {
 		box-sizing: border-box;
@@ -205,6 +211,7 @@ a {
 		column-count: 3;
 		column-gap: 20px;
 		column-fill: balance;
+		padding-bottom: 0;
 	}
 	#feed .question-wrapper {
 		-webkit-column-break-inside: avoid;
