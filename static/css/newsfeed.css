@@ -16,6 +16,7 @@ a {
 }
 * {
 	color: #353436;
+	box-sizing: border-box;
 }
 
 @media only screen and (min-width: 1200px) {
@@ -89,6 +90,9 @@ body {
 .nav-text.active {
 	color: #2eb398;
 }
+.comment-count:hover {
+	cursor: pointer;
+}
 
 @media only screen and (min-width: 1200px) {
 	#side-column {
@@ -98,6 +102,9 @@ body {
 		display: initial;
 	}
 	#main-content-header {
+		display: initial;
+	}
+	#off-canvas-comments {
 		display: initial;
 	}
 	#mobile-tab-bar-wrapper {
@@ -220,13 +227,22 @@ body {
 		padding-bottom: 20px;
 		margin-bottom: 0;
 	}
-	#off-canvas-comments {
+	#off-canvas-comments-backer {
 		position: fixed;
-		right: -33%;
-		z-index: 50;
-		top: 80px;
+		right: 0;
+		bottom: calc(-100% + 80px);
 		height: calc(100% - 80px);
 		width: 33%;
+		z-index: 49;
+		background: rgba(46, 179, 152, .8);
+	}
+	#off-canvas-comments {
+		position: fixed;
+		right: 0;
+		bottom: calc(-100% + 80px);
+		height: calc(100% - 80px);
+		width: 33%;
+		z-index: 50;
 		background: #f1f1f1;
 		padding: 30px;
 	}

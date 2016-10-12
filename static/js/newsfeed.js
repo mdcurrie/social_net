@@ -1,5 +1,5 @@
 $(function() {
-	$('.comment-count .svg-image').on('click', function() {
+	$('.comment-count').on('click', function() {
 		var question_id = $(this).parents('.question-wrapper').attr('id');
 		$.get('/comments/' + question_id, function(data) {
 			$('#off-canvas-comments').html(data);
@@ -47,20 +47,44 @@ $(function() {
 		    });
 		});
 
-		$('#off-canvas-comments').animate({right: 0}, 300, function() {
+		$('#off-canvas-comments-backer').transition({y: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+		$('#off-canvas-comments').transition({y: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 			$('#content-overlay').css({'z-index': 40});
+			$('#content-overlay').transition({opacity: 0.5}, 200);
 			$('input[name="comment"]').focus();
-			$('#content-overlay').animate({opacity: 0.5}, 200);
 		});
 	});
 
 	$('#content-overlay').on('click', function() {
-		$('#off-canvas-comments').animate({right: '-33%'}, 300, function() {
-			$('#content-overlay').animate({opacity: 0}, 200, function() {
+		$('#off-canvas-comments').transition({y: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+		$('#off-canvas-comments-backer').transition({y: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+			$('#content-overlay').transition({opacity: 0}, 200, function() {
 				$('#content-overlay').css({'z-index': -10});
 			});
 		});
 	});
+
+	$('.question-image-overlay').hover(
+		function() {
+			$('#off-canvas-comments-backer').css({"will-change": "transform"});
+			$('#off-canvas-comments').css({"will-change": "transform"});
+		},
+		function() {
+			$('#off-canvas-comments-backer').css({"will-change": "initial"});
+			$('#off-canvas-comments').css({"will-change": "initial"});
+		}
+	);
+
+	$('#content-overlay').hover(
+		function() {
+			$('#off-canvas-comments-backer').css({"will-change": "transform"});
+			$('#off-canvas-comments').css({"will-change": "transform"});
+		},
+		function() {
+			$('#off-canvas-comments-backer').css({"will-change": "initial"});
+			$('#off-canvas-comments').css({"will-change": "initial"});
+		}
+	);
 
 	$('#follow-topic-button').on('click', function(e) {
 		e.preventDefault();
