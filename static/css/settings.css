@@ -317,6 +317,7 @@ main {
 	}
 	main {
 		padding-top: 86px;
+		padding-bottom: 0;
 	}
 	#user-settings {
 		width: calc(100% - 80px);

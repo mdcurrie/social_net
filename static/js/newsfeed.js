@@ -64,7 +64,7 @@ $(function() {
 		});
 	});
 
-	$('.question-image-overlay').hover(
+	$('.question-image').hover(
 		function() {
 			$('#off-canvas-comments-backer').css({"will-change": "transform"});
 			$('#off-canvas-comments').css({"will-change": "transform"});
