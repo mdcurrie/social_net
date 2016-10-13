@@ -1,4 +1,12 @@
 $(function() {
+	$('input').on('focusin', function() {
+		$('#mobile-tab-bar-wrapper').transition({y: 46}, 300);
+	});
+
+	$('input').on('focusout', function() {
+		$('#mobile-tab-bar-wrapper').transition({y: 0}, 300);
+	});
+
 	/* profile picture section */
 	$('#user-profile-pic img').on('click', function() {
 		$(this).css({"opacity": 0.1});
