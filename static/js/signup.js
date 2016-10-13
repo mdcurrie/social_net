@@ -58,19 +58,15 @@ function validateUsername() {
 		return;
 	}
 	if (!(/^[a-zA-Z0-9_. ]+$/i.test(username))) {
-		error.text('Letters, numbers, spaces, and underscores only.');
-		error.css({"display": "block", "color": "#e64c65"});
+		error.css({"opacity": 0, "display": "block", "color": "#e64c65"}).text('Letters, numbers, spaces, and underscores only.').transition({opacity: 1}, 300);
 	}
 	else if (username.length < 6 || username.length > 25) {
-		error.text('Your username must be 6-25 characters long.');
-		error.css({"display": "block", "color": "#e64c65"});
+		error.css({"opacity": 0, "display": "block", "color": "#e64c65"}).text('Your username must be 6-25 characters long.').transition({opacity: 1}, 300);
 	}
 	else {
-		error.text('Great choice!');
-		error.css({"display": "block", "color": "#2eb398"});
+		error.css({"opacity": 0, "display": "block", "color": "#2eb398"}).text('Great choice!').transition({opacity: 1}, 300);
 		valid_username = true;
 	}
-	error.animate({"opacity": 1}, 100);
 }
 
 function validateEmail(send_json=true) {
@@ -84,8 +80,7 @@ function validateEmail(send_json=true) {
 		return;
 	}
 	if (!(/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/i.test(email))) {
-		error.text('Please enter a valid email address.');
-		error.css({"display": "block", "color": "#e64c65"});
+		error.css({"opacity": 0, "display": "block", "color": "#e64c65"}).text('Please enter a valid email address.').transition({opacity: 1}, 300);
 		return;
 	}
 	if (send_json == false) {
@@ -95,17 +90,14 @@ function validateEmail(send_json=true) {
 	else {
 		$.getJSON('email_lookup', {email: email}, function(data) {
 			if (data.email_taken) {
-				error.text('That email is already taken.');
-				error.css({"display": "block", "color": "#e64c65"});
+				error.css({"opacity": 0, "display": "block", "color": "#e64c65"}).text('That email is already taken.').transition({opacity: 1}, 300);
 			}
 			else {
-				error.text('Looks good.');
-				error.css({"display": "block", "color": "#2eb398"});
+				error.css({"opacity": 0, "display": "block", "color": "#2eb398"}).text('Looks good.').transition({opacity: 1}, 300);
 				valid_email = true;
 			}
 		});
 	}
-	error.animate({"opacity": 1}, 100);
 }
 
 function validatePassword() {
@@ -114,14 +106,15 @@ function validatePassword() {
 
 	valid_password = false;
 
+	if (password == '') {
+		error.text('');
+		return;
+	}
 	if (password.length < 6) {
-		error.text('Your password must be at least 6 characters long.');
-		error.css({"display": "block", "color": "#e64c65"});	
+		error.css({"opacity": 0, "display": "block", "color": "#e64c65"}).text('Your password must be at least 6 characters long.').transition({opacity: 1}, 300);	
 	}
 	else {
-		error.text("Don't share it with anyone.");
-		error.css({"display": "block", "color": "#2eb398"});
+		error.css({"opacity": 0, "display": "block", "color": "#2eb398"}).text("Don't share it with anyone.").transition({opacity: 1}, 300);
 		valid_password = true;
 	}
-	error.animate({"opacity": 1}, 100);
 }
