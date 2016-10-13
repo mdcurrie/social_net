@@ -10,12 +10,11 @@
         {% raw xsrf_form_html() %}
         <div class="input-row">
             <p class="error-message">{{ email_error }}</p>
-            <input style="background-image: url({{ static_url("images/mail.svg") }})" type="email" id="email" name="email"
-            {% if email %}value="{{ email }}"{% end %} autocomplete="off" placeholder="Email" {% if email_error or not password_error %}autofocus{% end %}>
+            <input type="email" id="email" name="email" {% if email %}value="{{ email }}"{% end %} placeholder="Email" {% if email_error or not password_error %}autofocus{% end %}>
         </div>
         <div class="input-row">
             <p class="error-message">{{ password_error }}</p>
-            <input style="background-image: url({{ static_url("images/lock.svg") }})" type="password" id="password" name="password" placeholder="Password" {% if password_error %}autofocus{% end %}>
+            <input type="password" id="password" name="password" placeholder="Password" {% if password_error %}autofocus{% end %}>
         </div>
         <button type="submit">Log In</button>
     </form>
@@ -26,5 +25,6 @@
 
 {% block js_files %}
     <script src="{{ static_url("js/jquery.min.js") }}"></script>
+    <script src="{{ static_url("js/jquery.transit.min.js") }}"></script>
     <script src="{{ static_url("js/login.js") }}"></script>
 {% end %}
