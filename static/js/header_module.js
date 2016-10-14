@@ -29,7 +29,7 @@ $(function() {
 });
 
 function hasScrolled() {
-	if ($(window).width() < 900) {
+	if ($(window).width() < 1200) {
 	    var st = $(this).scrollTop();
 	    
 	    // Make sure they scroll more than delta

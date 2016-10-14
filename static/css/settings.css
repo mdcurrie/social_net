@@ -23,7 +23,6 @@ a {
 
 main {
 	padding-top: 45px;
-	padding-bottom: 61px;
 }
 #user-settings {
 	background: white;
@@ -230,39 +229,6 @@ main {
 	margin: 0 auto;
 	margin-top: 5px;
 }
-#mobile-tab-bar-wrapper {
-	position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 46px;
-    background: white;
-    z-index: 20;
-    box-shadow: 0 0 15px rgba(46, 179, 152, .4);
-}
-#mobile-tab-bar {
-	width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-    overflow: auto;
-    height: 100%;
-}
-.nav-option {
-	width: 20%;
-	float: left;
-	text-align: center;
-	transform: translateY(6px);
-}
-.nav-icon svg {
-	height: 20px;
-}
-.nav-text {
-	font-size: 0.65em;
-	color: #d4d2d5;
-}
-.nav-text.active {
-	color: #2eb398;
-}
 .comment-count:hover {
 	cursor: pointer;
 }
@@ -309,9 +275,6 @@ main {
 }
 
 @media only screen and (min-width: 900px) {
-	#mobile-tab-bar-wrapper {
-		display: none;
-	}
 	body {
 		background: #f1f1f1;
 	}

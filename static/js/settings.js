@@ -280,14 +280,36 @@ $(function() {
 				$('.row:nth-of-type(3) input').eq(1).focus();
 			}
 			else {
-				$('#custom-url-error').remove();
-				$('#custom-url').text('https://hive.com/' + custom_url);;
-				$('.row:nth-of-type(3) form').transition({opacity: 0}, 300, function() {
-					$(this).css({"display": "none"});
-					$('input[name="custom-url"]').attr({"placeholder": custom_url}).val('');
-					$('#custom-url').css({"display": "block"}).transition({opacity: 1}, 300);
-					$('.row:nth-of-type(3) .key').css({"display": "block"}).transition({opacity: 1}, 300);
-				});				
+				if (custom_url.length == '') {
+					$('.row:nth-of-type(3) form').transition({opacity: 0}, 300, function() {
+						$(this).css({"display": "none"});
+						$('.row:nth-of-type(3) .key').css({"display": "block"}).transition({opacity: 1}, 300);
+						$('#custom-url').replaceWith('<div id="custom-url"><button class="form-button" id="custom-url-button">Set Custom URL</button></div>');
+						$('#custom-url').on('click', function() {
+							$(this).transition({opacity: 0}, 300, function() {
+								$(this).css({"display": "none"});
+							});
+
+							$('.row:nth-of-type(3) .key').transition({opacity: 0}, 300, function() {
+								$(this).css({"display": "none"});
+								$('.row:nth-of-type(3) form').css({"opacity": 0, "display": "block"}).transition({opacity: 1}, 300, function() {
+									$('.row:nth-of-type(3) input').eq(1).focus();
+								});
+							});
+						});
+						$('#custom-url').css({"display": "inline-block"}).transition({opacity: 1}, 300);
+					});
+				}
+				else {
+					$('#custom-url-error').remove();
+					$('#custom-url').text('https://hive.com/' + custom_url);;
+					$('.row:nth-of-type(3) form').transition({opacity: 0}, 300, function() {
+						$(this).css({"display": "none"});
+						$('input[name="custom-url"]').attr({"placeholder": custom_url}).val('');
+						$('#custom-url').css({"display": "block"}).transition({opacity: 1}, 300);
+						$('.row:nth-of-type(3) .key').css({"display": "block"}).transition({opacity: 1}, 300);
+					});
+				}		
 			}
 		});
 	});
