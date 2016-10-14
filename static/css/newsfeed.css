@@ -65,11 +65,11 @@ body {
     height: 46px;
     background: white;
     z-index: 20;
-    box-shadow: 0 0 15px rgba(46, 179, 152, .4);
+    box-shadow: 0 0 20px rgba(46, 179, 152, .2);
 }
 #mobile-tab-bar {
 	width: 100%;
-    max-width: 300px;
+    max-width: 400px;
     margin: 0 auto;
     overflow: auto;
     height: 100%;
@@ -78,10 +78,10 @@ body {
 	width: 20%;
 	float: left;
 	text-align: center;
-	transform: translateY(6px);
+	transform: translateY(8px);
 }
 .nav-icon svg {
-	height: 20px;
+	height: 28px;
 }
 .nav-text {
 	font-size: 0.65em;
