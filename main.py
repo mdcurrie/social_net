@@ -56,7 +56,7 @@ class Application(tornado.web.Application):
 			cookie_secret="bZJc2sWbQLKos6GkHn/VB9oXwQt8S0R0kRvJ5/xJ89E=",
 			xsrf_cookies=True,
 			login_url="/login",
-			ui_modules={"Question": QuestionModule, "Comment": CommentModule, "Header": HeaderModule, "SideColumn": SideColumnModule},
+			ui_modules={"Question": QuestionModule, "Comment": CommentModule, "Header": HeaderModule, "SideColumn": SideColumnModule, "MobileTabBar": MobileTabBarModule},
 			debug=True,
 		)
 		client = motor.motor_tornado.MotorClient("mongodb://mcurrie:practice@ds021884.mlab.com:21884/hive")
@@ -204,6 +204,14 @@ class SideColumnModule(tornado.web.UIModule):
 
 	def javascript_files(self):
 		return self.handler.static_url("js/sidecolumn_module.js")
+
+#module to render the mobile tab bar
+class MobileTabBarModule(tornado.web.UIModule):
+	def render(self, page):
+		return self.render_string("mobiletabbar_module.html", page=page)
+
+	def css_files(self):
+		return self.handler.static_url("css/mobiletabbar_module.css")
 
 # get user's information if logged in
 # prepare() runs at the start of each request
@@ -1172,5 +1180,5 @@ class SearchHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
