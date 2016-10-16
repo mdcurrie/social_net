@@ -92,15 +92,15 @@ main {
     font-size: 0.85em;
     text-align: center;
 }
+#metrics > div:hover {
+	cursor: pointer;
+}
 #metrics span {
 	font-size: 1.5em;
     margin-bottom: 2px;
     display: block;
 }
-#followers-count, #following-count:hover {
-	cursor: pointer;
-}
-#relation-header {
+.relation-header {
 	font-size: .75em;
 	padding: 10px;
 	text-transform: uppercase;
@@ -108,7 +108,7 @@ main {
 .none-text {
 	padding: 0 0 10px 10px;
 }
-#users {
+.users {
 	overflow: auto;
     width: calc(100% - 16px);
     margin: 0 auto;
@@ -124,6 +124,8 @@ main {
 }
 #misc {
 	background: #f1f1f1;
+	position: relative;
+	overflow: hidden;
 }
 #misc > div {
 	padding-top: 3px;
@@ -170,6 +172,25 @@ main {
 	font-size: 0.85em;
 	padding: 10px;
 	word-break: break-word;
+}
+.backer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	transform: translateX(-100%);
+	height: 100%;
+	width: 100%;
+	z-index: 9;
+	background: rgba(46, 179, 152, .8);
+}
+#follower-wrapper, #following-wrapper {
+	position: absolute;
+	left: 0;
+	top: 0;
+	transform: translateX(-100%);
+	width: 100%;
+	z-index: 10;
+	background: #f1f1f1;
 }
 
 @media only screen and (min-width: 380px) {
@@ -221,7 +242,7 @@ main {
 	#metrics > div {
 		font-size: 1em;
 	}
-	#relation-header {
+	.relation-header {
 		font-size: 0.85em;
 	}
 	.user {
@@ -368,21 +389,22 @@ main {
 	#misc > div {
 		padding: 10px 0 0 0;
 	}
-	#relation-wrapper {
+	#follower-wrapper, #following-wrapper {
 		border-top: 1px solid rgba(0,0,0,.1);
 		margin: 0 auto;
 		margin-top: 15px;
 		margin-bottom: 15px;
 		padding: 15px 0;
 		overflow: hidden;
+		background: white;
 	}
-	#relation-header {
+	.relation-header {
 		font-size: 1em;
 		margin-bottom: 10px;
 		text-transform: initial;
 		padding: 0;
 	}
-	#users {
+	.users {
 		width: calc(100% + 4px);
 		transform: translateX(-2px);
 	}
@@ -396,6 +418,13 @@ main {
 		margin-bottom: 15px;
 		padding: 15px 0;
 		overflow: hidden;
+	}
+	#recent-answers {
+		margin-bottom: 0;
+	}
+	#recent-questions {
+		margin-top: 0;
+		border-bottom: 1px solid rgba(0,0,0,.1);
 	}
 	.header {
 		font-size: 1em;
@@ -421,6 +450,9 @@ main {
 	}
 	.user-answer {
 		font-size: 0.9em;
+	}
+	.backer {
+		top: 15px;
 	}
 }
 
