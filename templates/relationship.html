@@ -1,5 +1,5 @@
- <div id="relation-wrapper">
-	<div id="relation-header">
+ <div id="{% if relation == 'follower' %}follower-wrapper{% else %}following-wrapper{% end %}">
+	<div class="relation-header">
 		{% if relation == "follower" %}
 			Followers
 		{% else %}
@@ -7,7 +7,7 @@
 		{% end %}
 	</div>
 	{% if relation_list %}
-		<div id="users">
+		<div class="users">
 			{% for user in relation_list %}
 				<div class="user">
 					<div class="user-profile-pic">
