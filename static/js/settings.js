@@ -124,15 +124,10 @@ $(function() {
 
 	/* email section */
 	$('#email').on('click', function() {
-		$(this).transition({opacity: 0}, 300, function() {
-			$(this).css({"display": "none"});
-		});
-		
-		$('.row:first-of-type .key').transition({opacity: 0}, 300, function() {
-			$('.row:first-of-type .key').css({"display": "none"});
-			$('.row:first-of-type form').css({"opacity": 0, "display": "block"}).transition({opacity: 1}, 300, function() {
-				$('.row:first-of-type input').focus();
-			});
+		$('.row:first-of-type').animate({"height": $('.row:first-of-type form').height() + 70}, 500);
+		$('.row:first-of-type .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+		$('.row:first-of-type .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+			$('.row:first-of-type input').eq(1).focus();
 		});
 	});
 
@@ -142,7 +137,7 @@ $(function() {
 		var email = $('.row:first-of-type input').eq(1).val();
 
 		if (!$('#email-error').length) {
-			$('.row:first-of-type').append('<div class="error-message" id="email-error"></div>');
+			$('.row:first-of-type .form-wrapper').append('<div class="error-message" id="email-error"></div>');
 			$('#email-error').hide();
 		}
 
@@ -164,26 +159,21 @@ $(function() {
 			else {
 				$('#email-error').remove();
 				$('#email').text(email);
-				$('.row:first-of-type form').transition({opacity: 0}, 300, function() {
-					$(this).css({"display": "none"});
-					$('input[name="email"]').attr({"placeholder": email}).val('');
-					$('#email').css({"display": "inline-block"}).transition({opacity: 1}, 300);
-					$('.row:first-of-type .key').css({"display": "block"}).transition({opacity: 1}, 300);
-				});
+				$('input[name="email"]').attr({"placeholder": email}).val('');
+				$('.row:first-of-type').animate({"height": $('.row:first-of-type .value').height() + 51}, 500);
+				$('.row:first-of-type .form-wrapper').transition({x: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+				$('.row:first-of-type .backer').transition({x: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');
+				$('input').blur();
 			}
 		});
 	});
 
 	/* password section */
 	$('#reset-password-button').on('click', function() {
-		$(this).transition({opacity: 0}, 300, function() {
-			$(this).css({"display": "none"});
-		});
-		$('.row:nth-of-type(2) .key').transition({opacity: 0}, 300, function() {
-			$(this).css({"display": "none"});
-			$('.row:nth-of-type(2) form').css({"opacity": 0, "display": "block"}).transition({opacity: 1}, 300, function() {
-				$('.row:nth-of-type(2) input').eq(1).focus();
-			});
+		$('.row:nth-of-type(2)').animate({"height": $('.row:nth-of-type(2) form').height() + 70}, 500);
+		$('.row:nth-of-type(2) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+		$('.row:nth-of-type(2) .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+			$('.row:nth-of-type(2) input').eq(1).focus();
 		});
 	});
 
@@ -194,7 +184,7 @@ $(function() {
 		var new_password = $('.row:nth-of-type(2) input').eq(2).val();
 
 		if (!$('#reset-password-error').length) {
-			$('.row:nth-of-type(2)').append('<div class="error-message" id="reset-password-error"></div>');
+			$('.row:nth-of-type(2) .form-wrapper').append('<div class="error-message" id="reset-password-error"></div>');
 			$('#reset-password-error').hide()
 		}
 
@@ -216,28 +206,22 @@ $(function() {
 			}
 			else {
 				$('#reset-password-error').remove();
-				$('.row:nth-of-type(2) form').transition({opacity: 1}, 300, function() {
-					$(this).css({"display": "none"});
-					$('input[name="old-password"]').val('');
-					$('input[name="new-password"]').val('');
-					$('#reset-password-button').css({"display": "inline-block"}).transition({opacity: 1}, 300);
-					$('.row:nth-of-type(2) .key').css({"display": "block"}).transition({opacity: 1}, 300);
-				});
+				$('.row:nth-of-type(2)').animate({"height": $('.row:nth-of-type(2) .value').height() + 51}, 500);
+				$('.row:nth-of-type(2) .form-wrapper').transition({x: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+				$('.row:nth-of-type(2) .backer').transition({x: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');
+				$('input[name="old-password"]').val('');
+				$('input[name="new-password"]').val('');
+				$('input').blur();
 			}
 		});
 	});
 
 	/* custom URL section */
 	$('#custom-url').on('click', function() {
-		$(this).transition({opacity: 0}, 300, function() {
-			$(this).css({"display": "none"});
-		});
-
-		$('.row:nth-of-type(3) .key').transition({opacity: 0}, 300, function() {
-			$(this).css({"display": "none"});
-			$('.row:nth-of-type(3) form').css({"opacity": 0, "display": "block"}).transition({opacity: 1}, 300, function() {
-				$('.row:nth-of-type(3) input').eq(1).focus();
-			});
+		$('.row:nth-of-type(3)').animate({"height": $('.row:nth-of-type(3) form').height() + 70}, 500);
+		$('.row:nth-of-type(3) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+		$('.row:nth-of-type(3) .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+			$('.row:nth-of-type(3) input').eq(1).focus();
 		});
 	});
 
@@ -246,7 +230,7 @@ $(function() {
 		var custom_url = $('.row:nth-of-type(3) input').eq(1).val();
 
 		if (!$('#custom-url-error').length) {
-			$('.row:nth-of-type(3)').append('<div class="error-message" id="custom-url-error"></div>');
+			$('.row:nth-of-type(3) .form-wrapper').append('<div class="error-message" id="custom-url-error"></div>');
 			$('#custom-url-error').hide();
 		}
 
@@ -281,35 +265,24 @@ $(function() {
 			}
 			else {
 				if (custom_url.length == '') {
-					$('.row:nth-of-type(3) form').transition({opacity: 0}, 300, function() {
-						$(this).css({"display": "none"});
-						$('.row:nth-of-type(3) .key').css({"display": "block"}).transition({opacity: 1}, 300);
-						$('#custom-url').replaceWith('<div id="custom-url"><button class="form-button" id="custom-url-button">Set Custom URL</button></div>');
-						$('#custom-url').on('click', function() {
-							$(this).transition({opacity: 0}, 300, function() {
-								$(this).css({"display": "none"});
-							});
-
-							$('.row:nth-of-type(3) .key').transition({opacity: 0}, 300, function() {
-								$(this).css({"display": "none"});
-								$('.row:nth-of-type(3) form').css({"opacity": 0, "display": "block"}).transition({opacity: 1}, 300, function() {
-									$('.row:nth-of-type(3) input').eq(1).focus();
-								});
-							});
+					$('#custom-url').replaceWith('<div id="custom-url"><button class="form-button" id="custom-url-button">Set Custom URL</button></div>');
+					$('#custom-url').on('click', function() {
+						$('.row:nth-of-type(3)').animate({"height": $('.row:nth-of-type(3) form').height() + 70}, 500);
+						$('.row:nth-of-type(3) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+						$('.row:nth-of-type(3) .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+							$('.row:nth-of-type(3) input').eq(1).focus();
 						});
-						$('#custom-url').css({"display": "inline-block"}).transition({opacity: 1}, 300);
 					});
 				}
 				else {
-					$('#custom-url-error').remove();
-					$('#custom-url').text('https://hive.com/' + custom_url);;
-					$('.row:nth-of-type(3) form').transition({opacity: 0}, 300, function() {
-						$(this).css({"display": "none"});
-						$('input[name="custom-url"]').attr({"placeholder": custom_url}).val('');
-						$('#custom-url').css({"display": "block"}).transition({opacity: 1}, 300);
-						$('.row:nth-of-type(3) .key').css({"display": "block"}).transition({opacity: 1}, 300);
-					});
-				}		
+					$('#custom-url').text('https://hive.com/' + custom_url);
+				}
+				$('#custom-url-error').remove();
+				$('input[name="custom-url"]').attr({"placeholder": custom_url}).val('');
+				$('.row:nth-of-type(3)').animate({"height": $('.row:nth-of-type(3) .value').height() + 51}, 500);
+				$('.row:nth-of-type(3) .form-wrapper').transition({x: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+				$('.row:nth-of-type(3) .backer').transition({x: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');	
+				$('input').blur();
 			}
 		});
 	});
