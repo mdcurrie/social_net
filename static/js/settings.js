@@ -1,10 +1,10 @@
 $(function() {
 	$('input').on('focusin', function() {
-		$('#mobile-tab-bar-wrapper').transition({y: 46}, 300);
+		$('#mobile-tab-bar-wrapper').transition({y: 46}, 0);
 	});
 
 	$('input').on('focusout', function() {
-		$('#mobile-tab-bar-wrapper').transition({y: 0}, 300);
+		$('#mobile-tab-bar-wrapper').transition({y: 0}, 0);
 	});
 
 	/* profile picture section */
