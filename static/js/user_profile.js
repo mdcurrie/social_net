@@ -15,12 +15,14 @@ $(function() {
 					$('.user img').height($('.user img').width());
 					$('#follower-wrapper').height("100%");
 					var z_index = parseInt($('#following-wrapper').css("z-index"));
+					$('#mobile-tab-bar-wrapper').css({"z-index": z_index + 3});
 					$('#misc .backer').css({"z-index": z_index + 1}).transition({x: "-100%"}, 0).transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
 					$('#follower-wrapper').css({"z-index": z_index + 2}).transition({x: "-100%"}, 0).transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');
 				}
 			}
 			else if ($('#following-wrapper').css("z-index") >= $('#follower-wrapper').css("z-index")) {
 				var z_index = parseInt($('#following-wrapper').css("z-index"));
+				$('#mobile-tab-bar-wrapper').css({"z-index": z_index + 3});
 				$('#misc .backer').css({"z-index": z_index + 1}).transition({x: "-100%"}, 0).transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
 				$('#follower-wrapper').css({"z-index": z_index + 2}).transition({x: "-100%"}, 0).transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');
 			}
@@ -47,12 +49,14 @@ $(function() {
 					$('.user img').height($('.user img').width());
 					$('#following-wrapper').height("100%");
 					var z_index = parseInt($('#follower-wrapper').css("z-index"));
+					$('#mobile-tab-bar-wrapper').css({"z-index": z_index + 3});
 					$('#misc .backer').css({"z-index": z_index + 1}).transition({x: "-100%"}, 0).transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
 					$('#following-wrapper').css({"z-index": z_index + 2}).transition({x: "-100%"}, 0).transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');
 				}
 			}
 			else if ($('#follower-wrapper').css("z-index") >= $('#following-wrapper').css("z-index")) {
 				var z_index = parseInt($('#follower-wrapper').css("z-index"));
+				$('#mobile-tab-bar-wrapper').css({"z-index": z_index + 3});
 				$('#misc .backer').css({"z-index": z_index + 1}).transition({x: "-100%"}, 0).transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
 				$('#following-wrapper').css({"z-index": z_index + 2}).transition({x: "-100%"}, 0).transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');
 			}

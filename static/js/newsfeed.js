@@ -47,12 +47,25 @@ $(function() {
 		    });
 		});
 
-		$('#off-canvas-comments-backer').transition({y: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
-		$('#off-canvas-comments').transition({y: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-			$('#content-overlay').css({'z-index': 40});
-			$('#content-overlay').transition({opacity: 0.5}, 200);
-			$('input[name="comment"]').focus();
-		});
+		if ($(window).width() < 900) {
+			var window_height = $(window).height();
+			$('#off-canvas-comments-backer').height(window_height);
+			$('#off-canvas-comments').height(window_height);
+			$('#off-canvas-comments-backer').transition({y: "-100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+			$('#off-canvas-comments').transition({y: "-100%"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+				$('#content-overlay').css({'z-index': 40});
+				$('#content-overlay').transition({opacity: 0.5}, 200);
+				$('input[name="comment"]').focus();
+			});
+		}
+		else {
+			$('#off-canvas-comments-backer').transition({y: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+			$('#off-canvas-comments').transition({y: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+				$('#content-overlay').css({'z-index': 40});
+				$('#content-overlay').transition({opacity: 0.5}, 200);
+				$('input[name="comment"]').focus();
+			});
+		}
 	});
 
 	$('#content-overlay').on('click', function() {

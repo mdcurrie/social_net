@@ -36,8 +36,23 @@ a {
 #off-canvas-question-form {
 	display: none;
 }
+#off-canvas-comments-backer {
+	position: fixed;
+	left: 0;
+	bottom: -100%;
+	height: 100%;
+	width: 100%;
+	z-index: 99;
+	background: rgba(46, 179, 152, .8);
+}
 #off-canvas-comments {
-	display: none;
+	position: fixed;
+	left: 0;
+	bottom: -100%;
+	height: 100%;
+	width: 100%;
+	z-index: 100;
+	background: #f1f1f1;
 }
 #main-content-header {
 	display: none;
@@ -190,6 +205,8 @@ body {
 	#off-canvas-comments-backer {
 		position: fixed;
 		right: 0;
+		left: initial;
+		top: initial;
 		bottom: calc(-100% + 80px);
 		height: calc(100% - 80px);
 		width: 33%;
@@ -199,6 +216,8 @@ body {
 	#off-canvas-comments {
 		position: fixed;
 		right: 0;
+		left: initial;
+		top: initial;
 		bottom: calc(-100% + 80px);
 		height: calc(100% - 80px);
 		width: 33%;
