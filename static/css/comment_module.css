@@ -70,7 +70,8 @@
 	font-size: 0.9em;
 	border: none;
 	outline: none;
-	box-shadow: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
 }
 .comment-form img {
 	width: 46px;
