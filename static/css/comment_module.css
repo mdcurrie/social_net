@@ -64,6 +64,7 @@
 	width: calc(100% - 46px);
 	height: 46px;
 	padding-left: 8px;
+	padding-right: 8px;
 	float: left;
 	background-color: white;
 	font-family: Gotham;
@@ -180,6 +181,8 @@
 		height: 45px;
 		border-top: 1px solid rgba(0,0,0,.1);
 		border-bottom-left-radius: 6px;
+		padding-left: 20px;
+		padding-right: 20px;
 	}
 	.comment-form img {
 		border-bottom-right-radius: 6px;

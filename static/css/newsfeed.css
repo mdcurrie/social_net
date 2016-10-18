@@ -39,8 +39,8 @@ a {
 #off-canvas-comments-backer {
 	position: fixed;
 	left: 0;
-	bottom: -100%;
-	height: 100%;
+	bottom: calc(-100% + 46px);
+	height: calc(100% - 46px);
 	width: 100%;
 	z-index: 99;
 	background: rgba(46, 179, 152, .8);
@@ -48,11 +48,19 @@ a {
 #off-canvas-comments {
 	position: fixed;
 	left: 0;
-	bottom: -100%;
-	height: 100%;
+	bottom: calc(-100% + 46px);
+	height: calc(100% - 46px);
 	width: 100%;
 	z-index: 100;
 	background: #f1f1f1;
+}
+.comment-section {
+	height: 100%;
+}
+.all-comments {
+	height: calc(100% - 46px);
+	padding-bottom: 0 !important;
+	overflow: auto;
 }
 #main-content-header {
 	display: none;
