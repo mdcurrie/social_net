@@ -11,7 +11,7 @@
 }
 .all-comments {
 	padding-top: 14px;
-	padding-bottom: 58px;
+	padding-bottom: 46px;
 }
 .comment {
 	overflow: auto;
@@ -25,6 +25,7 @@
 }
 .comment-wrapper:last-of-type .comment-text {
 	margin-bottom: 0;
+	border-bottom: none;
 }
 .comment-text {
 	float: left;
@@ -69,6 +70,7 @@
 	font-size: 0.9em;
 	border: none;
 	outline: none;
+	box-shadow: none;
 }
 .comment-form img {
 	width: 46px;
@@ -164,9 +166,6 @@
 	    -webkit-border-radius: 10px;
 	    border-radius: 10px;
 	    background: rgba(0, 0, 0,0.2); 
-	}
-	.comment-wrapper:last-of-type .comment-text {
-		border-bottom: none;
 	}
 	.comment-form {
 		position: absolute;
