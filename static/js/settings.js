@@ -1,4 +1,11 @@
 $(function() {
+	var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+	if (userAgent.match( /iPad/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPod/i ))
+	{
+		userAgent = 'iOS';
+
+	}
+
 	$('input').on('focusin', function() {
 		$('#mobile-tab-bar-wrapper').transition({y: 46}, 0);
 	});
@@ -56,7 +63,9 @@ $(function() {
 	$('#username .wrapper').on('click', function() {
 		$(this).css({"display": "none"});
 		$('#username form').css({"display": "inline-block"});
-		$('#username input').focus();
+		if (userAgent != 'iOS') {
+			$('#username input').focus();
+		}
 	});
 
 	/* validate username before submitting form */
@@ -107,7 +116,9 @@ $(function() {
 	$('#bio .wrapper').on('click', function() {
 		$(this).css({"display": "none"});
 		$('#bio form').css({"display": "inline-block"});
-		$('#bio input').focus();
+		if (userAgent != 'iOS') {
+			$('#bio input').focus();
+		}
 	});
 
 	$('#bio form').on('submit', function(e) {
@@ -127,7 +138,9 @@ $(function() {
 		$('.row:first-of-type').animate({"height": $('.row:first-of-type form').height() + 70}, 500);
 		$('.row:first-of-type .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
 		$('.row:first-of-type .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-			$('.row:first-of-type input').eq(1).focus();
+			if (userAgent != 'iOS') {
+				$('.row:first-of-type input').eq(1).focus();
+			}
 		});
 	});
 
@@ -145,7 +158,9 @@ $(function() {
 			$('#email-error').css({"opacity": 0, "display": "block"});
 			$('#email-error').text('That is not a valid email address.');
 			$('#email-error').transition({opacity: 1}, 300);
-			$('.row:first-of-type input').eq(1).focus();
+			if (userAgent != 'iOS') {
+				$('.row:first-of-type input').eq(1).focus();
+			}
 			return;
 		}
 
@@ -154,7 +169,9 @@ $(function() {
 				$('#email-error').css({"opacity": 0, "display": "block"});
 				$('#email-error').text(data.error);
 				$('#email-error').transition({opacity: 1}, 300);
-				$('.row:first-of-type input').eq(1).focus();
+				if (userAgent != 'iOS') {
+					$('.row:first-of-type input').eq(1).focus();
+				}
 			}
 			else {
 				$('#email-error').remove();
@@ -173,7 +190,9 @@ $(function() {
 		$('.row:nth-of-type(2)').animate({"height": $('.row:nth-of-type(2) form').height() + 70}, 500);
 		$('.row:nth-of-type(2) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
 		$('.row:nth-of-type(2) .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-			$('.row:nth-of-type(2) input').eq(1).focus();
+			if (userAgent != 'iOS') {
+				$('.row:nth-of-type(2) input').eq(1).focus();
+			}
 		});
 	});
 
@@ -192,7 +211,9 @@ $(function() {
 			$('#reset-password-error').css({"opacity": 0, "display": "block"});
 			$('#reset-password-error').text("Your new password must contain at least 6 characters.");
 			$('#reset-password-error').transition({opacity: 1}, 300);
-			$('.row:nth-of-type(2) input').eq(2).focus();
+			if (userAgent != 'iOS') {
+				$('.row:nth-of-type(2) input').eq(2).focus();
+			}
 			return;
 		}
 
@@ -201,8 +222,11 @@ $(function() {
 				$('#reset-password-error').css({"opacity": 0, "display": "block"});
 				$('#reset-password-error').text(data.error);
 				$('#reset-password-error').transition({opacity: 1}, 300);
-				$('.row:nth-of-type(2) input').eq(1).val('').focus();
+				$('.row:nth-of-type(2) input').eq(1).val('');
 				$('.row:nth-of-type(2) input').eq(2).val('');
+				if (userAgent != 'iOS') {
+					$('.row:nth-of-type(2) input').eq(1).focus();
+				}
 			}
 			else {
 				$('#reset-password-error').remove();
@@ -221,7 +245,9 @@ $(function() {
 		$('.row:nth-of-type(3)').animate({"height": $('.row:nth-of-type(3) form').height() + 70}, 500);
 		$('.row:nth-of-type(3) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
 		$('.row:nth-of-type(3) .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-			$('.row:nth-of-type(3) input').eq(1).focus();
+			if (userAgent != 'iOS') {
+				$('.row:nth-of-type(3) input').eq(1).focus();
+			}
 		});
 	});
 
@@ -238,21 +264,27 @@ $(function() {
 			$('#custom-url-error').css({"opacity": 0, "display": "block"});
 			$('#custom-url-error').text("Your custom URL must contain at least 6 characters.");
 			$('#custom-url-error').transition({opacity: 1}, 300);
-			$('.row:nth-of-type(3) input').eq(1).focus();
+			if (userAgent != 'iOS') {
+				$('.row:nth-of-type(3) input').eq(1).focus();
+			}
 			return;
 		}
 		if (custom_url == "signup" || custom_url == "login" || custom_url == "feed" || custom_url == "settings") {
 			$('#custom-url-error').css({"opacity": 0, "display": "block"});
 			$('#custom-url-error').text("Sorry, but that custom URL is not allowed.");
 			$('#custom-url-error').transition({opacity: 1}, 300);
-			$('.row:nth-of-type(3) input').eq(1).focus();
+			if (userAgent != 'iOS') {
+				$('.row:nth-of-type(3) input').eq(1).focus();
+			}
 			return;
 		}
 		if (custom_url != '' && !(/^[a-zA-Z0-9_]+$/i.test(custom_url))) {
 			$('#custom-url-error').css({"opacity": 0, "display": "block"});
 			$('#custom-url-error').text("Your custom URL can only contain letters, numbers, and, underscores.");
 			$('#custom-url-error').transition({opacity: 1}, 300);
-			$('.row:nth-of-type(3) input').eq(1).focus();
+			if (userAgent != 'iOS') {
+				$('.row:nth-of-type(3) input').eq(1).focus();
+			}
 			return;
 		}
 
@@ -261,7 +293,9 @@ $(function() {
 				$('#custom-url-error').css({"opacity": 0, "display": "block"});
 				$('#custom-url-error').text(data.error);
 				$('#custom-url-error').transition({opacity: 1}, 300);
-				$('.row:nth-of-type(3) input').eq(1).focus();
+				if (userAgent != 'iOS') {
+					$('.row:nth-of-type(3) input').eq(1).focus();
+				}
 			}
 			else {
 				if (custom_url.length == '') {
@@ -270,7 +304,9 @@ $(function() {
 						$('.row:nth-of-type(3)').animate({"height": $('.row:nth-of-type(3) form').height() + 70}, 500);
 						$('.row:nth-of-type(3) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
 						$('.row:nth-of-type(3) .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-							$('.row:nth-of-type(3) input').eq(1).focus();
+							if (userAgent != 'iOS') {
+								$('.row:nth-of-type(3) input').eq(1).focus();
+							}
 						});
 					});
 				}
