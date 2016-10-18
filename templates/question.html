@@ -15,6 +15,9 @@
     </head>
     <body>
         {% module Header() %}
+        {% if current_user %}
+            {% module MobileTabBar('') %}
+        {% end %}
         <main>
             <section id="question-content">
                 {% module Question(asker, question, vote, favorite_count, favorited_this_question, comment_count) %}  
