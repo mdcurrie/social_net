@@ -48,9 +48,11 @@ $(function() {
 		});
 
 		if ($(window).width() < 900) {
+			$('body').css({"overflow-y": "hidden"});
 			$('#off-canvas-comments-backer').transition({y: "-100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
 			$('#off-canvas-comments').transition({y: "-100%"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 				$('#content-overlay').css({'z-index': 40, "opacity": 0.5});
+
 				$('input[name="comment"]').focus();
 			});
 		}
