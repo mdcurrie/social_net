@@ -20,6 +20,11 @@
 	    {% if current_user %}
 			{% module MobileTabBar(title) %}
 		{% end %}
+		<aside id="off-canvas-comments-backer"></aside>
+		    <aside id="off-canvas-comments">
+		    	<div class="all-comments"></div>
+		    </aside>
+		<div id="content-overlay"></div>
 	    <main>
 	        <section id="main-content">
 	        	<div id="main-content-wrapper">
@@ -95,11 +100,6 @@
 					</div>
 				</div>
 		    </section>
-		    <aside id="off-canvas-comments-backer"></aside>
-		    <aside id="off-canvas-comments">
-		    	<div class="all-comments"></div>
-		    </aside>
-		    <div id="content-overlay"></div>
 		</main>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
         <script src="{{ static_url("js/jquery.transit.min.js") }}"></script>
