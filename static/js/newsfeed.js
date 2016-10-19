@@ -7,7 +7,7 @@ $(function() {
 			$('#close-comments div').on('click', function() {
 				$('#off-canvas-comments').transition({y: "100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
 				$('#off-canvas-comments-backer').transition({y: "100%"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-					$('body').css({"overflow-y": "hidden"});
+					$('body').css({"overflow-y": "initial"});
 				});
 			});
 
@@ -62,8 +62,8 @@ $(function() {
 			});
 		}
 		else {
-			$('#off-canvas-comments-backer').transition({y: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
-			$('#off-canvas-comments').transition({y: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+			$('#off-canvas-comments-backer').transition({y: 80}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+			$('#off-canvas-comments').transition({y: 80}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 				$('#content-overlay').css({'z-index': 40});
 				$('#content-overlay').transition({opacity: 0.5}, 200);
 				$('input[name="comment"]').focus();
@@ -72,8 +72,8 @@ $(function() {
 	});
 
 	$('#content-overlay').on('click', function() {
-		$('#off-canvas-comments').transition({y: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
-		$('#off-canvas-comments-backer').transition({y: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+		$('#off-canvas-comments').transition({y: "calc(100% + 80px)"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+		$('#off-canvas-comments-backer').transition({y: "calc(100% + 80px)"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 			$('#content-overlay').transition({opacity: 0}, 200, function() {
 				$('#content-overlay').css({'z-index': -10});
 			});

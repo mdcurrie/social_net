@@ -236,22 +236,16 @@ body {
 		margin-bottom: 0;
 	}
 	#off-canvas-comments-backer {
-		position: fixed;
 		right: 0;
-		left: initial;
-		top: initial;
-		transform: translateY(calc(-100% + 80px));
+		transform: translateY(calc(100% + 80px));
 		height: calc(100% - 80px);
 		width: 33%;
 		z-index: 49;
 		background: rgba(46, 179, 152, .8);
 	}
 	#off-canvas-comments {
-		position: fixed;
 		right: 0;
-		left: initial;
-		top: initial;
-		transform: translate(calc(-100% + 80px));
+		transform: translateY(calc(100% + 80px));
 		height: calc(100% - 80px);
 		width: 33%;
 		z-index: 50;
