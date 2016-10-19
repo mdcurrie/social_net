@@ -3,6 +3,7 @@ $(function() {
 		var question_id = $(this).parents('.question-wrapper').attr('id');
 		$.get('/comments/' + question_id, function(data) {
 			$('#off-canvas-comments').html(data);
+			$('#off-canvas-comments').prepend("<div id='close-comments'><div>&times</div></div>");
 			$('.all-comments').scrollTop($('.all-comments')[0].scrollHeight);
 
 			jQuery.fn.preventDoubleSubmission = function() {
@@ -47,7 +48,7 @@ $(function() {
 		    });
 		});
 
-		if ($(window).width() < 900) {
+		if ($(window).width() < 1200) {
 			$('#off-canvas-comments-backer').transition({y: "-100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
 			$('#off-canvas-comments').transition({y: "-100%"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 				$('main').css({"display": "none"});
