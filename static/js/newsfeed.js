@@ -81,7 +81,7 @@ $(function() {
 		});
 	});
 
-	$('.question-image').hover(
+/*	$('.question-image').hover(
 		function() {
 			$('#off-canvas-comments-backer').css({"will-change": "transform"});
 			$('#off-canvas-comments').css({"will-change": "transform"});
@@ -102,7 +102,7 @@ $(function() {
 			$('#off-canvas-comments').css({"will-change": "initial"});
 		}
 	);
-
+*/
 	$('#follow-topic-button').on('click', function(e) {
 		e.preventDefault();
 		var url = $('#follow-topic-button').attr('formaction');
