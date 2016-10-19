@@ -146,10 +146,6 @@ main {
 	overflow: auto;
 	position: relative;
 }
-.row:last-of-type {
-	border-bottom: 1px solid rgba(0,0,0,.1);
-	margin-bottom: 20px;
-}
 .row form {
     width: calc(100% - 20px);
     position: relative;
@@ -365,6 +361,10 @@ main {
 	}
 	#row-settings {
 		max-width: 650px;
+	}
+	.row:last-of-type {
+		border-bottom: 1px solid rgba(0,0,0,.1);
+		margin-bottom: 20px;
 	}
 	.form-input {
 		max-width: 250px;

@@ -131,15 +131,16 @@ header .dropdown-content a:hover {
 }
 
 @media only screen and (min-width: 1200px) {
+	header {
+		height: 80px;
+		transform: translateY(0) !important;
+		will-change: initial;
+	}
 	#search-form {
 		display: block;
 	}
 	#header-icon-area {
 		display: block;
-	}
-	header {
-		height: 80px;
-		transform: translateY(0) !important;
 	}
 	#logo {
 		font-size: 2em;

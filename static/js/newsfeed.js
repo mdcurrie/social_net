@@ -5,10 +5,10 @@ $(function() {
 			$('#off-canvas-comments').html(data);
 			$('#off-canvas-comments').prepend("<div id='close-comments'><div>&times</div></div>");
 			$('#close-comments div').on('click', function() {
-				$('main').css({"display": "initial"});
-				$('#content-overlay').css({'z-index': -100, "opacity": 0});
 				$('#off-canvas-comments').transition({y: "100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
-				$('#off-canvas-comments-backer').transition({y: "100%"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');
+				$('#off-canvas-comments-backer').transition({y: "100%"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+					$('body').css({"overflow-y": "hidden"});
+				});
 			});
 
 			$('.all-comments').scrollTop($('.all-comments')[0].scrollHeight);
@@ -58,8 +58,7 @@ $(function() {
 		if ($(window).width() < 1200) {
 			$('#off-canvas-comments-backer').transition({y: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
 			$('#off-canvas-comments').transition({y: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-				$('main').css({"display": "none"});
-				$('#content-overlay').css({'z-index': 40, "opacity": 0.5});
+				$('body').css({"overflow-y": "hidden"});
 			});
 		}
 		else {
