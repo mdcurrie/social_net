@@ -52,7 +52,7 @@
 .action-buttons {
 	position: absolute;
 	z-index: 10;
-	bottom: 0px;
+	bottom: -2px;
 	right: 10px;
 }
 .favorite-count {
@@ -86,7 +86,7 @@
 .question-title a {
 	word-wrap: break-word;
 	line-height: 1.1em;
-	font-size: 1em;
+	font-size: 1.1em;
 	letter-spacing: 0.01em;
 	color: white;
 }
@@ -94,7 +94,7 @@
 	background: white;
 	border-top: none;
 	position: relative;
-	padding-top: 24px;
+	padding-top: 28px;
 }
 .vote-count {
 	font-size: 0.70em;
@@ -106,7 +106,7 @@
 	background: white;
 }
 .poll-answer {
-	padding: 7px 0;
+	padding: 10px 0;
 }
 .poll-answer:last-of-type {
 	padding: 7px 0 0 0;
@@ -122,7 +122,7 @@
 }
 .poll-percentage-wrapper {
 	width: 45px;
-	height: 20px;
+	height: 24px;
 	padding-left: 10px;
 	float: left;
 	transition: background-color 0.3s;
@@ -137,7 +137,7 @@
 	position: relative;
 	top: 50%;
 	transform: translateY(-50%);
-	font-size: 0.75em;
+	font-size: 0.8em;
 	transition: color 0.3s
 }
 .bar-wrapper1 {
@@ -149,7 +149,7 @@
 	width: 100%;
 }
 .poll-bar {
-	height: 20px;
+	height: 24px;
 	background-color: #2eb398;
 	width: 100%;
 }
@@ -158,7 +158,7 @@
 	top: 50%;
 	transform: translateY(-50%);
 	left: 5px;
-	font-size: 0.75em;
+	font-size: 0.8em;
 }
 .topics-container {
 	background: #e4e4e4;
@@ -174,7 +174,7 @@
 
 @media only screen and (min-width: 380px) {
 	.question-title {
-		bottom: 40px;
+		bottom: 44px;
 		padding: 0 20px;
 	}
 	.asker-info {
@@ -201,49 +201,24 @@
 	    font-size: 0.8em;
 	}
 	.action-buttons {
-	    bottom: 1px;
 	    right: 20px;
 	}
 	.count-text {
 		font-size: 0.85em;
-		min-width: 25px;
 	}
 	.question-image {
-		height: 190px;
+		height: 210px;
 	}
 	.question-content {
 		padding-top: 30px;
 	}
-	.poll-answer {
-		padding: 8px 0;
-	}
 	.poll-percentage-wrapper {
-		height: 22px;
-		width: 60px;
 		padding-left: 20px;
-	}
-	.poll-percentage {
-	    font-size: 0.85em;
+		width: 60px;
 	}
 	.bar-wrapper1 {
 		margin-left: 60px;
 		width: calc(100% - 60px);
-	}
-	.poll-bar {
-		height: 22px;
-	}
-	.poll-bar > div {
-		font-size: 0.85em;
-	}
-	.vote-count {
-		font-size: 0.75em;
-		padding: 5px 20px;
-	}
-	.topics-container {
-		padding: 0 15px 3px 15px;
-	}
-	.question-topic a {
-		font-size: 0.85em
 	}
 }
 
@@ -277,23 +252,19 @@
 	    font-size: 0.65em;
 	}
 	.action-buttons {
-	    bottom: 0px;
+		bottom: 0;
 	}
 	.count-text {
 		font-size: 0.8em;
-		min-width: 25px;
-	}
-	.svg-image svg {
-		height: 18px;
 	}
 	.question-image {
-		height: 210px;
+		height: 220px;
 	}
 	.question-content {
-		padding-top: 28px;
+		padding-top: 32px;
 	}
 	.poll-answer {
-		padding: 9px 0;
+		padding: 12px 0;
 	}
 	.poll-percentage-wrapper {
 		height: 26px;
@@ -335,6 +306,9 @@
 }
 
 @media only screen and (min-width: 480px) {
+	.question-image {
+		height: 230px;
+	}
 	.question-content {
 		padding-top: 26px;
 	}

@@ -59,6 +59,7 @@
     bottom: 0px;
     left: 0px;
     box-shadow: 0 0 20px rgba(46, 179, 152, .1);
+    z-index: 20;
 }
 .comment-form input[name="comment"] {
 	width: calc(100% - 46px);

@@ -39,17 +39,12 @@ main {
 	overflow: auto;
 }
 
-@media only screen and (min-width: 480px) {
-	main {
-		padding-top: 86px;
-	}
-}
-
 @media only screen and (min-width: 900px) {
 	#mobile-tab-bar-wrapper {
 		display: block;
 	}
 	main {
+		padding-top: 86px;
 		max-width: initial;
 		width: calc(100% - 80px);
 	}
