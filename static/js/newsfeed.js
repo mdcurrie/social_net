@@ -6,13 +6,13 @@ $(function() {
 			$('#off-canvas-comments').prepend("<div id='close-comments'><div>&times</div></div>");
 			$('#close-comments div').on('click', function() {
 				$('main').css({"display": "initial"});
-				$('#off-canvas-comments').transition({y: "100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
-				$('#off-canvas-comments-backer').transition({y: "100%"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');
+				$('#off-canvas-comments').transition({y: "100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)', function() {
+					$(this).css({"display": "none"});
+				});
+				$('#off-canvas-comments-backer').transition({y: "100%"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+					$(this).css({"display": "none"});
+				});
 			});
-
-			if ($(window).width() >= 1200) {
-				$('.all-comments').scrollTop($('.all-comments')[0].scrollHeight);
-			}
 
 			jQuery.fn.preventDoubleSubmission = function() {
 		        $(this).on('submit', function(e) {
@@ -57,15 +57,14 @@ $(function() {
 		});
 
 		if ($(window).width() < 1200) {
-			$('#off-canvas-comments-backer').transition({y: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
-			$('#off-canvas-comments').transition({y: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-				$('.all-comments').scrollTop($('.all-comments')[0].scrollHeight);
+			$('#off-canvas-comments-backer').css({"display": "block"}).transition({y: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+			$('#off-canvas-comments').css({"display": "block"}).transition({y: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 				$('main').css({"display": "none"});
 			});
 		}
 		else {
-			$('#off-canvas-comments-backer').transition({y: 80}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
-			$('#off-canvas-comments').transition({y: 80}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+			$('#off-canvas-comments-backer').css({"display": "block"}).transition({y: 80}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+			$('#off-canvas-comments').css({"display": "block"}).transition({y: 80}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 				$('#content-overlay').css({'z-index': 40});
 				$('#content-overlay').transition({opacity: 0.5}, 200);
 				$('input[name="comment"]').focus();
@@ -74,8 +73,11 @@ $(function() {
 	});
 
 	$('#content-overlay').on('click', function() {
-		$('#off-canvas-comments').transition({y: "calc(100% + 80px)"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+		$('#off-canvas-comments').transition({y: "calc(100% + 80px)"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)', function() {
+			$(this).css({"display": "none"});
+		});
 		$('#off-canvas-comments-backer').transition({y: "calc(100% + 80px)"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+			$(this).css({"display": "none"});
 			$('#content-overlay').transition({opacity: 0}, 200, function() {
 				$('#content-overlay').css({'z-index': -10});
 			});

@@ -43,6 +43,7 @@ a {
 	width: 100%;
 	z-index: 99;
 	background: rgba(46, 179, 152, .8);
+	display: none;
 	will-change: transform;
 }
 #off-canvas-comments {
@@ -52,6 +53,7 @@ a {
 	width: 100%;
 	z-index: 100;
 	background: #f1f1f1;
+	display: none;
 	will-change: transform;
 }
 #close-comments {
