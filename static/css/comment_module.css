@@ -43,14 +43,14 @@
 }
 .commenter-username {
 	font-weight: bold;
-	float: left;
 	font-size: 0.8em;
 }
 .comment-time {
-	color: #868686;
-	font-size: 0.6em;
+	color: #A5A5A6;
+	font-size: 0.75em;
 	display: inline-block;
-	transform: translate(8px, -2px);
+	transform: translateX(8px);
+	font-weight: normal;
 }
 .comment-form {
     width: 100%;
@@ -64,8 +64,8 @@
 .comment-form input[name="comment"] {
 	width: calc(100% - 46px);
 	height: 46px;
-	padding-left: 8px;
-	padding-right: 8px;
+	padding-left: 10px;
+	padding-right: 10px;
 	float: left;
 	background-color: white;
 	font-family: Gotham;
