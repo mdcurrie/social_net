@@ -12,25 +12,26 @@
                     </a>
                     <div class="comment-text">
                         <div class="comment-top-text">
-                            <a href="/users/{{ str(comment["user_id"]) }}" class="commenter-username">{{ commenters[idx]["username"] }}</a>
-                            <span class="comment-time">
-                                {% set total_seconds = (datetime.utcnow() - comment["date"]).total_seconds() %}
-                                {% if total_seconds < 30 %}
-                                    Just now
-                                {% elif total_seconds < 60 %}
-                                    {{ int(total_seconds) }}s ago
-                                {% elif total_seconds < 3600 %}
-                                    {{ int(total_seconds * 0.0166667) }}m ago
-                                {% elif total_seconds < 86400 %}
-                                    {{ int(total_seconds * 0.000277778) }}h ago
-                                {% elif total_seconds < 172800 %}
-                                    Yesterday
-                                {% elif total_seconds < 15770000 %}
-                                    {{ comment["date"].strftime("%B %d").replace(' 0', ' ') }}
-                                {% else %}
-                                    {{ comment["date"].strftime("%B %d, %Y").replace(' 0', ' ') }}
-                                {% end %}
-                            </span>
+                            <a href="/users/{{ str(comment["user_id"]) }}" class="commenter-username">{{ commenters[idx]["username"] }}
+                                <span class="comment-time">
+                                    {% set total_seconds = (datetime.utcnow() - comment["date"]).total_seconds() %}
+                                    {% if total_seconds < 30 %}
+                                        Just now
+                                    {% elif total_seconds < 60 %}
+                                        {{ int(total_seconds) }}s ago
+                                    {% elif total_seconds < 3600 %}
+                                        {{ int(total_seconds * 0.0166667) }}m ago
+                                    {% elif total_seconds < 86400 %}
+                                        {{ int(total_seconds * 0.000277778) }}h ago
+                                    {% elif total_seconds < 172800 %}
+                                        Yesterday
+                                    {% elif total_seconds < 15770000 %}
+                                        {{ comment["date"].strftime("%B %d").replace(' 0', ' ') }}
+                                    {% else %}
+                                        {{ comment["date"].strftime("%B %d, %Y").replace(' 0', ' ') }}
+                                    {% end %}
+                                </span>
+                            </a>
                         </div>
                         <div class="comment-bot-text">{{ comment["comment"] }}</div>
                     </div>
