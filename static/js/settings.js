@@ -136,7 +136,7 @@ $(function() {
 	/* email section */
 	$('#email').on('click', function() {
 		$('.row:first-of-type').animate({"height": $('.row:first-of-type form').height() + 70}, 500);
-		$('.row:first-of-type .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+		$('.row:first-of-type .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
 		$('.row:first-of-type .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 			if (userAgent != 'iOS') {
 				$('.row:first-of-type input').eq(1).focus();
@@ -178,7 +178,7 @@ $(function() {
 				$('#email').text(email);
 				$('input[name="email"]').attr({"placeholder": email}).val('');
 				$('.row:first-of-type').animate({"height": $('.row:first-of-type .value').height() + 51}, 500);
-				$('.row:first-of-type .form-wrapper').transition({x: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+				$('.row:first-of-type .form-wrapper').transition({x: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
 				$('.row:first-of-type .backer').transition({x: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');
 				$('input').blur();
 			}
@@ -188,7 +188,7 @@ $(function() {
 	/* password section */
 	$('#reset-password-button').on('click', function() {
 		$('.row:nth-of-type(2)').animate({"height": $('.row:nth-of-type(2) form').height() + 70}, 500);
-		$('.row:nth-of-type(2) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+		$('.row:nth-of-type(2) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
 		$('.row:nth-of-type(2) .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 			if (userAgent != 'iOS') {
 				$('.row:nth-of-type(2) input').eq(1).focus();
@@ -231,7 +231,7 @@ $(function() {
 			else {
 				$('#reset-password-error').remove();
 				$('.row:nth-of-type(2)').animate({"height": $('.row:nth-of-type(2) .value').height() + 51}, 500);
-				$('.row:nth-of-type(2) .form-wrapper').transition({x: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+				$('.row:nth-of-type(2) .form-wrapper').transition({x: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
 				$('.row:nth-of-type(2) .backer').transition({x: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');
 				$('input[name="old-password"]').val('');
 				$('input[name="new-password"]').val('');
@@ -243,7 +243,7 @@ $(function() {
 	/* custom URL section */
 	$('#custom-url').on('click', function() {
 		$('.row:nth-of-type(3)').animate({"height": $('.row:nth-of-type(3) form').height() + 70}, 500);
-		$('.row:nth-of-type(3) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+		$('.row:nth-of-type(3) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
 		$('.row:nth-of-type(3) .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 			if (userAgent != 'iOS') {
 				$('.row:nth-of-type(3) input').eq(1).focus();
@@ -263,6 +263,15 @@ $(function() {
 		if (custom_url.length >= 1 && custom_url.length < 6) {
 			$('#custom-url-error').css({"opacity": 0, "display": "block"});
 			$('#custom-url-error').text("Your custom URL must contain at least 6 characters.");
+			$('#custom-url-error').transition({opacity: 1}, 300);
+			if (userAgent != 'iOS') {
+				$('.row:nth-of-type(3) input').eq(1).focus();
+			}
+			return;
+		}
+		if (custom_url.length > 20) {
+			$('#custom-url-error').css({"opacity": 0, "display": "block"});
+			$('#custom-url-error').text("Sorry, but your custom URL can only contain up to 20 characters.");
 			$('#custom-url-error').transition({opacity: 1}, 300);
 			if (userAgent != 'iOS') {
 				$('.row:nth-of-type(3) input').eq(1).focus();
@@ -302,7 +311,7 @@ $(function() {
 					$('#custom-url').replaceWith('<div id="custom-url"><button class="form-button" id="custom-url-button">Set Custom URL</button></div>');
 					$('#custom-url').on('click', function() {
 						$('.row:nth-of-type(3)').animate({"height": $('.row:nth-of-type(3) form').height() + 70}, 500);
-						$('.row:nth-of-type(3) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+						$('.row:nth-of-type(3) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
 						$('.row:nth-of-type(3) .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 							if (userAgent != 'iOS') {
 								$('.row:nth-of-type(3) input').eq(1).focus();
@@ -316,7 +325,7 @@ $(function() {
 				$('#custom-url-error').remove();
 				$('input[name="custom-url"]').attr({"placeholder": custom_url}).val('');
 				$('.row:nth-of-type(3)').animate({"height": $('.row:nth-of-type(3) .value').height() + 51}, 500);
-				$('.row:nth-of-type(3) .form-wrapper').transition({x: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.015)');
+				$('.row:nth-of-type(3) .form-wrapper').transition({x: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
 				$('.row:nth-of-type(3) .backer').transition({x: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');	
 				$('input').blur();
 			}

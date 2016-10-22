@@ -1,5 +1,5 @@
 $(function() {
-    $('.all-comments').animate({scrollTop: $('.all-comments')[0].scrollHeight}, 1000);
+    $('.all-comments').animate({scrollTop: $('.all-comments')[0].scrollHeight}, 600);
 
     jQuery.fn.preventDoubleSubmission = function() {
         $(this).on('submit', function(e) {

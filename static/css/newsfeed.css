@@ -69,7 +69,7 @@ a {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    color: #2eb398;
+    color: #DDDEDF;
 }
 .comment-section {
 	height: calc(100% - 46px);
@@ -85,6 +85,10 @@ a {
 }
 body {
 	background: #f1f1f1;
+}
+main {
+	max-width: 460px;
+	margin: 0 auto;
 }
 #main-content {
 	padding-top: 61px;
@@ -102,6 +106,27 @@ body {
 @media only screen and (min-width: 380px) {
 	#close-comments div {
 		left: 16px;
+	}
+}
+
+@media only screen and (min-width: 460px) {
+	.question-wrapper {
+		margin-bottom: 20px;
+	}
+}
+
+@media only screen and (min-width: 900px) {
+	main {
+		max-width: calc(100% - 60px);
+		overflow: auto;
+	}
+	#main-content {
+		padding-top: 86px;
+	}
+	.question-wrapper {
+		width: calc(50% - 20px);
+		float: left;
+		margin: 0 10px 20px 10px;
 	}
 }
 
@@ -123,6 +148,9 @@ body {
 	}
 	main {
 		box-sizing: border-box;
+		max-width: initial;
+		width: initial;
+		overflow: initial;
 	}
 	main * {
 		box-sizing: border-box;
@@ -144,6 +172,11 @@ body {
 	#main-content-title form {
 		display: inline-block;
 		transform: translate(10px, -4px);
+	}
+	.question-wrapper {
+		width: initial;
+		float: initial;
+		margin: initial;
 	}
 	#follow-topic-button {
 	    padding: 5px 10px;
