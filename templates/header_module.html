@@ -15,6 +15,11 @@
         </a>
     </div>
     {% if current_user %}
+        {% if create_question %}
+            <div id="mobile-create-question-wrapper">
+                <div id="mobile-create-question">+</div>
+            </div>
+        {% end %}
         <div id="header-icon-area">
             <div id="notification-icon">
                 <img src="{{ static_url("images/bell-white.svg") }}" alt="bell icon for user notifications">

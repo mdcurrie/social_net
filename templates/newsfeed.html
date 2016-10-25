@@ -15,7 +15,11 @@
         <![endif]-->
     </head>
     <body>
-	    {% module Header() %}
+    	{% if current_user %}
+	    	{% module Header(True, True) %}
+	    {% else %}
+	    	{% module Header() %}
+	    {% end %}
 	    {% module SideColumn(title) %}
 	    {% if current_user %}
 			{% module MobileTabBar(title) %}
