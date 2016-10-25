@@ -44,11 +44,14 @@
 }
 .asker-username a {
 	color: white;
-	font-size: 0.75em;
+	font-size: 0.8em;
+	letter-spacing: 0.03em;
+	font-weight: bold;
 }
 .question-date {
 	color: #A5A5A6;
 	font-size: 0.65em;
+	letter-spacing: 0.02em;
 }
 .action-buttons {
 	position: absolute;
@@ -68,12 +71,14 @@
 	position: relative;
 	height: 18px;
 	float: left;
-	margin-left: 12px;
+	margin-left: 16px;
 }
 .count-text {
 	color: white;
-	font-size: 0.75em;
+	font-size: 0.8em;
+	letter-spacing: 0.04em;
 	display: inline;
+	font-weight: bold;
 }
 .svg-image {
 	float: right;
@@ -84,14 +89,15 @@
 }
 .question-title {
 	position: absolute;
-	bottom: 40px;
+	bottom: 50px;
 	padding: 0 10px;
+	font-weight: bold;
 }
 .question-title a {
 	word-wrap: break-word;
 	line-height: 1.1em;
 	font-size: 1.1em;
-	letter-spacing: 0.01em;
+	letter-spacing: 0.03em;
 	color: white;
 }
 .question-content {
@@ -102,6 +108,7 @@
 }
 .vote-count {
 	font-size: 0.70em;
+	letter-spacing: 0.03em;
 	color: #A5A5A6;
 	padding: 5px 10px;
 	text-align: right;
@@ -154,6 +161,7 @@
 	transform: translateY(-50%);
 	left: 5px;
 	font-size: 0.8em;
+	letter-spacing: 0.03em;
 }
 .topics-container {
 	background: #e4e4e4;
@@ -165,11 +173,12 @@
 }
 .question-topic a {
 	font-size: 0.8em;
+	letter-spacing: 0.03em;
 }
 
 @media only screen and (min-width: 380px) {
 	.question-title {
-		bottom: 50px;
+		bottom: 60px;
 		padding: 0 20px;
 	}
 	.asker-info {
@@ -219,10 +228,11 @@
 
 @media only screen and (min-width: 420px) {
 	.question-title {
-		bottom: 52px;
+		bottom: 60px;
 	}
 	.question-title a {
 		font-size: 1.15em;
+		letter-spacing: 0.05em;
 	}
 	.asker-info {
 		bottom: -19px;
@@ -242,12 +252,14 @@
 	}
 	.asker-username a {
 	    font-size: .9em;
+	    letter-spacing: 0.04em;
 	}
 	.question-date {
 	    font-size: 0.8em;
 	}
 	.count-text {
 		font-size: .9em;
+		letter-spacing: 0.06em;
 	}
 	.question-image {
 		height: 220px;
@@ -279,6 +291,9 @@
 }
 
 @media only screen and (min-width: 460px) {
+	.question-title {
+		bottom: 65px;
+	}
 	.question-image {
 		border-top-left-radius: 6px;
 		border-top-right-radius: 6px;
@@ -301,11 +316,8 @@
 	.question-image {
 		height: 230px;
 	}
-	.svg-image {
-		margin-left: 8px;
-	}
 	.comment-count {
-		margin-left: 15px;
+		margin-left: 18px;
 	}
 	.question-content {
 		padding-top: 26px;
@@ -333,6 +345,18 @@
 }
 
 @media only screen and (min-width: 1200px) {
+	.question-title {
+		font-weight: normal;
+		letter-spacing: 0.02em;
+	}
+	.asker-username a {
+		font-weight: normal;
+		letter-spacing: 0.02em;
+	}
+	.count-text {
+		font-weight: normal;
+		letter-spacing: 0.04em;
+	}
 	.poll-answer:hover {
 		cursor: pointer;
 	}

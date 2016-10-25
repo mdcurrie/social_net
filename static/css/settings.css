@@ -28,6 +28,17 @@ main {
 	background: white;
 	padding-top: 50px;
 }
+#user-settings .wrapper {
+	background: #f1f1f1;
+	padding: 5px 0;
+	border-radius: 3px;
+	width: calc(100% - 20px);
+	max-width: 250px;
+	margin: 0 auto;
+}
+#user-settings .wrapper:hover {
+	cursor: pointer;
+}
 #user-profile-pic {
 	text-align: center;
 	margin-bottom: 25px;
@@ -122,17 +133,6 @@ main {
     text-align: center;
     font-family: Gotham;
 }
-#user-settings .wrapper {
-	background: #f1f1f1;
-	padding: 5px 0;
-	border-radius: 3px;
-	width: calc(100% - 20px);
-	max-width: 250px;
-	margin: 0 auto;
-}
-#user-settings .wrapper:hover {
-	cursor: pointer;
-}
 #bio .wrapper {
 	min-height: 1.5em;
 }
@@ -145,6 +145,10 @@ main {
 	border-top: 1px solid rgba(0,0,0,.1);
 	overflow: auto;
 	position: relative;
+}
+.row:last-of-type {
+	border-bottom: 1px solid rgba(0,0,0,.1);
+	margin-bottom: 15px;
 }
 .row form {
     width: calc(100% - 20px);
@@ -363,7 +367,6 @@ main {
 		max-width: 650px;
 	}
 	.row:last-of-type {
-		border-bottom: 1px solid rgba(0,0,0,.1);
 		margin-bottom: 20px;
 	}
 	.form-input {

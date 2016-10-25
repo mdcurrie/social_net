@@ -29,6 +29,22 @@ header {
 #mobile-search img {
 	height: 32px;
 }
+#mobile-create-question-wrapper {
+	position: absolute;
+    right: 0;
+    top: 0;
+    background: #2eb398;
+    height: 46px;
+    width: 46px;
+}
+#mobile-create-question {
+ 	position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 2em;
+}
 #search-form {
 	display: none;
 	width: 240px;
@@ -134,6 +150,9 @@ header .dropdown-content a:hover {
 
 @media only screen and (min-width: 1200px) {
 	#mobile-search {
+		display: none;
+	}
+	#mobile-create-question-wrapper {
 		display: none;
 	}
 	header {

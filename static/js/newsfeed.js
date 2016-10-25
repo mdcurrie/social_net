@@ -1,16 +1,18 @@
 $(function() {
+	var scroll_pos;
 	$('.comment-count').on('click', function() {
 		var question_id = $(this).parents('.question-wrapper').attr('id');
 		$.get('/comments/' + question_id, function(data) {
+			scroll_pos = $('body').scrollTop();
 			$('#off-canvas-comments').html(data);
 			$('#off-canvas-comments').prepend("<div id='close-comments'><div>&times</div></div>");
 			$('#close-comments div').on('click', function() {
 				$('main').css({"display": "block"});
-				$('#off-canvas-comments').transition({y: "100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)', function() {
-					$(this).css({"display": "none"});
-				});
+				$('body').scrollTop(scroll_pos);
+				$('#off-canvas-comments').transition({y: "100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
 				$('#off-canvas-comments-backer').transition({y: "100%"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 					$(this).css({"display": "none"});
+					$('#off-canvas-comments').css({"display": "none"});
 				});
 			});
 
@@ -69,6 +71,23 @@ $(function() {
 					$('input[name="comment"]').focus();
 				});
 			}
+		});
+	});
+
+	$('#mobile-create-question-wrapper').on('click', function() {
+		$('#off-canvas-question-form-backer').css({"display": "block"}).transition({y: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
+		$('#off-canvas-question-form').css({"display": "block"}).transition({y: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+			$('main').css({"display": "none"});
+		});
+	});
+
+	$('#close-question div').on('click', function() {
+		$('main').css({"display": "block"});
+		$('body').scrollTop(scroll_pos);
+		$('#off-canvas-question-form').transition({y: "100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
+		$('#off-canvas-question-form-backer').transition({y: "100%"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+			$(this).css({"display": "none"});
+			$('#off-canvas-question-form').css({"display": "none"});
 		});
 	});
 
