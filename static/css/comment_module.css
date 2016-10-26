@@ -10,7 +10,7 @@
 	background: white;
 }
 .all-comments {
-	padding-top: 14px;
+	padding-top: 10px;
 	padding-bottom: 46px;
 }
 .comment {
@@ -100,6 +100,9 @@
 	.profile-pic {
 		margin: 0 10px 0 20px;
 		float: left;
+	}
+	.all-comments {
+		padding-top: 20px;
 	}
 	.comment-text {
 	    width: calc(100% - 65px);

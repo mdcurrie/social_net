@@ -5,8 +5,8 @@ $(function() {
 		$.get('/comments/' + question_id, function(data) {
 			scroll_pos = $('body').scrollTop();
 			$('#off-canvas-comments').html(data);
-			$('#off-canvas-comments').prepend("<div id='close-comments'><div>&times</div></div>");
-			$('#close-comments div').on('click', function() {
+			$('#off-canvas-comments').prepend("<div id='close-comments'><div>&times</div><div>Comments</div></div>");
+			$('#close-comments div:first-of-type').on('click', function() {
 				$('main').css({"display": "block"});
 				$('body').scrollTop(scroll_pos);
 				$('#off-canvas-comments').transition({y: "100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
@@ -75,6 +75,7 @@ $(function() {
 	});
 
 	$('#mobile-create-question-wrapper').on('click', function() {
+		scroll_pos = $('body').scrollTop();
 		$('#off-canvas-question-form-backer').css({"display": "block"}).transition({y: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
 		$('#off-canvas-question-form').css({"display": "block"}).transition({y: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 			$('main').css({"display": "none"});
@@ -89,6 +90,14 @@ $(function() {
 			$(this).css({"display": "none"});
 			$('#off-canvas-question-form').css({"display": "none"});
 		});
+	});
+
+	$('#off-canvas-question-form input').on('focusin', function() {
+		$('#submit-question-button').transition({y: 46}, 0);
+	});
+
+	$('#off-canvas-question-form input').on('focusout', function() {
+		$('#submit-question-button').transition({y: 0}, 0);
 	});
 
 	$('#content-overlay').on('click', function() {

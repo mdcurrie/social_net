@@ -52,18 +52,28 @@ a {
 }
 #close-comments {
 	height: 46px;
-	background: white;
-	box-shadow: 0 0 20px rgba(46, 179, 152, .1);
+	background: #2eb398;
+	box-shadow: 0 0 20px rgba(0, 0, 0, .35);
 	position: relative;
 }
-#close-comments div {
-	font-family: Gotham, serif;
-    font-size: 3.5em;
-    left: 6px;
+#close-comments div:first-of-type {
+	font-family: initial;
+    font-size: 3em;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    color: #DDDEDF;
+    color: white;
+    padding-right: 23px;
+    padding-left: 6px;
+}
+#close-comments div:nth-of-type(2) {
+	font-size: 1.25em;
+	line-height: 1.25em;
+    color: white;
+    position: absolute;
+    left: 55px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 .comment-section {
 	height: calc(100% - 46px);
@@ -98,8 +108,11 @@ main {
 }
 
 @media only screen and (min-width: 380px) {
-	#close-comments div {
-		left: 16px;
+	#close-comments div:first-of-type {
+		padding-left: 16px;
+	}
+	#close-comments div:nth-of-type(2) {
+		left: 70px;
 	}
 }
 
@@ -121,6 +134,9 @@ main {
 		width: calc(50% - 20px);
 		float: left;
 		margin: 0 10px 20px 10px;
+	}
+	.comment-section {
+		position: initial !important;
 	}
 }
 
@@ -283,6 +299,7 @@ main {
 	}
 	.comment-section {
 		height: 100%;
+		position: relative !important;
 	}
 	#content-overlay {
 		position: fixed;

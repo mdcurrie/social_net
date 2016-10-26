@@ -111,34 +111,46 @@
 	opacity: 0;
 }
 #question-form-wrapper {
-	width: 80%;
+	height: calc(100% - 46px);
+	padding-top: 10px;
+	margin: 0 auto;
+	overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+#question-form-wrapper > * {
+	width: calc(100% - 20px);
+	padding-bottom: 56px;
 	margin: 0 auto;
 }
 #question-form-header {
-	font-size: 2em;
-	margin-bottom: 40px;
+	font-size: 1.25em;
+	margin-bottom: 20px;
 }
 .question-form-error {
 	font-size: 0.85em;
-	margin-top: 4px;
+	margin-top: 3px;
 	color: #e64c65;
 }
 .input-section {
 	margin: 20px 0;
 }
+.input-section:first-of-type {
+	margin-top: 0;
+}
 .input-label {
 	margin-bottom: 4px;
-	font-size: 1.1em;
+	font-size: 0.95em;
 	color: #2eb398;
 }
 .input-section input {
     font-family: Gotham;
-    background: white;
+    background: #f1f1f1;
     border: none;
     outline: none;
-    padding: 5px 3px;
-    font-size: 1em;
-    width: 100%;		
+    padding: 8px 5px;
+    font-size: .9em;
+    width: 100%;
+    border-radius: 3px;		
 }
 .input-section:nth-of-type(6), .input-section:nth-of-type(7) {
 	display: none;
@@ -153,12 +165,14 @@
 	border: none;
 	outline: none;
 	font-family: Gotham;
-	padding: 7px 0;
 	background: #2eb398;
 	color: white;
-	margin-top: 20px;
-	font-size: 1.1em;
-	border-radius: 3px;
+	font-size: 1.25em;
+	height: 46px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	box-shadow: 0 0 20px rgba(0, 0, 0, .35);
 }
 #submit-question-button:hover {
 	background: #23927c;
@@ -180,27 +194,34 @@
 	height: 100%;
 	width: 100%;
 	z-index: 120;
-	background: #f1f1f1;
+	background: white;
 	display: none;
 	will-change: transform;
 }
 #close-question {
 	height: 46px;
-	background: white;
-	box-shadow: 0 0 20px rgba(46, 179, 152, .1);
+	background: #2eb398;
+	box-shadow: 0 0 20px rgba(0, 0, 0, .35);
 	position: relative;
 }
-#close-question div {
-	font-family: Gotham, serif;
-    font-size: 3.5em;
-    left: 6px;
+#close-question div:first-of-type {
+	font-family: initial;
+    font-size: 3em;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    color: #DDDEDF;
+    color: white;
+    padding-right: 23px;
+    padding-left: 6px;	
 }
-#question-form-wrapper {
-	height: calc(100% - 46px);
+#close-question div:nth-of-type(2) {
+	font-size: 1.25em;
+	line-height: 1.25em;
+    color: white;
+    position: absolute;
+    left: 55px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 @media only screen and (min-width: 1200px) {
