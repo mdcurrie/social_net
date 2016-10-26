@@ -66,9 +66,9 @@
     <aside id="off-canvas-question-form">
         <div id='close-question'>
             <div>&times</div>
+            <div>Create a Question</div>
         </div>
         <div id="question-form-wrapper">
-            <div id="question-form-header">Create a Question</div>
             <form action="/create_question" method="post">
                 {% raw xsrf_form_html() %}
                 <div class="input-section">
@@ -103,7 +103,7 @@
                     <div class="input-label">Topics</div>
                     <input name="topics" id="topics-input" placeholder="europe travel great-britain" autocomplete="off" maxlength="100">
                 </div>
-                <button id="submit-question-button" formaction="/create-question" formmethod="post">Submit</button>
+                <button id="submit-question-button" formaction="/create-question" formmethod="post">Submit Question</button>
             </form>
         </div>
     </aside>
