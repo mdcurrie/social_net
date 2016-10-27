@@ -53,11 +53,11 @@ a {
 #close-comments {
 	height: 46px;
 	background: #2eb398;
-	box-shadow: 0 0 20px rgba(0, 0, 0, .35);
+	box-shadow: 0 0 10px rgba(0, 0, 0, .35);
 	position: relative;
 }
 #close-comments div:first-of-type {
-	font-family: initial;
+	font-family: serif;
     font-size: 3em;
     position: absolute;
     top: 50%;
@@ -114,6 +114,9 @@ main {
 	#close-comments div:nth-of-type(2) {
 		left: 70px;
 	}
+	input[name="comment"] {
+		padding-left: 20px !important;
+	}
 }
 
 @media only screen and (min-width: 460px) {
@@ -137,6 +140,9 @@ main {
 	}
 	.comment-section {
 		position: initial !important;
+	}
+	.comment-form img {
+		border-bottom-right-radius: 0 !important;
 	}
 }
 
@@ -300,6 +306,9 @@ main {
 	.comment-section {
 		height: 100%;
 		position: relative !important;
+	}
+	.comment-form img {
+		border-bottom-right-radius: 6px !important;
 	}
 	#content-overlay {
 		position: fixed;

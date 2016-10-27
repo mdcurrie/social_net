@@ -16,6 +16,16 @@ $(function() {
 				});
 			});
 
+			$('.all-comments').scroll(function() {
+				var all_comments = document.getElementsByClassName("all-comments")[0];
+				var top = all_comments.scrollTop, totalScroll = all_comments.scrollHeight, currentScroll = top + all_comments.offsetHeight;
+		        if (top === 0) {
+		            all_comments.scrollTop = 1;
+		        } else if (currentScroll === totalScroll) {
+		            all_comments.scrollTop = top - 1;
+		        }
+		    });
+
 			jQuery.fn.preventDoubleSubmission = function() {
 		        $(this).on('submit', function(e) {
 		            var $form = $(this);
@@ -59,13 +69,17 @@ $(function() {
 
 		    if ($(window).width() < 1200) {
 				$('#off-canvas-comments-backer').css({"display": "block"}).transition({y: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-				$('#off-canvas-comments').css({"display": "block"}).transition({y: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+				$('#off-canvas-comments').css({"display": "block"});
+				$('.all-comments').scrollTop(1);
+				$('#off-canvas-comments').transition({y: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 					$('main').css({"display": "none"});
 				});
 			}
 			else {
 				$('#off-canvas-comments-backer').css({"display": "block"}).transition({y: 80}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-				$('#off-canvas-comments').css({"display": "block"}).transition({y: 80}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+				$('#off-canvas-comments').css({"display": "block"});
+				$('.all-comments').scrollTop(1);
+				$('#off-canvas-comments').transition({y: 80}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
 					$('#content-overlay').css({'z-index': 40});
 					$('#content-overlay').transition({opacity: 0.5}, 200);
 					$('input[name="comment"]').focus();
@@ -111,6 +125,8 @@ $(function() {
 			});
 		});
 	});
+
+	
 
 /*	$('.question-image').hover(
 		function() {
