@@ -130,7 +130,25 @@ $(function() {
 		});
 	});
 
-	
+	$('#mobile-search').on('click', function() {
+		$('#off-canvas-mobile-search-backer').css({"display": "block"}).transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
+		$('#off-canvas-mobile-search').css({"display": "block"}).transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+			$('#mobile-search-overlay').css({'z-index': 40});
+			$('#mobile-search-overlay').transition({opacity: 0.5}, 200);
+		});
+	});
+
+	$('#mobile-search-overlay').on('click', function() {
+		$('#off-canvas-mobile-search').transition({x: "-100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)', function() {
+			$(this).css({"display": "none"});
+		});
+		$('#off-canvas-mobile-search-backer').transition({x: "-100%"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+			$(this).css({"display": "none"});
+			$('#mobile-search-overlay').transition({opacity: 0}, 200, function() {
+				$('#mobile-search-overlay').css({'z-index': -10});
+			});
+		});
+	});
 
 /*	$('.question-image').hover(
 		function() {
