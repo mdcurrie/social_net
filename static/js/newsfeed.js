@@ -107,11 +107,15 @@ $(function() {
 	});
 
 	$('#off-canvas-question-form input').on('focusin', function() {
-		$('#submit-question-button').transition({y: 46}, 0);
+		if ($(window).width() < 1200) {
+			$('#submit-question-button').transition({y: 46}, 0);
+		}
 	});
 
 	$('#off-canvas-question-form input').on('focusout', function() {
-		$('#submit-question-button').transition({y: 0}, 0);
+		if ($(window).width() < 1200) {
+			$('#submit-question-button').transition({y: 0}, 0);
+		}
 	});
 
 	$('#content-overlay').on('click', function() {
