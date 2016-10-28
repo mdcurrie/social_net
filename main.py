@@ -185,8 +185,8 @@ class Application(tornado.web.Application):
 
 # module to render the page header
 class HeaderModule(tornado.web.UIModule):
-	def render(self, search=True):
-		return self.render_string("header_module.html", current_user=self.current_user, search=search)
+	def render(self, search=True, create_question=False):
+		return self.render_string("header_module.html", current_user=self.current_user, search=search, create_question=create_question)
 
 	def css_files(self):
 		return self.handler.static_url("css/header_module.css")
@@ -1180,5 +1180,5 @@ class SearchHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
