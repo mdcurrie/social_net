@@ -15,49 +15,34 @@ $(function() {
 	});
 
 	/* profile picture section */
-	$('#user-profile-pic img').on('click', function() {
-		$(this).css({"opacity": 0.1});
-		$('#user-profile-pic form').css({"opacity": 0, "display": "block"});
-		$('#user-profile-pic form').transition({opacity: 1}, 300, function() {
-			$('#user-profile-pic input').eq(1).focus();
-		});
-	});
+	var picture_upload_callback = function (res) {
+        if (res.success === true) {
+        	$("<img>", {
+        		src: res.data.link,
+        		error: function() {
+        			console.log('imgur error');
+        		},
+        		load: function() {
+        			$.post('/settings/updatePicture', {_xsrf: getCookie('_xsrf'), "profile-picture": res.data.link}, function(data) {
+        				if (data.error) {
+							$('#profile-pic-error').css({"opacity": 0}).text(data.error);
+							$('#profile-pic-error').transition({opacity: 1}, 300);
+						}
+						else {
+							$('#profile-pic-error').remove();
+							$('#user-profile-pic img').attr({"src": res.data.link});
+							$('#current-user-profile-pic img').attr({"src": res.data.link});	
+	        			}
+	        		});
+        		}
+        	});
+        }
+    };
 
-	/* validate profile pic URL before submitting form */
-	$('#user-profile-pic form').on('submit', function(e) {
-		e.preventDefault();
-		var picture_link = $('#user-profile-pic form input').eq(1).val();
-
-		if (!$('#profile-pic-error').length) {
-			$('#user-profile-pic').append('<div id="profile-pic-error"></div>');
-		}
-
-		$("<img>", {
-			src: picture_link,
-			error: function() {
-				$('#profile-pic-error').css({"opacity": 0}).text("You must enter a link to an image.");
-				$('#profile-pic-error').transition({opacity: 1}, 300);
-			},
-			load: function() {
-				$.post('/settings/updatePicture', {_xsrf: getCookie('_xsrf'), "profile-picture": picture_link}, function(data) {
-					if (data.error) {
-						$('#profile-pic-error').css({"opacity": 0}).text(data.error);
-						$('#profile-pic-error').transition({opacity: 1}, 300);
-					}
-					else {
-						$('#profile-pic-error').remove();
-						$('#user-profile-pic img').attr({"src": picture_link});
-						$('#current-user-profile-pic img').attr({"src": picture_link});
-						$('#user-profile-pic form').transition({opacity: 0}, 300, function() {
-							$('#user-profile-pic form').css({"display": "none"});
-							$('input[name="profile-picture"]').attr({"placeholder": picture_link}).val('');
-							$('#user-profile-pic img').transition({opacity: 1}, 300);
-						});		
-					}
-				});
-			}
-		});
-	});
+    new Imgur({
+        clientid: 'a512d4db12a3c8d',
+        callback: picture_upload_callback
+    });
 
 	/* username section */
 	$('#username .wrapper').on('click', function() {

@@ -6,6 +6,7 @@
 	width: 240px;
 	padding-top: 130px;
 	background: #353436;
+	height: 100%;
 }
 #create-question {
 	width: calc(100% - 68px);
@@ -226,7 +227,7 @@
 
 @media only screen and (min-width: 1200px) {
 	#side-column {
-		display: initial;
+		display: block;
 	}
 	#off-canvas-question-form-backer {
 		right: 0;

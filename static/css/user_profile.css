@@ -465,6 +465,8 @@ main {
 @media only screen and (min-width: 1200px) {
 	main {
 		padding-top: 130px;
+		width: calc(100% - 240px);
+		float: right;
 	}
 	#user-profile {
 		padding: 20px 0;
