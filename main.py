@@ -504,6 +504,10 @@ class SettingsHandler(BaseHandler):
 				elif custom_url in {"signup", "login", "feed", "settings"}:
 					self.write({"error": "Sorry, but that custom URL is not allowed."})
 				else:
+					if custom_url == '':
+						yield self.application.db.users.update({"_id": self.current_user["_id"]}, {"$set": {"custom_url": custom_url}})
+						return
+
 					found_user = yield self.application.db.users.find_one({"custom_url": custom_url}, {"custom_url": 1})
 					if found_user and found_user["_id"] != self.current_user["_id"]:
 						self.write({"error": "Sorry, but someone else is already using that custom URL."})
@@ -953,7 +957,7 @@ class FeedHandler(BaseHandler):
 			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
 
 			searches = 0
-			while len(questions) < 20 and searches < 5:
+			while len(questions) < 20 and searches < 6:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
@@ -1180,5 +1184,5 @@ class SearchHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()

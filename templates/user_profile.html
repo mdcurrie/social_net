@@ -14,8 +14,9 @@
         <![endif]-->
     </head>
     <body>
-        {% module Header() %}
+        {% module Header(True, True) %}
         {% if current_user %}
+            {% module SideColumn('') %}
             {% if own_profile %}
                 {% module MobileTabBar('Profile') %}
             {% else %}
