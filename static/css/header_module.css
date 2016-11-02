@@ -8,18 +8,8 @@ header {
 	box-shadow: 0 0 20px rgba(46, 179, 152, .1);
 	will-change: transform;
 }
-#logo {
-	position: absolute;
-	top: 50%;
-	left: calc(50% + 120px);
-	transform: translate(-50%, -50%);
-	font-size: 1.5em;
-	padding-top: 3px;
-}
-#logo a {
-	font-family: Jaapokki;
-	color: #2eb398;
-	display: inline-block;
+#search-form {
+	display: none;
 }
 #mobile-search-icon {
 	position: absolute;
@@ -62,11 +52,23 @@ header {
 	background: black;
 	z-index: -10;
 }
+#logo {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 1.5em;
+	padding-top: 3px;
+}
+#logo a {
+	font-family: Jaapokki;
+	color: #2eb398;
+	display: inline-block;
+}
 #mobile-create-question-wrapper {
 	position: absolute;
     right: 0;
     top: 0;
-    background: #2eb398;
     height: 46px;
     width: 46px;
 }
@@ -75,11 +77,8 @@ header {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: white;
+    color: #2eb398;
     font-size: 2em;
-}
-#search-form {
-	display: none;
 }
 #header-icon-area {
 	display: none;
@@ -105,6 +104,7 @@ header {
 		display: block;
 	}
 	#logo {
+		left: calc(50% + 120px);
 		font-size: 2em;
 		padding: 0;
 	}
@@ -187,27 +187,20 @@ header {
 	    right: -2px;
 	    top: 65px;
 	    background: white;
-	    min-width: 135px;
 	    border-radius: 7px;
 	    border: 1px solid #f1f1f1;
 	}
 	header .dropdown-content a {
-	    color: #353436;
-	    padding: 10px 16px;
-	    text-decoration: none;
+	    padding: 5px 12px;
 	    display: block;
 	}
 	header .dropdown-content a:hover {
 		background: #f1f1f1;
 	}
 	#current-user-profile-pic button {
-		font-family: Gotham;
-		font-size: 1em;
-		width: 100%;
-		padding: 10px 16px;
+		padding: 5px 12px;
 		color: #353436;
 		background: white;
-		text-align: left;
 		border: none;
 		outline: none;
 		border-bottom-left-radius: 7px;

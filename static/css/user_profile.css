@@ -89,9 +89,6 @@ main {
     font-size: 0.85em;
     text-align: center;
 }
-#metrics > div:hover {
-	cursor: pointer;
-}
 #metrics span {
 	font-size: 1.5em;
     margin-bottom: 2px;
@@ -159,12 +156,9 @@ main {
 	background-position: 50% 40%;
 	position: relative;
 }
-.background-image:hover .background-image-overlay {
-	background: rgba(0,0,0,.1);
-}
 .background-image-overlay {
-	background: rgba(0,0,0,.35);
-	transition: background 0.3s;
+	background: linear-gradient(-180deg, rgba(0,0,0,0), rgba(0,0,0,.35));
+	transition: opacity 0.3s;
 	height: 100%;
 }
 .user-answer {
@@ -342,16 +336,6 @@ main {
 		color: white;
 		border: none;
 	}
-	#username-and-button button:hover {
-		cursor: pointer;
-	}
-	#username-and-button button.active:hover {
-		background: #23927c;
-	}
-	#username-and-button button:not(.active):hover {
-		background: #2eb398;
-		color: white;
-	}
 	#bio {
 		position: absolute;
 		top: 50%;
@@ -474,5 +458,46 @@ main {
 		border-radius: 5px;
 		margin: 0 auto;
 		margin-bottom: 40px;
+	}
+}
+
+@media only screen and (pointer: fine) {
+	#metrics > div:hover {
+		cursor: pointer;
+	}
+	.background-image:hover .background-image-overlay {
+		opacity: .25;
+	}
+	#username-and-button button:hover {
+		cursor: pointer;
+	}
+	#username-and-button button.active:hover {
+		background: #23927c;
+	}
+	#username-and-button button:not(.active):hover {
+		background: #2eb398;
+		color: white;
+	}
+}
+
+@media only screen and (pointer: coarse) {
+	#username-and-button button.active:active {
+		background: #2eb398;
+		color: white;
+	}
+	#username-and-button button:not(.active):active {
+		background: white;
+		color: #2eb398;
+	}
+
+	@media only screen and (min-width: 900px) {
+		#username-and-button button.active:active {
+			background: white;
+			color: #2eb398;
+		}
+		#username-and-button button:not(.active):active {
+			background: #2eb398;
+			color: white;
+		}
 	}
 }

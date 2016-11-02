@@ -36,9 +36,6 @@ main {
 	max-width: 250px;
 	margin: 0 auto;
 }
-#user-settings .wrapper:hover {
-	cursor: pointer;
-}
 #user-profile-pic {
 	text-align: center;
 	margin-bottom: 25px;
@@ -113,7 +110,7 @@ main {
     font-family: Gotham;
 }
 #bio .wrapper {
-	min-height: 1.5em;
+	min-height: calc(1em + 8px);
 }
 #row-settings {
 	width: calc(100% - 20px);
@@ -124,6 +121,9 @@ main {
 	border-top: 1px solid rgba(0,0,0,.1);
 	overflow: auto;
 	position: relative;
+}
+.row:nth-of-type(3) .value {
+	overflow: auto;
 }
 .row:last-of-type {
 	border-bottom: 1px solid rgba(0,0,0,.1);
@@ -176,10 +176,6 @@ main {
     width: 100%;
     transition: background 0.3s;
 }
-.form-button:hover {
-	cursor: pointer;
-	background: #23927c;
-}
 #url-prefix {
 	text-align: left;
 }
@@ -188,15 +184,10 @@ main {
 	font-weight: bold;
 	display: inline-block;
 }
-#email:hover {
-	cursor: pointer;
-}
 #custom-url {
 	color: #2eb398;
 	font-weight: bold;
-}
-#custom-url:hover {
-	cursor: pointer;
+	float: right;
 }
 #custom-url-button {
 	width: initial;
@@ -290,10 +281,11 @@ main {
 		margin: 0 auto;
 		margin-bottom: 40px;
 	}
-	#user-profile-pic img:hover {
-		cursor: pointer;
-		opacity: 0.2;
-	}
+	#user-settings .wrapper {
+		display: inline-block;
+		padding: 5px 20px;
+		width: 30%;
+	}	
 	#user-profile-pic form {
 		width: 30%;
 	}
@@ -334,19 +326,11 @@ main {
 	#bio form {
 		width: 30%;
 	}
-	#user-settings .wrapper {
-		display: inline-block;
-		padding: 5px 20px;
-		width: 30%;
-	}
-	#user-settings .wrapper:hover {
-		cursor: pointer;
-	}
 	#row-settings {
 		max-width: 650px;
 	}
 	.row:last-of-type {
-		margin-bottom: 20px;
+		margin-bottom: 40px;
 	}
 	.form-input {
 		max-width: 250px;
@@ -355,20 +339,10 @@ main {
 	}
 	.form-button {
 		padding: 5px 10px;
-	}
-	.form-button:hover {
-		cursor: pointer;
-		background: #23927c;
-	}
+	}	
 	#email {
 		color: #2eb398;
 		font-weight: bold;
-	}
-	#email:hover {
-		cursor: pointer;
-	}
-	#custom-url:hover {
-		cursor: pointer;
 	}
 	#url-prefix {
 		margin-bottom: 2px;
@@ -380,5 +354,27 @@ main {
 		padding-top: 130px;
 		width: calc(100% - 240px);
 		float: right;
+	}
+}
+
+@media only screen and (pointer: fine) {
+	#user-settings .wrapper:hover {
+		cursor: pointer;
+	}
+	.form-button:hover {
+		cursor: pointer;
+		background: #23927c;
+	}
+	#email:hover {
+		cursor: pointer;
+		}
+	#custom-url:hover {
+		cursor: pointer;
+	}
+}
+
+@media only screen and (pointer: coarse) {
+	.form-button:active {
+		background: #23927c;
 	}
 }
