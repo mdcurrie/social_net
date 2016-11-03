@@ -185,8 +185,8 @@ class Application(tornado.web.Application):
 
 # module to render the page header
 class HeaderModule(tornado.web.UIModule):
-	def render(self, search=True, create_question=False):
-		return self.render_string("header_module.html", current_user=self.current_user, search=search, create_question=create_question)
+	def render(self, page, search=True, logged_in=False):
+		return self.render_string("header_module.html", current_user=self.current_user, page=page, search=search, logged_in=logged_in)
 
 	def css_files(self):
 		return self.handler.static_url("css/header_module.css")

@@ -14,14 +14,9 @@
         <![endif]-->
     </head>
     <body>
-        {% module Header(True, True) %}
+        {% module Header('Profile' if own_profile else '', True, current_user != None) %}
         {% if current_user %}
             {% module SideColumn('') %}
-            {% if own_profile %}
-                {% module MobileTabBar('Profile') %}
-            {% else %}
-                {% module MobileTabBar(None) %}
-            {% end %}
         {% end %}
         <main>
             <section id="user-profile">
