@@ -9,7 +9,7 @@ main {
     height: 46px;
     background: white;
     z-index: 20;
-    box-shadow: 0 0 20px rgba(46, 179, 152, .1);
+    border-top: 1px solid #f1f1f1;
 }
 #mobile-tab-bar {
 	width: 100%;
@@ -20,20 +20,29 @@ main {
 }
 .nav-option {
 	width: 20%;
+    opacity: .4;
 	float: left;
 	text-align: center;
 	transform: translateY(5px);
 }
+.nav-option.active {
+    opacity: 1;
+}
+.nav-option:nth-of-type(3) {
+    transform: translateY(1px);
+}
+.nav-option:nth-of-type(3) svg {
+    height: 42px;
+    width: 42px;
+}
 .nav-icon svg {
 	height: 24px;
+    fill: #2eb398;
 }
 .nav-text {
 	font-size: 0.65em;
-	color: #b9bcc1;
-    letter-spacing: 0.03em;
-}
-.nav-text.active {
 	color: #2eb398;
+    letter-spacing: 0.03em;
 }
 
 @media only screen and (min-width: 1200px) {

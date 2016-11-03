@@ -125,10 +125,6 @@ main {
 .row:nth-of-type(3) .value {
 	overflow: auto;
 }
-.row:last-of-type {
-	border-bottom: 1px solid rgba(0,0,0,.1);
-	margin-bottom: 15px;
-}
 .row form {
     width: calc(100% - 20px);
     position: relative;
@@ -331,6 +327,7 @@ main {
 	}
 	.row:last-of-type {
 		margin-bottom: 40px;
+		border-bottom: 1px solid rgba(0,0,0,.1);
 	}
 	.form-input {
 		max-width: 250px;

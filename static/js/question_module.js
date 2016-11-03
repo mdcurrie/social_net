@@ -32,10 +32,10 @@ $(function() {
             }
             else {
                 if (data.favorite) {
-                    clicked.find('path').css({"fill": "#e64c65"});
+                    clicked.find('svg').css({"fill": "#e64c65"});
                 }
                 else {
-                    clicked.find('path').css({"fill": "white"});
+                    clicked.find('svg').css({"fill": "white"});
                 }
                 clicked.parents('.favorite-count').children('.count-text').text(data.count);
             }

@@ -27,7 +27,7 @@ $(function() {
 	    }
 	}, 250);
 
-	$('#mobile-create-question-wrapper').on('click', function() {
+	$('.nav-option:nth-of-type(3)').on('click', function() {
 		scroll_pos = $('body').scrollTop();
 		$('#off-canvas-question-form-backer').css({"display": "block"}).transition({y: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
 		$('#off-canvas-question-form').css({"display": "block"}).transition({y: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
@@ -64,6 +64,10 @@ $(function() {
 				$('#mobile-search-overlay').css({'z-index': -10});
 			});
 		});
+	});
+
+	$('.nav-option').on('click', function() {
+		$(this).transition({opacity: 1}, 300);
 	});
 });
 

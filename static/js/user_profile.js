@@ -1,4 +1,10 @@
 $(function() {
+	$('#metrics > div').on('click', function() {
+		if ($(window).width() < 900) {
+			$(this).transition({scale: 1.35}, 150).transition({scale: 1}, 150);
+		}
+	});
+
 	$('#followers-count').on('click', function() {
 		var url = $(this).attr('class');
 		$.get(url, function(data) {
