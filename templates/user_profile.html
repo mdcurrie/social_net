@@ -98,10 +98,10 @@
                                                     {{ answered_questions[idx]["question"] }}
                                                 </div>
                                             </div>
+                                            <div class="user-answer">
+                                                A: {{ answered_questions[idx]["data"][answer]["label"] }}
+                                            </div>  
                                         </a>
-                                        <div class="user-answer">
-                                            A: {{ answered_questions[idx]["data"][answer]["label"] }}
-                                        </div>  
                                     </div>
                                 {% end %}
                             </div>
