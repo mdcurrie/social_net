@@ -66,9 +66,11 @@ $(function() {
 		});
 	});
 
-	$('.nav-option').on('click', function() {
-		$(this).transition({opacity: 1}, 300);
+	$('.nav-option:nth-of-type(3)').on('click', function() {
+		$(this).transition({scale: 1.35}, 150).transition({scale: 1}, 150);
 	});
+
+	
 });
 
 function hasScrolled() {

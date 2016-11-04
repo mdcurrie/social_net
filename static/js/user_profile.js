@@ -5,6 +5,27 @@ $(function() {
 		}
 	});
 
+	$('.questions-wrapper a').on('click', function(e) {
+		e.preventDefault();
+		url = $(this).attr("href");
+		overlay = $(this).find('.background-image-overlay');
+		overlay.transition({opacity: 0}, 150, function() {
+			window.location.href = url;
+		});	
+	});
+
+	/*	$('.questions-wrapper a').on('click', function(e) {
+		e.preventDefault();
+		q = $(this).parent('.question');
+		pos = q.offset();
+		console.log(pos);
+		$('body').append("<div class='click-effect-wrapper'><div class='click-effect'></div></div>");
+		$('.click-effect-wrapper').css({"text-align": "center", "position": "absolute", "left": pos.left, "top": pos.top, width: q.width(), height: q.height(), "overflow": "hidden"});
+		$('.click-effect').css({"background": "#2eb398", "opacity": ".35", "border-radius": "50%", "height": "100%"}).transition({scale: 0}, 0).transition({scale: 2}, 400);
+
+
+	});*/
+
 	$('#followers-count').on('click', function() {
 		var url = $(this).attr('class');
 		$.get(url, function(data) {

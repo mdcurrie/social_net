@@ -104,12 +104,12 @@ main {
 }
 .users {
 	overflow: auto;
-    width: calc(100% - 16px);
+    width: calc(100% + 4px);
     margin: 0 auto;
 }
 .user {
 	width: calc(25% - 4px);
-    margin: 0 2px 2px 2px;
+    margin: 0 4px 4px 0;
     float: left;
 }
 .user img {
@@ -121,21 +121,16 @@ main {
 	position: relative;
 	overflow: hidden;
 }
-#misc > div {
-	padding-top: 3px;
-}
 .header {
 	font-size: .75em;
 	padding: 10px;
+	padding-top: 12px;
 	text-transform: uppercase;
-}
-.questions-wrapper {
-	margin: 0 auto;
-	width: calc(100% - 20px);
+	letter-spacing: 0.03em;
 }
 .question {
-	margin-bottom: 10px;
-	background: white;
+	margin-bottom: 8px;
+	box-shadow: 0 0 2px rgba(0,0,0,.1);
 }
 .question-title {
 	position: absolute;
@@ -167,7 +162,22 @@ main {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow-x: hidden;
+	background: white;
 }
+/*
+.question:nth-of-type(4n+1) .user-answer {
+	background: rgb(83, 156, 253);
+}
+.question:nth-of-type(4n+2) .user-answer {
+	background: rgb(248, 91, 124);
+}
+.question:nth-of-type(4n+3) .user-answer {
+	background: rgb(247, 208, 90);
+}
+.question:nth-of-type(4n+4) .user-answer {
+	background: #2eb398;
+}
+*/
 .backer {
 	position: absolute;
 	left: 0;
@@ -252,11 +262,11 @@ main {
 	}
 	.questions-wrapper {
 		overflow: auto;
-		width: calc(100% - 10px);
+		width: calc(100% + 10px);
 	}
 	.question {
 		width: calc(50% - 10px);
-	    margin: 0 5px 10px 5px;
+	    margin: 0 10px 10px 0;
 	    float: left;
 	}
 	.question-title {

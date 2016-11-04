@@ -236,6 +236,10 @@ main {
 	.value {
 		font-size: 0.95em;
 	}
+	.row:last-of-type {
+		margin-bottom: 40px;
+		border-bottom: 1px solid rgba(0,0,0,.1);
+	}
 }
 
 @media only screen and (min-width: 600px) {
@@ -324,10 +328,6 @@ main {
 	}
 	#row-settings {
 		max-width: 650px;
-	}
-	.row:last-of-type {
-		margin-bottom: 40px;
-		border-bottom: 1px solid rgba(0,0,0,.1);
 	}
 	.form-input {
 		max-width: 250px;
