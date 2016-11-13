@@ -64,6 +64,7 @@ main {
     font-size: 1em;
     border-radius: 20px;
     margin-top: 10px;
+    transition: transform .3s;
 }
 #username-and-button button.active {
 	background: white;
@@ -79,7 +80,7 @@ main {
 	padding: 0 20px;
 }
 #metrics {
-	overflow: auto;
+	overflow: hidden;
 	background: white;
 	padding: 20px 0;
 }
@@ -96,7 +97,9 @@ main {
 }
 .relation-header {
 	font-size: .75em;
-	padding: 10px;
+	line-height: .75em;
+	padding: 10px 5px;
+	padding-bottom: 9px;
 	text-transform: uppercase;
 }
 .none-text {
@@ -107,6 +110,9 @@ main {
     width: calc(100% + 4px);
     margin: 0 auto;
 }
+.user-profile-pic {
+	position: relative;
+}
 .user {
 	width: calc(25% - 4px);
     margin: 0 4px 4px 0;
@@ -116,6 +122,26 @@ main {
 	width: 100%;
 	object-fit: cover;
 }
+.user-relationship-overlay {
+ 	position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(-180deg, rgba(0,0,0,0), rgba(0,0,0,0), rgba(0,0,0,.35));
+}
+.user-relationship-username {
+	position: absolute;
+	width: 100%;
+    font-size: 0.75em;
+    letter-spacing: 0.02em;
+    bottom: 5px;
+    padding: 1px 5px;
+    color: white;
+    text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow-x: hidden;
+}
 #misc {
 	background: #f1f1f1;
 	position: relative;
@@ -123,8 +149,9 @@ main {
 }
 .header {
 	font-size: .75em;
+	line-height: .75em;
 	padding: 10px;
-	padding-top: 12px;
+	padding-bottom: 9px;
 	text-transform: uppercase;
 	letter-spacing: 0.03em;
 }
@@ -180,9 +207,8 @@ main {
 */
 .backer {
 	position: absolute;
-	left: 0;
+	left: -100%;
 	top: 0;
-	transform: translateX(-100%);
 	height: 100%;
 	width: 100%;
 	z-index: 9;
@@ -190,10 +216,10 @@ main {
 }
 #follower-wrapper, #following-wrapper {
 	position: absolute;
-	left: 0;
+	left: -100%;
 	top: 0;
-	transform: translateX(-100%);
 	width: 100%;
+	height: 100%;
 	z-index: 10;
 	background: #f1f1f1;
 }
@@ -211,8 +237,16 @@ main {
 }
 
 @media only screen and (min-width: 480px) {
+	.relation-header {
+		padding: 10px 8px;
+	}
 	.user {
 		width: calc(20% - 4px);
+	}
+	.user-relationship-username {
+	    bottom: 8px;
+	    padding: 1px 8px;
+	    font-size: 0.85em;
 	}
 	.question-title {
 		font-size: 1.2em;
@@ -253,12 +287,22 @@ main {
 	}
 	.relation-header {
 		font-size: 0.85em;
+		line-height: 0.85em;
+		padding: 10px 8px;
+		padding-bottom: 9px;
 	}
 	.user {
 		width: calc(12.5% - 4px);
 	}
+	.user-relationship-username {
+	    bottom: 8px;
+	    padding: 1px 8px;
+	    font-size: 0.75em;
+	}
 	.header {
 		font-size: 0.85em;
+		padding: 10px;
+		padding-bottom: 9px;
 	}
 	.questions-wrapper {
 		overflow: auto;
@@ -389,7 +433,7 @@ main {
 		padding: 10px 0 0 0;
 	}
 	#follower-wrapper, #following-wrapper {
-		border-top: 1px solid rgba(0,0,0,.1);
+		border-top: 1px solid rgba(0,0,0,.065);
 		margin: 0 auto;
 		margin-top: 15px;
 		margin-bottom: 15px;
@@ -407,11 +451,17 @@ main {
 		width: calc(100% + 4px);
 		transform: translateX(-2px);
 	}
+	.user-relationship-username {
+		padding: 1px 8px 1px 7px;
+	}
+	.user:nth-of-type(8n-7) .user-relationship-username {
+		padding: 1px 8px 1px 9px;
+	}
 	.none-text {
 		padding: 0;
 	}
 	.profile-questions {
-		border-top: 1px solid rgba(0,0,0,.1);
+		border-top: 1px solid rgba(0,0,0,.065);
 		margin: 0 auto;
 		margin-top: 15px;
 		margin-bottom: 15px;
@@ -423,7 +473,7 @@ main {
 	}
 	#recent-questions {
 		margin-top: 0;
-		border-bottom: 1px solid rgba(0,0,0,.1);
+		border-bottom: 1px solid rgba(0,0,0,.065);
 	}
 	.header {
 		font-size: 1em;
@@ -432,8 +482,8 @@ main {
 		padding: 0;
 	}
 	.questions-wrapper {
-		width: calc(100% + 20px);
-		transform: translateX(-5px);
+		width: calc(100% + 8px);
+		transform: translateX(-3px);
 	}
 	.question {
 		width: calc(33.3% - 10px);
@@ -475,8 +525,8 @@ main {
 	#metrics > div:hover {
 		cursor: pointer;
 	}
-	.background-image:hover .background-image-overlay {
-		opacity: .25;
+	.question:hover .background-image-overlay {
+		opacity: .35;
 	}
 	#username-and-button button:hover {
 		cursor: pointer;
@@ -495,8 +545,7 @@ main {
 }
 
 @media only screen and (pointer: coarse) {
-	#username-and-button button:not(.active):active {
-		background: white;
-		color: #2eb398;
+	#username-and-button button:active {
+		transform: scale(1.35, 1.35);
 	}
 }

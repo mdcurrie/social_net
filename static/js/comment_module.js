@@ -21,10 +21,15 @@ $(function() {
                             window.location.href = data.redirect;
                         }
                         else {
-                            data.replacement = data.replacement.slice(106, -405);
+                            data.replacement = data.replacement.slice(106, -465);
                             $('.all-comments').replaceWith(data.replacement);
                             $('.comment-form input').eq(1).val('');
-                            $('.all-comments').scrollTop($('.all-comments')[0].scrollHeight);
+                            if ($(window).width() < 900) {
+                                $('body').scrollTop($('body')[0].scrollHeight);
+                            }
+                            else {
+                                $('.all-comments').scrollTop($('.all-comments')[0].scrollHeight);
+                            }
                             $('#' + question_id).find('.comment-count .count-text').text(data.count);
                             $form.data('submitted', false);
                         }
@@ -38,7 +43,10 @@ $(function() {
 
     $('.comment-form form').preventDoubleSubmission();
     
-    $('.comment-form img').on('click', function() {
+    $('#comment-img-wrapper').on('click', function() {
+        if ($(window).width() < 900) {
+            $(this).velocity({scaleX: 1.35, scaleY: 1.35}, 150).velocity({scaleX: 1, scaleY, translateX: 4, translateY: 7}, 150);
+        }
         $('.comment-form form').submit();
     });
 });

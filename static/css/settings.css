@@ -118,8 +118,8 @@ main {
 }
 .row {
 	padding: 25px 0;
-	border-top: 1px solid rgba(0,0,0,.1);
-	overflow: auto;
+	border-top: 1px solid rgba(0,0,0,.065);
+	overflow: hidden;
 	position: relative;
 }
 .row:nth-of-type(3) .value {
@@ -144,6 +144,7 @@ main {
     width: 100%;
     text-align: right;
     font-size: 0.85em;
+    transform: translateX(-1px);
 }
 .value > .form-button {
 	width: initial;
@@ -201,9 +202,8 @@ main {
 }
 .backer {
 	position: absolute;
-	left: 0;
+	left: -100%;
 	top: 0;
-	transform: translateX(-100%);
 	height: 100%;
 	width: 100%;
 	z-index: 9;
@@ -211,9 +211,8 @@ main {
 }
 .form-wrapper {
 	position: absolute;
-	left: 0;
+	left: -100%;
 	top: 0;
-	transform: translateX(-100%);
 	height: 100%;
 	width: 100%;
 	background: white;
@@ -238,7 +237,7 @@ main {
 	}
 	.row:last-of-type {
 		margin-bottom: 40px;
-		border-bottom: 1px solid rgba(0,0,0,.1);
+		border-bottom: 1px solid rgba(0,0,0,.065);
 	}
 }
 

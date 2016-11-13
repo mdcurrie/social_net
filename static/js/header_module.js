@@ -5,15 +5,20 @@ var navbarHeight = $('header').outerHeight();
 
 $(function() {
 	$('#current-user-profile-pic img').on('click', function() {
-		if ($('header .dropdown-content').css("display") == 'none') {
-			$('header .dropdown-content').css({"opacity": 0, "display": "block"});
-			$('header .dropdown-content').transition({opacity: 1, y: "25px"}, 300, 'easeInOutCubic');
+		dropdown_content = $('header .dropdown-content');
+		if (dropdown_content.css("display") == 'none') {
+			sequence = [
+				{e: dropdown_content, p: {opacity: 0},                 o: {display: "block", duration: 0}},
+				{e: dropdown_content, p: {opacity: 1, translateY: 25}, o: {duration: 300, easing: 'easeInOutCubic'}},
+			];
 		}
 		else {
-			$('header .dropdown-content').transition({opacity: 0, y: 0}, 300, 'easeInOutCubic', function() {
-				$('header .dropdown-content').css({"display": "none"});
-			});
+			sequence = [
+				{e: dropdown_content, p: {opacity: 0, translateY: 0},  o: {display: "none", duration: 300, easing: "easeInOutCubic"}},
+			];
 		}
+
+		$.Velocity.RunSequence(sequence);
 	});
 
 	$(window).scroll(function(event){
@@ -73,6 +78,8 @@ $(function() {
 	
 });
 
+var comment_enabled = false;
+
 function hasScrolled() {
 	if ($(window).width() < 1200) {
 	    var st = $(this).scrollTop();
@@ -86,10 +93,23 @@ function hasScrolled() {
 	    if (st > lastScrollTop && st > navbarHeight){
 	        // Scroll Down
 	        $('header').transition({y: '-46px'}, 300, 'easeInOutCubic');
+	        if ($('.comment-form').length && !comment_enabled) {
+	        	comment_enabled = true;
+	        	$('.comment-form').css({"opacity": 0});
+	        	$('.comment-form').transition({opacity: 1}, 300);
+	        	$('#mobile-tab-bar-wrapper').transition({opacity: 0}, 300, function() {
+	        		$(this).css({"display": "none"});
+	        	});
+	        }
 	    } else {
 	        // Scroll Up
 	        if(st + $(window).height() < $(document).height()) {
 	            $('header').transition({y: '0px'}, 300, 'easeInOutCubic');
+	            if (comment_enabled) {
+	            	comment_enabled = false;
+		            $('#mobile-tab-bar-wrapper').css({"display": "block"}).transition({opacity: 1}, 300);
+		        	$('.comment-form').transition({opacity: 1}, 300);
+		        }
 	        }
 	    }
 	    

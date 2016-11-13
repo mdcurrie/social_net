@@ -7,11 +7,11 @@ $(function() {
 	}
 
 	$('input').on('focusin', function() {
-		$('#mobile-tab-bar-wrapper').transition({y: 46}, 0);
+		$('#mobile-tab-bar-wrapper').velocity({translateY: 46}, 0);
 	});
 
 	$('input').on('focusout', function() {
-		$('#mobile-tab-bar-wrapper').transition({y: 0}, 0);
+		$('#mobile-tab-bar-wrapper').velocity({translateY: 0}, 0);
 	});
 
 	/* profile picture section */
@@ -25,8 +25,7 @@ $(function() {
         		load: function() {
         			$.post('/settings/updatePicture', {_xsrf: getCookie('_xsrf'), "profile-picture": res.data.link}, function(data) {
         				if (data.error) {
-							$('#profile-pic-error').css({"opacity": 0}).text(data.error);
-							$('#profile-pic-error').transition({opacity: 1}, 300);
+							$('#profile-pic-error').velocity({"opacity": 0}, 0).text(data.error).velocity({opacity: 1}, 300);
 						}
 						else {
 							$('#profile-pic-error').remove();
@@ -63,29 +62,21 @@ $(function() {
 		}
 
 		if (username == '') {
-			$('#username-error').css({"opacity": 0});
-			$('#username-error').text("You must enter a username.");
-			$('#username-error').transition({opacity: 1}, 300);
+			$('#username-error').velocity({"opacity": 0}, 0).text("You must enter a username.").velocity({opacity: 1}, 300);
 			return;
 		}
 		if (!(/^[a-zA-Z0-9_. ]+$/i.test(username))) {
-			$('#username-error').css({"opacity": 0});
-			$('#username-error').text("Your username can only contain letters, numbers, spaces, and underscores.");
-			$('#username-error').transition({opacity: 1}, 300);
+			$('#username-error').velocity({"opacity": 0}, 0).text("Your username can only contain letters, numbers, spaces, and underscores.").velocity({opacity: 1}, 300);
 			return;
 		}
 		if (username.length < 6 || username.length > 25) {
-			$('#username-error').css({"opacity": 0});
-			$('#username-error').text("Your username must be between 6 and 25 characters long.");
-			$('#username-error').transition({opacity: 1}, 300);
+			$('#username-error').velocity({"opacity": 0}, 0).text("Your username must be between 6 and 25 characters long.").velocity({opacity: 1}, 300);
 			return;
 		}
 
 		$.post('/settings/updateUsername', {_xsrf: getCookie('_xsrf'), username: username}, function(data) {
 			if (data.error) {
-				$('#username-error').css({"opacity": 0});
-				$('#username-error').text(data.error);
-				$('#username-error').transition({opacity: 1}, 300);
+				$('#username-error').velocity({"opacity": 0}, 0).text(data.error).velocity({opacity: 1}, 300);
 			}
 			else {
 				$('#username-error').remove();
@@ -120,9 +111,13 @@ $(function() {
 
 	/* email section */
 	$('#email').on('click', function() {
-		$('.row:first-of-type').animate({"height": $('.row:first-of-type form').height() + 70}, 500);
-		$('.row:first-of-type .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-		$('.row:first-of-type .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+		row = $('.row:first-of-type');
+		row_backer = $('.row:first-of-type .backer');
+		form_wrapper = $('.row:first-of-type .form-wrapper');
+
+		row.velocity({"height": row.height() + 110}, 500);
+		row_backer.velocity({translateX: "100%"}, 300, [1.000, 0.000, 1.000, 1.000]);
+		form_wrapper.velocity({translateX: "100%"}, 500, [1.000, 0.000, 0.585, 1.000], function() {
 			if (userAgent != 'iOS') {
 				$('.row:first-of-type input').eq(1).focus();
 			}
@@ -140,41 +135,50 @@ $(function() {
 		}
 
 		if (!(/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/i.test(email))) {
-			$('#email-error').css({"opacity": 0, "display": "block"});
-			$('#email-error').text('That is not a valid email address.');
-			$('#email-error').transition({opacity: 1}, 300);
-			if (userAgent != 'iOS') {
-				$('.row:first-of-type input').eq(1).focus();
-			}
+			$('#email-error').velocity({opacity: 0}, 0).text('That is not a valid email address.').velocity({opacity: 1}, {display: "block"}, 300, function() {
+				if (userAgent != 'iOS') {
+					$('.row:first-of-type input').eq(1).focus();
+				}
+			});
 			return;
 		}
 
 		$.post('/settings/updateEmail', {_xsrf: getCookie('_xsrf'), email: email}, function(data) {
 			if (data.error) {
-				$('#email-error').css({"opacity": 0, "display": "block"});
-				$('#email-error').text(data.error);
-				$('#email-error').transition({opacity: 1}, 300);
-				if (userAgent != 'iOS') {
-					$('.row:first-of-type input').eq(1).focus();
-				}
+				$('#email-error').velocity({opacity: 0}, 0).text(data.error).velocity({opacity: 1}, {display: "block"}, 300, function() {
+					if (userAgent != 'iOS') {
+						$('.row:first-of-type input').eq(1).focus();
+					}
+				});
+				return;
 			}
 			else {
 				$('#email-error').remove();
 				$('#email').text(email);
 				$('input[name="email"]').attr({"placeholder": email}).val('');
-				$('.row:first-of-type').animate({"height": $('.row:first-of-type .value').height() + 51}, 500);
-				$('.row:first-of-type .form-wrapper').transition({x: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-				$('.row:first-of-type .backer').transition({x: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');
 				$('input').blur();
+
+				row = $('.row:first-of-type');
+				value = $('.row:first-of-type .value')
+				form_wrapper = $('.row:first-of-type .form-wrapper');
+				backer = $('.row:first-of-type .backer');
+
+				row.velocity({height: value.height() + 51}, 500);
+				form_wrapper.velocity({translateX: 0}, 300, [1.000, 0.000, 1.000, 1.000]);
+				backer.velocity({translateX: 0}, 500, [1.000, 0.000, 0.585, 1.000]);
 			}
 		});
 	});
 
 	/* password section */
 	$('#reset-password-button').on('click', function() {
-		$('.row:nth-of-type(2)').animate({"height": $('.row:nth-of-type(2) form').height() + 70}, 500);
-		$('.row:nth-of-type(2) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-		$('.row:nth-of-type(2) .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+		row = $('.row:nth-of-type(2)');
+		row_backer = $('.row:nth-of-type(2) .backer');
+		form_wrapper = $('.row:nth-of-type(2) .form-wrapper');
+
+		row.velocity({"height": row.height() + 130}, 500);
+		row_backer.velocity({translateX: "100%"}, 300, [1.000, 0.000, 1.000, 1.000]);
+		form_wrapper.velocity({translateX: "100%"}, 500, [1.000, 0.000, 0.585, 1.000], function() {
 			if (userAgent != 'iOS') {
 				$('.row:nth-of-type(2) input').eq(1).focus();
 			}
@@ -193,20 +197,17 @@ $(function() {
 		}
 
 		if (new_password.length < 6) {
-			$('#reset-password-error').css({"opacity": 0, "display": "block"});
-			$('#reset-password-error').text("Your new password must contain at least 6 characters.");
-			$('#reset-password-error').transition({opacity: 1}, 300);
-			if (userAgent != 'iOS') {
-				$('.row:nth-of-type(2) input').eq(2).focus();
-			}
+			$('#reset-password-error').velocity({opacity: 0}, 0).text("Your new password must contain at least 6 characters.").velocity({opacity: 1}, {display: "block"}, 300, function() {
+				if (userAgent != 'iOS') {
+					$('.row:nth-of-type(2) input').eq(2).focus();
+				}
+			});
 			return;
 		}
 
 		$.post('/settings/updatePassword', {_xsrf: getCookie('_xsrf'), "old-password": old_password, "new-password": new_password}, function(data) {
 			if (data.error) {
-				$('#reset-password-error').css({"opacity": 0, "display": "block"});
-				$('#reset-password-error').text(data.error);
-				$('#reset-password-error').transition({opacity: 1}, 300);
+				$('#reset-password-error').velocity({"opacity": 0}, 0).text(data.error).velocity({opacity: 1}, {display: "block"}, 300);
 				$('.row:nth-of-type(2) input').eq(1).val('');
 				$('.row:nth-of-type(2) input').eq(2).val('');
 				if (userAgent != 'iOS') {
@@ -215,21 +216,31 @@ $(function() {
 			}
 			else {
 				$('#reset-password-error').remove();
-				$('.row:nth-of-type(2)').animate({"height": $('.row:nth-of-type(2) .value').height() + 51}, 500);
-				$('.row:nth-of-type(2) .form-wrapper').transition({x: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-				$('.row:nth-of-type(2) .backer').transition({x: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');
 				$('input[name="old-password"]').val('');
 				$('input[name="new-password"]').val('');
 				$('input').blur();
+
+				row = $('.row:nth-of-type(2)');
+				value = $('.row:nth-of-type(2) .value')
+				form_wrapper = $('.row:nth-of-type(2) .form-wrapper');
+				backer = $('.row:nth-of-type(2) .backer');
+
+				row.velocity({height: value.height() + 51}, 500);
+				form_wrapper.velocity({translateX: 0}, 300, [1.000, 0.000, 1.000, 1.000]);
+				backer.velocity({translateX: 0}, 500, [1.000, 0.000, 0.585, 1.000]);
 			}
 		});
 	});
 
 	/* custom URL section */
 	$('#custom-url').on('click', function() {
-		$('.row:nth-of-type(3)').animate({"height": $('.row:nth-of-type(3) form').height() + 70}, 500);
-		$('.row:nth-of-type(3) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-		$('.row:nth-of-type(3) .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+		row = $('.row:nth-of-type(3)');
+		row_backer = $('.row:nth-of-type(3) .backer');
+		form_wrapper = $('.row:nth-of-type(3) .form-wrapper');
+
+		row.velocity({"height": row.height() + 115}, 500);
+		row_backer.velocity({translateX: "100%"}, 300, [1.000, 0.000, 1.000, 1.000]);
+		form_wrapper.velocity({translateX: "100%"}, 500, [1.000, 0.000, 0.585, 1.000], function() {
 			if (userAgent != 'iOS') {
 				$('.row:nth-of-type(3) input').eq(1).focus();
 			}
@@ -246,58 +257,58 @@ $(function() {
 		}
 
 		if (custom_url.length >= 1 && custom_url.length < 6) {
-			$('#custom-url-error').css({"opacity": 0, "display": "block"});
-			$('#custom-url-error').text("Your custom URL must contain at least 6 characters.");
-			$('#custom-url-error').transition({opacity: 1}, 300);
-			if (userAgent != 'iOS') {
-				$('.row:nth-of-type(3) input').eq(1).focus();
-			}
+			$('#custom-url-error').velocity({"opacity": 0}, 0).text("Your custom URL must contain at least 6 characters.").velocity({opacity: 1}, {display: "block"}, 300, function() {
+				if (userAgent != 'iOS') {
+					$('.row:nth-of-type(3) input').eq(1).focus();
+				}
+			});
 			return;
 		}
 		if (custom_url.length > 20) {
-			$('#custom-url-error').css({"opacity": 0, "display": "block"});
-			$('#custom-url-error').text("Sorry, but your custom URL can only contain up to 20 characters.");
-			$('#custom-url-error').transition({opacity: 1}, 300);
-			if (userAgent != 'iOS') {
-				$('.row:nth-of-type(3) input').eq(1).focus();
-			}
+			$('#custom-url-error').velocity({"opacity": 0}, 0).text("Sorry, but your custom URL can only contain up to 20 characters.").velocity({opacity: 1}, {display: "block"}, 300, function() {
+				if (userAgent != 'iOS') {
+					$('.row:nth-of-type(3) input').eq(1).focus();
+				}
+			});
 			return;
 		}
 		if (custom_url == "signup" || custom_url == "login" || custom_url == "feed" || custom_url == "settings") {
-			$('#custom-url-error').css({"opacity": 0, "display": "block"});
-			$('#custom-url-error').text("Sorry, but that custom URL is not allowed.");
-			$('#custom-url-error').transition({opacity: 1}, 300);
-			if (userAgent != 'iOS') {
-				$('.row:nth-of-type(3) input').eq(1).focus();
-			}
+			$('#custom-url-error').velocity({"opacity": 0}, 0).text("Sorry, but that custom URL is not allowed.").velocity({opacity: 1}, {display: "block"}, 300, function() {
+				if (userAgent != 'iOS') {
+					$('.row:nth-of-type(3) input').eq(1).focus();
+				}
+			});
 			return;
 		}
 		if (custom_url != '' && !(/^[a-zA-Z0-9_]+$/i.test(custom_url))) {
-			$('#custom-url-error').css({"opacity": 0, "display": "block"});
-			$('#custom-url-error').text("Your custom URL can only contain letters, numbers, and, underscores.");
-			$('#custom-url-error').transition({opacity: 1}, 300);
-			if (userAgent != 'iOS') {
-				$('.row:nth-of-type(3) input').eq(1).focus();
-			}
+			$('#custom-url-error').velocity({"opacity": 0}, 0).text("Your custom URL can only contain letters, numbers, and, underscores.").velocity({opacity: 1}, {display: "block"}, 300, function() {
+				if (userAgent != 'iOS') {
+					$('.row:nth-of-type(3) input').eq(1).focus();
+				}
+			});
 			return;
 		}
 
 		$.post('/settings/updateURL', {_xsrf: getCookie('_xsrf'), "custom-url": custom_url}, function(data) {
 			if (data.error) {
-				$('#custom-url-error').css({"opacity": 0, "display": "block"});
-				$('#custom-url-error').text(data.error);
-				$('#custom-url-error').transition({opacity: 1}, 300);
-				if (userAgent != 'iOS') {
-					$('.row:nth-of-type(3) input').eq(1).focus();
-				}
+				$('#custom-url-error').velocity({"opacity": 0}, 0).text(data.error).velocity({opacity: 1}, {display: "block"}, 300, function() {
+					if (userAgent != 'iOS') {
+						$('.row:nth-of-type(3) input').eq(1).focus();
+					}
+				});
 			}
 			else {
 				if (custom_url.length == '') {
 					$('#custom-url').replaceWith('<div id="custom-url"><button class="form-button" id="custom-url-button">Set Custom URL</button></div>');
 					$('#custom-url').on('click', function() {
-						$('.row:nth-of-type(3)').animate({"height": $('.row:nth-of-type(3) form').height() + 70}, 500);
-						$('.row:nth-of-type(3) .backer').transition({x: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-						$('.row:nth-of-type(3) .form-wrapper').transition({x: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
+						row = $('.row:nth-of-type(3)');
+						form = $('.row:nth-of-type(3) form');
+						row_backer = $('.row:nth-of-type(3) .backer');
+						form_wrapper = $('.row:nth-of-type(3) .form-wrapper');
+
+						row.velocity({"height": form.height() + 70}, 500);
+						row_backer.velocity({translateX: "100%"}, 300, [1.000, 0.000, 1.000, 1.000]);
+						form_wrapper.velocity({translateX: "100%"}, 500, [1.000, 0.000, 0.585, 1.000], function() {
 							if (userAgent != 'iOS') {
 								$('.row:nth-of-type(3) input').eq(1).focus();
 							}
@@ -309,10 +320,16 @@ $(function() {
 				}
 				$('#custom-url-error').remove();
 				$('input[name="custom-url"]').attr({"placeholder": custom_url}).val('');
-				$('.row:nth-of-type(3)').animate({"height": $('.row:nth-of-type(3) .value').height() + 51}, 500);
-				$('.row:nth-of-type(3) .form-wrapper').transition({x: '-100%'}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-				$('.row:nth-of-type(3) .backer').transition({x: '-100%'}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)');	
 				$('input').blur();
+
+				row = $('.row:nth-of-type(3)');
+				value = $('.row:nth-of-type(3) .value');
+				row_backer = $('.row:nth-of-type(3) .backer');
+				form_wrapper = $('.row:nth-of-type(3) .form-wrapper');
+
+				row.velocity({height: value.height() + 51}, 500);
+				form_wrapper.velocity({translateX: 0}, 300, [1.000, 0.000, 1.000, 1.000]);
+				row_backer.velocity({translateX: 0}, 500, [1.000, 0.000, 0.585, 1.000]);
 			}
 		});
 	});

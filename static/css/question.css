@@ -21,10 +21,6 @@ a {
 
 /*=================== GENERAL STYLING END ====================*/
 
-#mobile-tab-bar-wrapper {
-	display: none;
-}
-
 body {
 	background: #f1f1f1;
 }
@@ -40,13 +36,11 @@ main {
 }
 
 @media only screen and (min-width: 900px) {
-	#mobile-tab-bar-wrapper {
-		display: block;
-	}
 	main {
 		padding-top: 86px;
-		max-width: initial;
+		max-width: 1010px;
 		width: calc(100% - 80px);
+		overflow: auto;
 	}
 	#question-content {
 		width: calc(50% - 20px);
@@ -65,7 +59,13 @@ main {
 	}
 	main {
 		padding-top: 130px;
-		width: 100%;
+		width: calc(100% - 240px);
+		max-width: initial;
+		float: right;
+	}
+	#content-and-comments-wrapper {
+		width: calc(100% - 80px);
 		max-width: 1010px;
+		margin: 0 auto;
 	}
 }
