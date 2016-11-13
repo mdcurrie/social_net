@@ -10,11 +10,13 @@
 		<div class="users">
 			{% for user in relation_list %}
 				<div class="user">
-					<div class="user-profile-pic">
-						<a href="/users/{{ str(user["_id"]) }}">
+					<a href="/users/{{ str(user["_id"]) }}">
+						<div class="user-profile-pic">
 							<img src="{{ user["profile_pic_link"] }}" alt="{{ user["username"] }}'s profile picture">
-						</a>
-					</div>
+							<div class="user-relationship-overlay"></div>
+							<div class="user-relationship-username">{{ user["username"] }}</div>
+						</div>
+					</a>
 				</div>
 			{% end %}
 		</div>

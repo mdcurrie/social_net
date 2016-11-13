@@ -14,20 +14,23 @@
         <![endif]-->
     </head>
     <body>
-        {% module Header() %}
+        {% module Header('', True, current_user != None) %}
         {% if current_user %}
-            {% module MobileTabBar('') %}
+            {% module SideColumn('') %}
         {% end %}
         <main>
-            <section id="question-content">
-                {% module Question(asker, question, vote, favorite_count, favorited_this_question, comment_count) %}  
-            </section>
-            <section id="question-comments">
-                {% module Comment(str(question["_id"]), comments, commenters) %}
-            </section>
+            <div id="content-and-comments-wrapper">
+                <section id="question-content">
+                    {% module Question(asker, question, vote, favorite_count, favorited_this_question, comment_count) %}  
+                </section>
+                <section id="question-comments">
+                    {% module Comment(str(question["_id"]), comments, commenters) %}
+                </section>
+            </div>
         </main>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
-        <script src="{{ static_url("js/jquery.transit.min.js") }}"></script>
+        <script src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+        <script src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
         <script src="{{ static_url("js/question.js") }}"></script>
     </body>
 </html>
