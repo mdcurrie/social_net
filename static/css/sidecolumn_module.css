@@ -181,7 +181,7 @@
 }
 #off-canvas-question-form-backer {
 	position: fixed;
-	transform: translateY(100%);
+	top: 100%;
 	height: 100%;
 	width: 100%;
 	z-index: 110;
@@ -191,7 +191,7 @@
 }
 #off-canvas-question-form {
 	position: fixed;
-	transform: translateY(100%);
+	top: 100%;
 	height: 100%;
 	width: 100%;
 	z-index: 120;

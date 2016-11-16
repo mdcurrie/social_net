@@ -45,7 +45,12 @@ $(function() {
     
     $('#comment-img-wrapper').on('click', function() {
         if ($(window).width() < 900) {
-            $(this).velocity({scaleX: 1.35, scaleY: 1.35}, 150).velocity({scaleX: 1, scaleY, translateX: 4, translateY: 7}, 150);
+            wrapper = $(this);
+            sequence = [
+                {e: wrapper, p: {scaleX: 1.35, scaleY: 1.35}, o: {duration: 150}},
+                {e: wrapper, p: {scaleX: 1, scaleY: 1},       o: {duration: 150}}
+            ];
+            $.Velocity.RunSequence(sequence);
         }
         $('.comment-form form').submit();
     });

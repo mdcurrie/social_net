@@ -9,11 +9,16 @@ $(function() {
 			$('#close-comments div:first-of-type').on('click', function() {
 				$('main').css({"display": "block"});
 				$('body').scrollTop(scroll_pos);
-				$('#off-canvas-comments').transition({y: "100%"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-				$('#off-canvas-comments-backer').transition({y: "100%"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-					$(this).css({"display": "none"});
-					$('#off-canvas-comments').css({"display": "none"});
-				});
+
+				comments = $('#off-canvas-comments');
+				backer   = $('#off-canvas-comments-backer');
+
+				sequence = [
+					{e: comments, p: {translateY: 0}, o: {display: "none", duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
+					{e: backer,   p: {translateY: 0}, o: {display: "none", duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
+				];
+
+				$.Velocity.RunSequence(sequence);
 			});
 
 			$('.all-comments').scroll(function() {
@@ -68,76 +73,64 @@ $(function() {
 		    });
 
 		    if ($(window).width() < 1200) {
-				$('#off-canvas-comments-backer').css({"display": "block"}).transition({y: 0}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-				$('#off-canvas-comments').css({"display": "block"});
-				$('.all-comments').scrollTop(1);
-				$('#off-canvas-comments').transition({y: 0}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-					$('main').css({"display": "none"});
-				});
+		    	main     = $('main');
+		    	comments = $('#off-canvas-comments').css({"display": "block"});
+		    	backer   = $('#off-canvas-comments-backer');
+		    	$('.all-comments').scrollTop(1);
+
+		    	sequence = [
+		    		{e: backer,   p: {translateY: "-100%"}, o: {display: "block", duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
+		    		{e: comments, p: {translateY: "-100%"}, o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+		    		{e: main,     p: {opacity: 1},          o: {display: "none", duration: 0}}
+		    	];
+
+		    	$.Velocity.RunSequence(sequence);
 			}
 			else {
-				$('#off-canvas-comments-backer').css({"display": "block"}).transition({y: 80}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-				$('#off-canvas-comments').css({"display": "block"});
-				$('.all-comments').scrollTop(1);
-				$('#off-canvas-comments').transition({y: 80}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-					$('#content-overlay').css({'z-index': 40});
-					$('#content-overlay').transition({opacity: 0.5}, 200);
-					$('input[name="comment"]').focus();
-				});
+		    	comments = $('#off-canvas-comments').css({"display": "block"});
+		    	backer   = $('#off-canvas-comments-backer');
+		    	overlay  = $('#content-overlay').css({"z-index": 40});
+		    	$('.all-comments').scrollTop(1);
+		    	$('input[name="comment"]').focus();
+
+		    	sequence = [
+		    		{e: backer,   p: {translateY: "-100%"}, o: {display: "block", duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
+		    		{e: comments, p: {translateY: "-100%"}, o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+		    		{e: overlay,  p: {opacity: 0.5},        o: {duration: 200}}
+		    	];
+
+		    	$.Velocity.RunSequence(sequence);
 			}
 		});
 	});
 
-	
-
-	
-
 	$('#off-canvas-question-form input').on('focusin', function() {
 		if ($(window).width() < 1200) {
-			$('#submit-question-button').transition({y: 46}, 0);
+			$('#submit-question-button').velocity({translateY: 46}, 0);
 		}
 	});
 
 	$('#off-canvas-question-form input').on('focusout', function() {
 		if ($(window).width() < 1200) {
-			$('#submit-question-button').transition({y: 0}, 0);
+			$('#submit-question-button').velocity({translateY: 0}, 0);
 		}
 	});
 
 	$('#content-overlay').on('click', function() {
-		$('#off-canvas-comments').transition({y: "calc(100% + 80px)"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)', function() {
-			$(this).css({"display": "none"});
-		});
-		$('#off-canvas-comments-backer').transition({y: "calc(100% + 80px)"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-			$(this).css({"display": "none"});
-			$('#content-overlay').transition({opacity: 0}, 200, function() {
-				$('#content-overlay').css({'z-index': -10});
-			});
-		});
+		comments = $('#off-canvas-comments');
+		backer   = $('#off-canvas-comments-backer');
+		overlay  = $('#content-overlay');
+
+		sequence = [
+			{e: comments, p: {translateY: 0},  o: {display: "none", duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
+			{e: backer,   p: {translateY: 0},  o: {display: "none", duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+			{e: overlay,  p: {opacity: 0},     o: {duration: 200}},
+			{e: overlay,  p: {"z-index": -10}, o: {duration: 0}}
+		];
+
+		$.Velocity.RunSequence(sequence);
 	});
 
-/*	$('.question-image').hover(
-		function() {
-			$('#off-canvas-comments-backer').css({"will-change": "transform"});
-			$('#off-canvas-comments').css({"will-change": "transform"});
-		},
-		function() {
-			$('#off-canvas-comments-backer').css({"will-change": "initial"});
-			$('#off-canvas-comments').css({"will-change": "initial"});
-		}
-	);
-
-	$('#content-overlay').hover(
-		function() {
-			$('#off-canvas-comments-backer').css({"will-change": "transform"});
-			$('#off-canvas-comments').css({"will-change": "transform"});
-		},
-		function() {
-			$('#off-canvas-comments-backer').css({"will-change": "initial"});
-			$('#off-canvas-comments').css({"will-change": "initial"});
-		}
-	);
-*/
 	$('#follow-topic-button').on('click', function(e) {
 		e.preventDefault();
 		var url = $('#follow-topic-button').attr('formaction');

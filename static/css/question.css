@@ -38,7 +38,7 @@ main {
 @media only screen and (min-width: 900px) {
 	main {
 		padding-top: 86px;
-		max-width: 1010px;
+		max-width: 900px;
 		width: calc(100% - 80px);
 		overflow: auto;
 	}
@@ -65,7 +65,7 @@ main {
 	}
 	#content-and-comments-wrapper {
 		width: calc(100% - 80px);
-		max-width: 1010px;
+		max-width: 950px;
 		margin: 0 auto;
 	}
 }

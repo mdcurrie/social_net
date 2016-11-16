@@ -30,9 +30,8 @@ header {
 	z-index: 110;
 	background: rgba(46, 179, 152, .8);
 	top: 0;
-	left: 0;
+	right: 100%;
 	display: none;
-	transform: translateX(-100%);
 }
 #off-canvas-mobile-search {
 	position: fixed;
@@ -41,9 +40,8 @@ header {
 	z-index: 110;
 	background: white;
 	top: 0;
-	left: 0;
+	right: 100%;
 	display: none;
-	transform: translateX(-100%);
 }
 #mobile-search-overlay {
 	position: fixed;
@@ -225,6 +223,7 @@ main {
 	header .dropdown-content a {
 	    padding: 5px 12px;
 	    display: block;
+	    transition: background 0.3s;
 	}
 	header .dropdown-content a:hover {
 		background: #f1f1f1;
@@ -246,6 +245,6 @@ main {
         padding-bottom: 0;
     }
     #mobile-tab-bar-wrapper {
-        display: none;
+        display: none !important;
     }
 }

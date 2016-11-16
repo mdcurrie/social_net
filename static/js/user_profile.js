@@ -2,7 +2,7 @@ $(function() {
 	$('#followers-count').on('click', function() {
 		var url = $(this).attr('class');
 
-		if ($(window).width() < 900) {
+		if (window.innerWidth < 900) {
 			$(this).velocity({scaleX: 1.35, scaleY: 1.35}, 150).velocity({scaleX: 1, scaleY: 1}, 150);
 		}
 
@@ -88,7 +88,7 @@ $(function() {
 	$('#following-count').on('click', function() {
 		var url = $(this).attr('class');
 
-		if ($(window).width() < 900) {
+		if (window.innerWidth < 900) {
 			$(this).velocity({scaleX: 1.35, scaleY: 1.35}, 150).velocity({scaleX: 1, scaleY: 1}, 150);
 		}
 
@@ -173,7 +173,7 @@ $(function() {
 
 	$('#question-count').on('click', function() {
 
-		if ($(window).width() < 900) {
+		if (window.innerWidth < 900) {
 			$(this).velocity({scaleX: 1.35, scaleY: 1.35}, 150).velocity({scaleX: 1, scaleY: 1}, 150);
 		}
 
@@ -218,19 +218,58 @@ $(function() {
 
 	$('#username-and-button button').on('click', function(e) {
 		e.preventDefault();
-		var url = $('#username-and-button form').attr('action');
+		url = $('#username-and-button form').attr('action');
+		clicked = $(this);
+		count = $('#followers-count span');
+
+		if (window.innerWidth < 900) {
+			if (clicked.css("background-color") == "rgb(255, 255, 255)") {
+				if (parseInt(count.text()) < 1000) {
+					count.text(parseInt(count.text()) - 1);
+				}
+	            sequence = [
+	                {e: clicked, p: {scaleX: 1.75, scaleY: 1.75},                   o: {duration: 100}},
+	                {e: clicked, p: {scaleX: 1, scaleY: 1},                         o: {duration: 100}},
+	                {e: clicked, p: {backgroundColor: "#2eb398", color: "#ffffff"}, o: {duration: 100, sequenceQueue: false}}
+	            ];
+	        }
+	        else {
+	        	if (parseInt(count.text()) < 1000) {
+					count.text(parseInt(count.text()) + 1);
+				}  	
+	            sequence = [
+	                {e: clicked, p: {scaleX: 1.75, scaleY: 1.75},                   o: {duration: 100}},
+	                {e: clicked, p: {scaleX: 1, scaleY: 1},                         o: {duration: 100}},
+	                {e: clicked, p: {backgroundColor: "#ffffff", color: "#2eb398"}, o: {duration: 100, sequenceQueue: false}}
+	            ];
+	        }
+
+	        $.Velocity.RunSequence(sequence);
+	    }
+
 		$.post(url, {_xsrf: getCookie('_xsrf')}, function(data) {
 			if (data.redirect) {
 				window.location.href = data.redirect;
 			}
 			else {
-				$('#followers-count span').text(data.followers);
+				count.text(data.followers);
 				$('#username-and-button button').text(data.display_text);
-				if (data.display_text == 'Follow') {
-					$('#username-and-button button').removeClass('active');
+
+				if (window.innerWidth < 900) {
+					if (data.display_text == 'Follow') {
+						$('#username-and-button button').velocity({backgroundColor: "#2eb398", color: "#ffffff"}, 100).removeClass("active");
+					}
+					else {
+						$('#username-and-button button').velocity({backgroundColor: "#ffffff", color: "#2eb398"}, 100).addClass("active");
+					}
 				}
 				else {
-					$('#username-and-button button').addClass('active');
+					if (data.display_text == 'Follow') {
+						$('#username-and-button button').velocity({backgroundColor: "#ffffff", color: "#2eb398"}, 100).removeClass("active");
+					}
+					else {
+						$('#username-and-button button').velocity({backgroundColor: "#2eb398", color: "#ffffff"}, 100).addClass("active");
+					}
 				}
 			}
 		});

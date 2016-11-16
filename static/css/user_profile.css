@@ -23,7 +23,7 @@ a {
 
 main {
 	padding-top: 45px;
-	background: #f1f1f1;
+	background: #2eb398;
 	overflow-x: hidden;
 }
 #user-profile {
@@ -331,6 +331,7 @@ main {
 @media only screen and (min-width: 900px) {
 	main {
 		padding-top: 86px;
+		background: #f1f1f1;
 	}
 	#user-profile {
 		padding: 20px 0;
@@ -530,22 +531,5 @@ main {
 	}
 	#username-and-button button:hover {
 		cursor: pointer;
-	}
-	#username-and-button button:not(.active):hover {
-		background: white;
-		color: #2eb398;
-	}
-}
-
-@media only screen and (pointer: fine) and (min-width: 900px) {	
-	#username-and-button button:not(.active):hover {
-		background: #2eb398;
-		color: white;
-	}
-}
-
-@media only screen and (pointer: coarse) {
-	#username-and-button button:active {
-		transform: scale(1.35, 1.35);
 	}
 }

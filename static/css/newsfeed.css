@@ -30,10 +30,10 @@ a {
 
 /*=================== GENERAL STYLING END ====================*/
 
-
 #off-canvas-comments-backer {
 	position: fixed;
-	transform: translateY(100%);
+	top: 100%;
+	left: 0;
 	height: 100%;
 	width: 100%;
 	z-index: 110;
@@ -43,7 +43,8 @@ a {
 }
 #off-canvas-comments {
 	position: fixed;
-	transform: translateY(100%);
+	top: 100%;
+	left: 0;
 	height: 100%;
 	width: 100%;
 	z-index: 120;
@@ -293,7 +294,7 @@ main {
 	}
 	#off-canvas-comments-backer {
 		right: 0;
-		transform: translateY(calc(100% + 80px));
+		left: initial;
 		height: calc(100% - 80px);
 		width: 33%;
 		z-index: 49;
@@ -301,7 +302,7 @@ main {
 	}
 	#off-canvas-comments {
 		right: 0;
-		transform: translateY(calc(100% + 80px));
+		left: initial;
 		height: calc(100% - 80px);
 		width: 33%;
 		z-index: 50;

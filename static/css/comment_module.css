@@ -64,11 +64,13 @@
     border-top: 1px solid #f1f1f1;
     height: 46px;
     background: white;
+    z-index: 110;
 }
 .comment-form form {
 	max-width: 460px;
 	margin: 0 auto;
 	overflow: auto;
+	position: relative;
 }
 .comment-form input[name="comment"] {
 	width: calc(100% - 46px);
@@ -90,9 +92,11 @@
 	width: 32px;
     height: 32px;
     border-radius: 50%;
-    transform: translate(4px, 7px);
     background: #2eb398;
-    float: left;
+    position: absolute;
+    left: calc(100% - 42px);
+    top: 7px;
+    transition: background 0.3s;
 }
 .comment-form img {
 	position: absolute;
@@ -193,16 +197,34 @@
 		bottom: 0;
 		left: 0;
 		box-shadow: none;
+		border-top: 1px solid rgba(0,0,0,.1);
+		border-bottom-left-radius: 6px;
+		border-bottom-right-radius: 6px;
+		opacity: 1 !important;
+	}
+	.comment-form form {
+		max-width: initial;
+		border-bottom-right-radius: 6px;
 	}
 	.comment-form input[name="comment"] {
 		height: 45px;
-		border-top: 1px solid rgba(0,0,0,.1);
 		border-bottom-left-radius: 6px;
 		padding-left: 20px;
 		padding-right: 20px;
 	}
-	.comment-form img {
+	#comment-img-wrapper {
+		width: 46px;
+		height: 45px;
+		background: #2eb398;
+		float: left;
+		position: relative;
 		border-bottom-right-radius: 6px;
+		left: inherit;
+		top: initial;
+		border-radius: initial;
+	}
+	.comment-form img {
+		transform: translate(-50%, -50%);
 	}
 }
 
