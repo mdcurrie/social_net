@@ -67,54 +67,61 @@
 <div id="off-canvas-mobile-search"></div>
 <div id="mobile-search-overlay"></div>
 
-<nav id="mobile-tab-bar-wrapper">
-    <div id="mobile-tab-bar">
-        <div class="nav-option {% if page == 'Feed' %}active{% end %}">
-            <a href="/feed">
+{% if current_user %}
+    <nav id="mobile-tab-bar-wrapper">
+        <div id="mobile-tab-bar">
+            <div class="nav-option {% if page == 'Feed' %}active{% end %}">
+                <a href="/feed">
+                    <div class="nav-icon">
+                        <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                            <path d="M0 0h24v24H0z" fill="none"/>
+                        </svg>
+                    </div>
+                    <div class="nav-text">Home</div>
+                </a>
+            </div>
+            <div class="nav-option {% if page == 'Favorites' %}active{% end %}">
+                <a href="/favorites">
+                    <div class="nav-icon">
+                        <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                    <div class="nav-text">Favorites</div>
+                </a>
+            </div>
+            <div class="nav-option active">
                 <div class="nav-icon">
                     <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
                         <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
                     </svg>
                 </div>
-                <div class="nav-text">Home</div>
-            </a>
-        </div>
-        <div class="nav-option">
-            <div class="nav-icon">
-                <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-                </svg>
             </div>
-            <div class="nav-text">Notifs</div>
-        </div>
-        <div class="nav-option active">
-            <div class="nav-icon">
-                <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
-                </svg>
+            <div class="nav-option {% if page == 'Profile' %}active{% end %}">
+                <a href="{{ '/users/' + str(current_user["_id"]) }}">
+                    <div class="nav-icon">
+                        <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            <path d="M0 0h24v24H0z" fill="none"/>
+                        </svg>
+                    </div>
+                    <div class="nav-text">Profile</div>
+                </a>
+            </div>
+            <div class="nav-option {% if page == 'Settings' %}active{% end %}">
+                <a href = '/settings'>
+                    <div class="nav-icon">
+                        <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+                        </svg>
+                    </div>
+                    <div class="nav-text">Settings</div>
+                </a>
             </div>
         </div>
-        <div class="nav-option {% if page == 'Profile' %}active{% end %}">
-            <a href="{{ '/users/' + str(current_user["_id"]) }}">
-                <div class="nav-icon">
-                    <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                        <path d="M0 0h24v24H0z" fill="none"/>
-                    </svg>
-                </div>
-                <div class="nav-text">Profile</div>
-            </a>
-        </div>
-        <div class="nav-option">
-            <div class="nav-icon">
-                <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-                </svg>
-            </div>
-            <div class="nav-text">More</div>
-        </div>
-    </div>
-</nav>
+    </nav>
+{% end %}

@@ -9,7 +9,7 @@
         <div class="asker-info">
             <div class="asker-profile-pic">
                 <a href="/users/{{ str(asker["_id"]) }}">
-                    <img src="{{ asker["profile_pic_link"] }}">
+                    <img src="{{ asker["profile_pic_link"] }}" data-gradient-map="#271f37 25%, #dc143c">
                 </a>
             </div>
             <div class="asker-text">
@@ -86,6 +86,7 @@
                             <div class="bar-wrapper1">
                                 <div class="bar-wrapper2" style="width: {% if total_votes == 0 %}0%{% else %}{{ q["votes"]*100/total_votes }}%{% end %}">
                                     <div class="poll-bar"><div>{{ q["label"] }}</div></div>
+                                    <div class="behind-poll-bar"><div>{{ q["label"] }}</div></div>
                                 </div>
                             </div>
                         </div>
@@ -100,6 +101,7 @@
                                 <div class="bar-wrapper1">
                                     <div class="bar-wrapper2" style="width: {% if total_votes == 0 %}0%{% else %}{{ q["votes"]*100/total_votes }}%{% end %}">
                                         <div class="poll-bar"><div>{{ q["label"] }}</div></div>
+                                        <div class="behind-poll-bar"><div>{{ q["label"] }}</div></div>
                                     </div>
                                 </div>
                             </div>
@@ -113,6 +115,7 @@
                                 <div class="bar-wrapper1">
                                     <div class="bar-wrapper2" style="width: {% if total_votes == 0 %}0%{% else %}{{ q["votes"]*100/total_votes }}%{% end %}">
                                         <div class="poll-bar"><div>{{ q["label"] }}</div></div>
+                                        <div class="behind-poll-bar"><div>{{ q["label"] }}</div></div>
                                     </div>
                                 </div>
                             </div>
