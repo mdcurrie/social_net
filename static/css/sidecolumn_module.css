@@ -173,7 +173,6 @@
 	position: absolute;
 	bottom: 0;
 	left: 0;
-	box-shadow: 0 0 10px rgba(0, 0, 0, .35);
 }
 #submit-question-button:hover {
 	background: #23927c;
@@ -202,7 +201,6 @@
 #close-question {
 	height: 46px;
 	background: #2eb398;
-	box-shadow: 0 0 10px rgba(0, 0, 0, .35);
 	position: relative;
 }
 #close-question div:first-of-type {

@@ -32,7 +32,7 @@
     width: calc(100% - 55px);
     padding-bottom: 20px;
     margin-bottom: 20px;
-    border-bottom: 1px solid rgba(0,0,0,.1);
+    border-bottom: 1px solid rgba(0,0,0,.065);
 }
 .comment-top-text {
 	margin-bottom: 9px;
@@ -48,7 +48,7 @@
 	letter-spacing: 0.03em;
 }
 .comment-time {
-	color: #A5A5A6;
+	color: #999;
 	font-size: 0.75em;
 	letter-spacing: 0.02em;
 	display: inline-block;
@@ -61,7 +61,7 @@
     position: fixed;
     bottom: 0px;
     left: 0px;
-    border-top: 1px solid #f1f1f1;
+    box-shadow: 0 0 20px rgba(46, 179, 152, .15);
     height: 46px;
     background: white;
     z-index: 110;
@@ -197,7 +197,7 @@
 		bottom: 0;
 		left: 0;
 		box-shadow: none;
-		border-top: 1px solid rgba(0,0,0,.1);
+		border-top: 1px solid rgba(0,0,0,.065);
 		border-bottom-left-radius: 6px;
 		border-bottom-right-radius: 6px;
 		opacity: 1 !important;

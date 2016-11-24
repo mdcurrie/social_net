@@ -21,18 +21,31 @@ a {
 
 /*=================== GENERAL STYLING END ====================*/
 
-body {
-	background: #f1f1f1;
-}
 main {
-	padding-top: 61px;
+	padding-top: 46px;
 	max-width: 460px;
 	margin: 0 auto;
 	padding-bottom: 0 !important;
+	background: #f1f1f1;
 }
 #question-content {
 	margin-bottom: 15px;
 	overflow: auto;
+}
+
+@media only screen and (min-width: 460px) {
+	body {
+		background: #f1f1f1;
+	}
+	main {
+		padding-top: 61px;
+	}
+}
+
+@media only screen and (min-width: 600px) {
+	main {
+		padding-top: 76px;
+	}
 }
 
 @media only screen and (min-width: 900px) {
@@ -51,11 +64,15 @@ main {
 		height: 100%;
 		float: right;
 	}
+	#mobile-tab-bar-wrapper {
+		display: block !important;
+		opacity: 1 !important;
+	}
 }
 
 @media only screen and (min-width: 1200px) {
 	#mobile-tab-bar-wrapper {
-		display: none;
+		display: none !important;
 	}
 	main {
 		padding-top: 130px;

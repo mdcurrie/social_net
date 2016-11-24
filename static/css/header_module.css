@@ -8,7 +8,7 @@ header {
 	height: 46px;
 	top: 0;
 	background: white;
-	box-shadow: 0 0 20px rgba(46, 179, 152, .1);
+	box-shadow: 0 0 20px rgba(46, 179, 152, .15);
 	will-change: transform;
 }
 #search-form {
@@ -80,7 +80,7 @@ main {
     height: 46px;
     background: white;
     z-index: 20;
-    border-top: 1px solid #f1f1f1;
+    box-shadow: 0 0 20px rgba(46, 179, 152, .15);
 }
 #mobile-tab-bar {
 	width: 100%;

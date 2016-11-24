@@ -24,7 +24,7 @@ $(function() {
                             data.replacement = data.replacement.slice(106, -465);
                             $('.all-comments').replaceWith(data.replacement);
                             $('.comment-form input').eq(1).val('');
-                            if ($(window).width() < 900) {
+                            if (window.innerWidth < 900) {
                                 $('body').scrollTop($('body')[0].scrollHeight);
                             }
                             else {
@@ -44,7 +44,7 @@ $(function() {
     $('.comment-form form').preventDoubleSubmission();
     
     $('#comment-img-wrapper').on('click', function() {
-        if ($(window).width() < 900) {
+        if (window.innerWidth < 900) {
             wrapper = $(this);
             sequence = [
                 {e: wrapper, p: {scaleX: 1.35, scaleY: 1.35}, o: {duration: 150}},

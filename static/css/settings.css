@@ -139,6 +139,7 @@ main {
 	top: 50%;
 	transform: translateY(-50%);
 	font-size: 0.85em;
+	color: #999;
 }
 .value {
     width: 100%;
@@ -175,6 +176,7 @@ main {
 }
 #url-prefix {
 	text-align: left;
+	color: #999;
 }
 #email {
 	color: #2eb398;
@@ -327,6 +329,9 @@ main {
 	}
 	#row-settings {
 		max-width: 650px;
+	}
+	.key {
+		color: #353436;
 	}
 	.form-input {
 		max-width: 250px;

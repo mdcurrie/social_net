@@ -14,12 +14,18 @@ $(function() {
 					overlay  = $('.user-relationship-overlay');
 					backer   = $('#misc .backer');
 					wrapper  = $('#follower-wrapper');
+					question = $('.profile-questions');
 
 					sequence = [
-						{e: user_img, p: {height: user_img.width()}, o: {duration: 0}},
-						{e: overlay,  p: {height: user_img.width()}, o: {duration: 0}},
-						{e: backer,   p: {translateX: "100%"},       o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-						{e: wrapper,  p: {translateX: "100%"},       o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
+						{e: user_img, p: {height: user_img.width()},   o: {duration: 0}},
+						{e: overlay,  p: {height: user_img.width()},   o: {duration: 0}},
+						{e: wrapper,  p: {backgroundColor: "#ffffff"}, o: {duration: 0}},
+						{e: backer,   p: {translateX: "100%"},         o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
+						{e: wrapper,  p: {translateX: "100%"},         o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+						{e: backer,   p: {opacity: 0},                 o: {duration: 0}},
+						{e: question, p: {opacity: 0},                 o: {duration: 0}},
+						{e: wrapper,  p: {backgroundColorAlpha: 0},    o: {duration: 0}}
+
 					];
 
 					$.Velocity.RunSequence(sequence);
@@ -30,19 +36,28 @@ $(function() {
 					overlay  = $('.user-relationship-overlay');
 					backer   = $('#misc .backer');
 					wrapper  = $('#follower-wrapper');
+					other    = $('#following-wrapper');
+					question = $('.profile-questions');
 					tab_bar  = $('#mobile-tab-bar-wrapper');
 					z_index  = parseInt($('#following-wrapper').css("z-index"));
 
 					sequence = [
 						{e: user_img, p: {height: user_img.width()},              o: {duration: 0}},
 						{e: overlay,  p: {height: user_img.width()},              o: {duration: 0}},
-						{e: tab_bar,  p: {"z_index": z_index + 3},                o: {duration: 0}},
+						{e: tab_bar,  p: {"z-index": z_index + 3},                o: {duration: 0}},
 						{e: backer,   p: {visibility: "hidden"},                  o: {duration: 0}},
 						{e: backer,   p: {translateX: 0, "z-index": z_index + 1}, o: {duration: 0}},
 						{e: wrapper,  p: {"z-index": z_index + 2},                o: {duration: 0}},
 						{e: backer,   p: {visibility: "visibile"},                o: {duration: 0}},
+						{e: wrapper,  p: {opacity: 1},                            o: {duration: 0}},
+						{e: wrapper,  p: {backgroundColor: "#ffffff"},  o: {duration: 0}},
+						{e: backer,   p: {opacity: 1},                            o: {duration: 0}},
 						{e: backer,   p: {translateX: "100%"},                    o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-						{e: wrapper,  p: {translateX: "100%"},                    o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
+						{e: wrapper,  p: {translateX: "100%"},                    o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+						{e: backer,   p: {opacity: 0},                 o: {duration: 0}},
+						{e: question, p: {opacity: 0},                 o: {duration: 0}},
+						{e: other,    p: {opacity: 0},                 o: {duration: 0}},
+						{e: wrapper,  p: {backgroundColorAlpha: 0},    o: {duration: 0}}
 					];
 
 					$.Velocity.RunSequence(sequence);
@@ -51,17 +66,25 @@ $(function() {
 			else if ($('#following-wrapper').css("z-index") >= $('#follower-wrapper').css("z-index")) {
 				backer  = $('#misc .backer');
 				wrapper = $('#follower-wrapper');
+				other    = $('#following-wrapper');
+				question = $('.profile-questions');
 				tab_bar = $('#mobile-tab-bar-wrapper');
 				z_index = parseInt($('#following-wrapper').css("z-index"));
 
 				sequence = [
-					{e: tab_bar,  p: {"z_index": z_index + 3},                o: {duration: 0}},
+					{e: tab_bar,  p: {"z-index": z_index + 3},                o: {duration: 0}},
 					{e: backer,   p: {visibility: "hidden"},                  o: {duration: 0}},
 					{e: backer,   p: {translateX: 0, "z-index": z_index + 1}, o: {duration: 0}},
 					{e: wrapper,  p: {translateX: 0, "z-index": z_index + 2}, o: {duration: 0}},
 					{e: backer,   p: {visibility: "visibile"},                o: {duration: 0}},
+					{e: wrapper,  p: {opacity: 1, backgroundColor: "#ffffff", backgroundColorAlpha: 1}, o: {duration: 0}},
+					{e: backer,   p: {opacity: 1},                            o: {duration: 0}},
 					{e: backer,   p: {translateX: "100%"},                    o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-					{e: wrapper,  p: {translateX: "100%"},                    o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
+					{e: wrapper,  p: {translateX: "100%"},                    o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+					{e: backer,   p: {opacity: 0},                 o: {duration: 0}},
+					{e: question, p: {opacity: 0},                 o: {duration: 0}},
+					{e: other,    p: {opacity: 0},                 o: {duration: 0}},
+					{e: wrapper,  p: {backgroundColorAlpha: 0},    o: {duration: 0}}
 				];
 
 				$.Velocity.RunSequence(sequence);
@@ -69,15 +92,21 @@ $(function() {
 			else {
 				backer  = $('#misc .backer');
 				wrapper = $('#follower-wrapper');
+				question = $('.profile-questions');
 				tab_bar = $('#mobile-tab-bar-wrapper');
 				z_index = parseInt($('#following-wrapper').css("z-index"));
 
 				sequence = [
-					{e: tab_bar,  p: {"z_index": z_index + 3}, o: {duration: 0}},
+					{e: tab_bar,  p: {"z-index": z_index + 3}, o: {duration: 0}},
 					{e: backer,   p: {"z-index": z_index + 1}, o: {duration: 0}},
 					{e: wrapper,  p: {"z-index": z_index + 2}, o: {duration: 0}},
+					{e: wrapper,  p: {opacity: 1, backgroundColor: "#ffffff", backgroundColorAlpha: 1}, o: {duration: 0}},
+					{e: backer,   p: {opacity: 1},                            o: {duration: 0}},
 					{e: backer,   p: {translateX: "100%"},     o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-					{e: wrapper,  p: {translateX: "100%"},     o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
+					{e: wrapper,  p: {translateX: "100%"},     o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+					{e: backer,   p: {opacity: 0},                 o: {duration: 0}},
+					{e: question, p: {opacity: 0},                 o: {duration: 0}},
+					{e: wrapper,  p: {backgroundColorAlpha: 0},    o: {duration: 0}}
 				];
 
 				$.Velocity.RunSequence(sequence);
@@ -100,12 +129,17 @@ $(function() {
 					overlay  = $('.user-relationship-overlay');
 					backer   = $('#misc .backer');
 					wrapper  = $('#following-wrapper');
+					question = $('.profile-questions');
 
 					sequence = [
-						{e: user_img, p: {height: user_img.width()}, o: {duration: 0}},
-						{e: overlay,  p: {height: user_img.width()}, o: {duration: 0}},
-						{e: backer,   p: {translateX: "100%"},       o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-						{e: wrapper,  p: {translateX: "100%"},       o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
+						{e: user_img, p: {height: user_img.width()},   o: {duration: 0}},
+						{e: overlay,  p: {height: user_img.width()},   o: {duration: 0}},
+						{e: wrapper,  p: {backgroundColor: "#ffffff"}, o: {duration: 0}},
+						{e: backer,   p: {translateX: "100%"},         o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
+						{e: wrapper,  p: {translateX: "100%"},         o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+						{e: backer,   p: {opacity: 0},                 o: {duration: 0}},
+						{e: question, p: {opacity: 0},                 o: {duration: 0}},
+						{e: wrapper,  p: {backgroundColorAlpha: 0},    o: {duration: 0}}
 					];
 
 					$.Velocity.RunSequence(sequence);
@@ -115,6 +149,8 @@ $(function() {
 					user_img = $('.user img');
 					overlay  = $('.user-relationship-overlay');
 					backer   = $('#misc .backer');
+					question = $('.profile-questions');
+					other    = $('#follower-wrapper');
 					wrapper  = $('#following-wrapper');
 					tab_bar  = $('#mobile-tab-bar-wrapper');
 					z_index  = parseInt($('#follower-wrapper').css("z-index"));
@@ -122,13 +158,19 @@ $(function() {
 					sequence = [
 						{e: user_img, p: {height: user_img.width()},              o: {duration: 0}},
 						{e: overlay,  p: {height: user_img.width()},              o: {duration: 0}},
-						{e: tab_bar,  p: {"z_index": z_index + 3},                o: {duration: 0}},
+						{e: tab_bar,  p: {"z-index": z_index + 3},                o: {duration: 0}},
 						{e: backer,   p: {visibility: "hidden"},                  o: {duration: 0}},
 						{e: backer,   p: {translateX: 0, "z-index": z_index + 1}, o: {duration: 0}},
 						{e: wrapper,  p: {"z-index": z_index + 2},                o: {duration: 0}},
 						{e: backer,   p: {visibility: "visibile"},                o: {duration: 0}},
+						{e: wrapper,  p: {opacity: 1, backgroundColor: "#ffffff", backgroundColorAlpha: 1}, o: {duration: 0}},
+						{e: backer,   p: {opacity: 1},                            o: {duration: 0}},
 						{e: backer,   p: {translateX: "100%"},                    o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-						{e: wrapper,  p: {translateX: "100%"},                    o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
+						{e: wrapper,  p: {translateX: "100%"},                    o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+						{e: backer,   p: {opacity: 0},                 o: {duration: 0}},
+						{e: question, p: {opacity: 0},                 o: {duration: 0}},
+						{e: other,    p: {opacity: 0},                 o: {duration: 0}},
+						{e: wrapper,  p: {backgroundColorAlpha: 0},    o: {duration: 0}}
 					];
 
 					$.Velocity.RunSequence(sequence);
@@ -137,17 +179,25 @@ $(function() {
 			else if ($('#follower-wrapper').css("z-index") >= $('#following-wrapper').css("z-index")) {
 				backer   = $('#misc .backer');
 				wrapper  = $('#following-wrapper');
+				other    = $('#follower-wrapper');
+				question = $('.profile-questions');
 				tab_bar  = $('#mobile-tab-bar-wrapper');
 				z_index  = parseInt($('#follower-wrapper').css("z-index"));
 
 				sequence = [
-					{e: tab_bar,  p: {"z_index": z_index + 3},                o: {duration: 0}},
+					{e: tab_bar,  p: {"z-index": z_index + 3},                o: {duration: 0}},
 					{e: backer,   p: {visibility: "hidden"},                  o: {duration: 0}},
 					{e: backer,   p: {translateX: 0, "z-index": z_index + 1}, o: {duration: 0}},
 					{e: wrapper,  p: {translateX: 0, "z-index": z_index + 2}, o: {duration: 0}},
 					{e: backer,   p: {visibility: "visibile"},                o: {duration: 0}},
+					{e: wrapper,  p: {opacity: 1, backgroundColor: "#ffffff", backgroundColorAlpha: 1}, o: {duration: 0}},
+					{e: backer,   p: {opacity: 1},                            o: {duration: 0}},
 					{e: backer,   p: {translateX: "100%"},                    o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-					{e: wrapper,  p: {translateX: "100%"},                    o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
+					{e: wrapper,  p: {translateX: "100%"},                    o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+					{e: backer,   p: {opacity: 0},                 o: {duration: 0}},
+					{e: question, p: {opacity: 0},                 o: {duration: 0}},
+					{e: other,    p: {opacity: 0},                 o: {duration: 0}},
+					{e: wrapper,  p: {backgroundColorAlpha: 0},    o: {duration: 0}}
 				];
 
 				$.Velocity.RunSequence(sequence);
@@ -155,15 +205,21 @@ $(function() {
 			else {
 				backer   = $('#misc .backer');
 				wrapper  = $('#following-wrapper');
+				question = $('.profile-questions');
 				tab_bar  = $('#mobile-tab-bar-wrapper');
 				z_index  = parseInt($('#follower-wrapper').css("z-index"));
 
 				sequence = [
-					{e: tab_bar,  p: {"z_index": z_index + 3}, o: {duration: 0}},
+					{e: tab_bar,  p: {"z-index": z_index + 3}, o: {duration: 0}},
 					{e: backer,   p: {"z-index": z_index + 1}, o: {duration: 0}},
 					{e: wrapper,  p: {"z-index": z_index + 2}, o: {duration: 0}},
+					{e: wrapper,  p: {opacity: 1, backgroundColor: "#ffffff", backgroundColorAlpha: 1}, o: {duration: 0}},
+					{e: backer,   p: {opacity: 1},                            o: {duration: 0}},
 					{e: backer,   p: {translateX: "100%"},     o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-					{e: wrapper,  p: {translateX: "100%"},     o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
+					{e: wrapper,  p: {translateX: "100%"},     o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+					{e: backer,   p: {opacity: 0},                 o: {duration: 0}},
+					{e: question, p: {opacity: 0},                 o: {duration: 0}},
+					{e: wrapper,  p: {backgroundColorAlpha: 0},    o: {duration: 0}}
 				];
 
 				$.Velocity.RunSequence(sequence);
@@ -172,6 +228,8 @@ $(function() {
 	});
 
 	$('#question-count').on('click', function() {
+
+		question = $('.profile-questions');
 
 		if (window.innerWidth < 900) {
 			$(this).velocity({scaleX: 1.35, scaleY: 1.35}, 150).velocity({scaleX: 1, scaleY: 1}, 150);
@@ -202,12 +260,18 @@ $(function() {
 		if (other_wrapper) {
 			sequence = [
 				{e: other_wrapper, p: {translateX: 0}, o: {duration: 0}},
+				{e: wrapper,       p: {backgroundColorAlpha: 1, backgroundColor: "#ffffff"}, o: {duration: 0}},
+				{e: backer,        p: {opacity: 1},    o: {duration: 0}},
+				{e: question,      p: {opacity: 1},    o: {duration: 0}},
 				{e: wrapper,       p: {translateX: 0}, o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
 				{e: backer,        p: {translateX: 0}, o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
 			];
 		}
 		else {
 			sequence = [
+				{e: wrapper,       p: {backgroundColorAlpha: 1, backgroundColor: "#ffffff"}, o: {duration: 0}},
+				{e: backer,        p: {opacity: 1},    o: {duration: 0}},
+				{e: question,      p: {opacity: 1},    o: {duration: 0}},
 				{e: wrapper, p: {translateX: 0}, o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
 				{e: backer,  p: {translateX: 0}, o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
 			];

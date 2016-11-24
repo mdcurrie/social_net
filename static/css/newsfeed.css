@@ -55,7 +55,6 @@ a {
 #close-comments {
 	height: 46px;
 	background: #2eb398;
-	box-shadow: 0 0 10px rgba(0, 0, 0, .35);
 	position: relative;
 }
 #close-comments div:first-of-type {
@@ -86,19 +85,16 @@ a {
 	overflow: auto;
 	-webkit-overflow-scrolling: touch;
 }
-body {
-	background: #f1f1f1;
-}
 main {
 	max-width: 460px;
 	margin: 0 auto;
 }
-/*#main-content {
-	padding-top: 61px;
+#main-content {
+	padding-top: 46px;
 }
 .question-wrapper {
-	margin-bottom: 15px;
-}*/
+	border-bottom: 15px solid #f1f1f1;
+}
 .comment-count:hover {
 	cursor: pointer;
 }
@@ -106,13 +102,23 @@ main {
 	cursor: pointer;
 }
 #main-content-header {
-	width: calc(100% - 20px);
-	margin: 0 auto;
+	width: calc(100% - 16px);
+    margin: 0 auto;
+    margin-top: 14px;
+    overflow: auto;
+    margin-bottom: 4px;
+    position: relative;
+    padding: 3px 0;
 }
 #main-content-title {
-	color: #353436;
-	font-size: 1em;
-	margin-bottom: 15px;
+	color: #999;
+    font-size: 0.8em;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #f1f1f1;
+    border-radius: 30px;
+    padding: 8px;
 }
 #main-content-title form {
 	display: inline-block;
@@ -120,7 +126,7 @@ main {
 }
 #main-content-selection {
 	float: right;
-	transform: translateY(-4px);
+	height: 24px;
 }
 #main-content-selection a:first-of-type .selection {
 	margin-right: 10px;
@@ -133,6 +139,10 @@ main {
 }
 .selection {
 	float: left;
+}
+#mobile-tab-bar-wrapper {
+	display: block !important;
+	opacity: 1 !important;
 }
 
 @media only screen and (min-width: 380px) {
@@ -148,11 +158,19 @@ main {
 }
 
 @media only screen and (min-width: 460px) {
+	body {
+		background: #f1f1f1;
+	}
 	.question-wrapper {
 		margin-bottom: 20px;
 	}
 	#main-content-header {
 		width: 100%;
+		margin-bottom: 8px;
+	}
+	#main-content-title {
+		background: white;
+		font-size: 0.9em;
 	}
 }
 

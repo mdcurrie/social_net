@@ -2,6 +2,8 @@ $(function() {
 	var scroll_pos;
 	$('.comment-count').on('click', function() {
 		var question_id = $(this).parents('.question-wrapper').attr('id');
+		var svg = $(this).find('.svg-image');
+
 		$.get('/comments/' + question_id, function(data) {
 			scroll_pos = $('body').scrollTop();
 			$('#off-canvas-comments').html(data);

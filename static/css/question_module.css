@@ -4,7 +4,7 @@
 	position: relative;
 }
 .question-image {
-	height: 190px;
+	height: 220px;
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 50% 40%;
@@ -39,7 +39,7 @@
 }
 .asker-username {
 	float: left;
-	margin-bottom: 9px;
+	margin-bottom: 11px;
 }
 .asker-username a {
 	color: white;
@@ -48,7 +48,7 @@
 	font-weight: bold;
 }
 .question-date {
-	color: #A5A5A6;
+	color: #999;
 	font-size: 0.65em;
 	letter-spacing: 0.02em;
 }
@@ -56,7 +56,7 @@
 	position: absolute;
 	z-index: 10;
 	bottom: 4px;
-	right: 10px;
+	right: 6px;
 }
 .favorite-count {
 	position: relative;
@@ -108,8 +108,8 @@
 .vote-count {
 	font-size: 0.70em;
 	letter-spacing: 0.03em;
-	color: #A5A5A6;
-	padding: 5px 10px;
+	color: #999;
+	padding: 5px 8px;
 	text-align: right;
 }
 .labels {
@@ -135,11 +135,12 @@
 	color: white;
 }
 .poll-percentage {
+	color: #999;
 	position: relative;
 	top: 50%;
 	transform: translateY(-50%);
 	font-size: 0.8em;
-	transition: color 0.3s
+	transition: color 0.3s;
 }
 .bar-wrapper1 {
 	margin-left: 45px;
@@ -153,26 +154,57 @@
 	height: 24px;
 	background-color: #2eb398;
 	width: 100%;
+	position: relative;
 }
 .poll-bar > div {
 	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 5px;
+    padding: 1px 0;
+    font-size: 0.8em;
+    letter-spacing: 0.03em;
+    text-overflow: clip;
+    white-space: nowrap;
+    overflow-x: hidden;
+    width: calc(100% - 5px);
+    color: white;
+}
+.behind-poll-bar {
+	position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 24px;
+}
+.behind-poll-bar > div {
 	font-size: 0.8em;
-	letter-spacing: 0.03em;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 5px;
+    letter-spacing: 0.03em;
+    padding: 1px 0;
+    color: #999;
 }
 .topics-container {
-	background: #e4e4e4;
-	padding: 0 5px 3px 5px;
+	border-top: 1px solid #f1f1f1;
+    width: calc(100% - 16px);
+    margin: 0 auto;
+    overflow: auto;
 }
 .question-topic {
-	display: inline-block;
-	margin: 0 5px;
+    float: left;
 }
 .question-topic a {
 	font-size: 0.8em;
-	letter-spacing: 0.03em;
+    letter-spacing: 0.03em;
+    color: #999;
+    padding: 7px;
+    background: #f1f1f1;
+    border-radius: 30px;
+    margin: 5px 10px 5px 0;
+    display: block;
 }
 
 @media only screen and (min-width: 380px) {
@@ -195,7 +227,7 @@
 		transform: translateY(8px);
 	}
 	.asker-username {
-		margin-bottom: 9px;
+		margin-bottom: 10px;
 	}
 	.asker-username a {
 	    font-size: 0.85em;
@@ -204,13 +236,13 @@
 	    font-size: 0.75em;
 	}
 	.action-buttons {
-	    right: 20px;
+	    right: 16px;
 	}
 	.count-text {
 		font-size: 0.85em;
 	}
 	.question-image {
-		height: 210px;
+		height: 230px;
 	}
 	.question-content {
 		padding-top: 30px;
@@ -222,6 +254,12 @@
 	.bar-wrapper1 {
 		margin-left: 60px;
 		width: calc(100% - 60px);
+	}
+	.vote-count {
+		padding: 5px 20px;
+	}
+	.topics-container {
+	    width: calc(100% - 40px);
 	}
 }
 
@@ -261,7 +299,7 @@
 		letter-spacing: 0.06em;
 	}
 	.question-image {
-		height: 220px;
+		height: 240px;
 	}
 	.question-content {
 		padding-top: 32px;
@@ -279,6 +317,12 @@
 		height: 26px;
 	}
 	.poll-bar > div {
+		font-size: 0.9em;
+	}
+	.behind-poll-bar {
+		height: 26px;
+	}
+	.behind-poll-bar > div {
 		font-size: 0.9em;
 	}
 	.vote-count {
@@ -313,7 +357,7 @@
 
 @media only screen and (min-width: 480px) {
 	.question-image {
-		height: 230px;
+		height: 240px;
 	}
 	.comment-count {
 		margin-left: 18px;
@@ -334,12 +378,6 @@
 	.bar-wrapper1 {
 		margin-left: 63px;
 		width: calc(100% - 63px);
-	}
-	.poll-bar {
-		height: 26px;
-	}
-	.poll-bar > div {
-		font-size: 0.9em;
 	}
 }
 
