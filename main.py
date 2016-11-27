@@ -957,7 +957,7 @@ class FeedHandler(BaseHandler):
 			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
 
 			searches = 0
-			while len(questions) < 20 and searches < 7:
+			while len(questions) < 20 and searches < 10:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
@@ -990,7 +990,7 @@ class RecentFeedHandler(BaseHandler):
 			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
 
 			searches = 0
-			while len(questions) < 20 and searches < 7:
+			while len(questions) < 20 and searches < 10:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
@@ -1065,7 +1065,7 @@ class TopicHandler(BaseHandler):
 		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(20)
 
 		searches = 0
-		while len(questions) < 20 and searches < 7:
+		while len(questions) < 20 and searches < 10:
 			days      = days + 14
 			old_span  = time_span
 			time_span = datetime.utcnow() - timedelta(days=days)
@@ -1102,7 +1102,7 @@ class RecentTopicHandler(BaseHandler):
 		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(20)
 
 		searches = 0
-		while len(questions) < 20 and searches < 7:
+		while len(questions) < 20 and searches < 10:
 			days      = days + 14
 			old_span  = time_span
 			time_span = datetime.utcnow() - timedelta(days=days)
