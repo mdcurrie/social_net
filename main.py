@@ -49,6 +49,7 @@ class Application(tornado.web.Application):
 					(r"/favorites", FavoritesHandler),
 					(r"/favorites/recent", RecentFavoritesHandler),
 					(r"/search", SearchHandler),
+					(r"/(\w+)", CustomURLHandler),
 		]
 		settings = dict(
 			template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -370,7 +371,7 @@ class FollowHateHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def post(self, target_id):
 		if not self.current_user:
-			self.redirect("/login")
+			self.write({"redirect": "/login"})
 		else:
 			try:
 				target_id = ObjectId(target_id)
@@ -501,7 +502,7 @@ class SettingsHandler(BaseHandler):
 				elif custom_url != '' and re.compile("^[a-zA-Z0-9_]+$").match(custom_url) == None:
 					self.write({"error": "Your custom URL can only contain letters, numbers, and underscores."})
 				# some URLS are off-limits
-				elif custom_url in {"signup", "login", "feed", "settings"}:
+				elif custom_url in {"feed", "login", "logout", "signup", "settings", "email_lookup", "users", "follow_or_hate", "questions", "comments", "favorite_or_share", "vote", "create_question", "add_topic", "topics", "favorites", "search"}:
 					self.write({"error": "Sorry, but that custom URL is not allowed."})
 				else:
 					if custom_url == '':
@@ -957,7 +958,7 @@ class FeedHandler(BaseHandler):
 			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
 
 			searches = 0
-			while len(questions) < 20 and searches < 10:
+			while len(questions) < 20 and searches < 7:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
@@ -990,7 +991,7 @@ class RecentFeedHandler(BaseHandler):
 			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
 
 			searches = 0
-			while len(questions) < 20 and searches < 10:
+			while len(questions) < 20 and searches < 7:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
@@ -1065,7 +1066,7 @@ class TopicHandler(BaseHandler):
 		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(20)
 
 		searches = 0
-		while len(questions) < 20 and searches < 10:
+		while len(questions) < 20 and searches < 7:
 			days      = days + 14
 			old_span  = time_span
 			time_span = datetime.utcnow() - timedelta(days=days)
@@ -1102,7 +1103,7 @@ class RecentTopicHandler(BaseHandler):
 		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(20)
 
 		searches = 0
-		while len(questions) < 20 and searches < 10:
+		while len(questions) < 20 and searches < 7:
 			days      = days + 14
 			old_span  = time_span
 			time_span = datetime.utcnow() - timedelta(days=days)
@@ -1181,8 +1182,45 @@ class SearchHandler(BaseHandler):
 
 		logging.info(ret)
 
+class CustomURLHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self, custom_url):
+		target_user = yield self.application.db.users.find_one({"custom_url": custom_url}, {"username_search": 0, "email": 0, "topics": 0, "password": 0, "salt": 0})
+		if not target_user:
+			if self.current_user:
+				self.redirect("/feed")
+			else:
+				self.redirect("/")
+		else:
+			own_profile = self.current_user and self.current_user["_id"] == target_user["_id"]
+
+			ret = yield [self.application.db.questions.find({"asker": target_user["_id"]}, {"date": 0, "asker": 0, "topics": 0, "question_search": 0}).sort("_id", -1).to_list(18),
+						 self.application.db.votes.find({"user_id": target_user["_id"]}, {"_id": 0}).sort("_id", -1).to_list(18),
+						 self.application.db.followers.find_one({"user_id": target_user["_id"]}, {"_id": 0}),
+						 self.application.db.following.find_one({"user_id": target_user["_id"]}, {"_id": 0}),]
+
+			questions, votes, user_followers, user_following = ret
+
+			question_count       = target_user.get("question_count", 0)
+			following_this_user  = self.current_user and user_followers and self.current_user["_id"] in user_followers["followers"]
+			user_followers_count = user_following_count = 0
+			if user_followers:
+				user_followers_count = user_followers["count"]
+			if user_following:
+				user_following_count = user_following["count"]
+
+			recent_answers = answered_questions = None
+			if votes:
+				answered_questions = yield self.application.db.questions.find({"_id": {"$in": [vote["question_id"] for vote in votes[0]["votes"]]}}).to_list(None)
+				recent_answers     = [v["vote_index"] for q in answered_questions for v in votes[0]["votes"] if q["_id"] == v["question_id"]]
+
+			self.render("user_profile.html", profile=target_user, own_profile=own_profile, following_this_user=following_this_user, recent_answers=recent_answers,
+				 							 answered_questions=answered_questions, questions=questions, question_count=question_count, user_following_count=user_following_count,
+				 							 user_followers_count=user_followers_count)
+
+
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()

@@ -22,6 +22,9 @@
                 <div id="user-profile-pic">
                     <div class="dropzone">
                         <img src="{{ current_user["profile_pic_link"] }}" alt="Your profile picture">
+                        <div id="loading-circle">
+                            <img src="{{ static_url("images/loading-svg.svg") }}" alt="Loading icon">
+                        </div>
                     </div>
                 </div>
                 <div id="username">
@@ -34,12 +37,12 @@
                     </form>
                 </div>
                 <div id="bio">
-                    <div class="wrapper">
-                        {{ current_user["bio"] }}
+                    <div class="wrapper {% if not current_user["bio"] %}active{% end %}">
+                        {% if current_user["bio"] %}{{ current_user["bio"] }}{% else %}About you{% end %}
                     </div>
                     <form action="/settings/updateBio" method="post">
                         {% raw xsrf_form_html() %}
-                        <input type="text" name="bio" placeholder="{{ current_user["bio"] }}" autocomplete="off">
+                        <input type="text" name="bio" placeholder="{% if current_user["bio"] %}{{ current_user["bio"] }}{% else %}About you{% end %}" autocomplete="off">
                     </form>
                 </div>
                 <div id="row-settings">

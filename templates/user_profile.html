@@ -54,7 +54,7 @@
                                         {% else %}
                                             {{ round(question_count/1000000, 1) }}M
                                         {% end %}
-                                    </span> questions
+                                    </span> {% if question_count == 1 %}question{% else %}questions{% end %}
                                 </div>
                                 <div id="followers-count" class="/users/{{ profile["_id"] }}/get_relationships?relationship=follower">
                                     <span>
@@ -65,7 +65,7 @@
                                         {% else %}
                                             {{ round(user_followers_count/1000000, 1) }}M
                                         {% end %}
-                                    </span> followers
+                                    </span> {% if user_followers_count == 1 %}follower{% else %}followers{% end %}
                                 </div>
                                 <div id="following-count" class="/users/{{ profile["_id"] }}/get_relationships?relationship=following">
                                     <span>
@@ -106,7 +106,7 @@
                                 {% end %}
                             </div>
                         {% else %}
-                            <div class="none-text">No answers yet.</div>
+                            <div class="none-text">No answers yet. =[</div>
                         {% end %}
                     </div>
                     <div class="profile-questions" id="recent-questions">
@@ -130,7 +130,7 @@
                                 {% end %}
                             </div>
                         {% else %}
-                            <div class="none-text">No questions yet.</div>
+                            <div class="none-text">No questions yet. =\</div>
                         {% end %}
                     </div>
                     <div class="backer"></div>
