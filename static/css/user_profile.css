@@ -97,7 +97,8 @@ main {
     color: #2eb398;
 }
 .relation-header {
-	font-size: .7em;
+	font-size: 0.75em;
+	line-height: 0.75em;
     letter-spacing: 0.03em;
     color: #999;
     margin: 12px 0 6px 6px;
@@ -107,7 +108,9 @@ main {
     border-radius: 30px;
 }
 .none-text {
-	padding: 0 0 10px 10px;
+	padding: 5px 0 10px 10px;
+	font-size: 0.75em;
+	color: #999;
 }
 .users {
 	overflow: auto;
@@ -151,7 +154,8 @@ main {
 	overflow: hidden;
 }
 .header {
-	font-size: .7em;
+	font-size: .75em;
+	line-height: 0.75em;
     letter-spacing: 0.03em;
     color: #999;
     margin: 12px 0 6px 10px;
@@ -246,7 +250,9 @@ main {
 
 @media only screen and (min-width: 480px) {
 	.header, .relation-header {
-		font-size: 0.9em;
+		font-size: 0.8em;
+		line-height: 0.8em;
+		margin: 14px 0 8px 10px;
 	}
 	#recent-questions .header:before {
 		top: calc(50% + 3px);
@@ -297,7 +303,8 @@ main {
 		font-size: 1em;
 	}
 	.header, .relation-header {
-		font-size: 0.95em;
+		font-size: 0.9em;
+		line-height: 0.9em;
 	}
 	.user {
 		width: calc(12.5% - 4px);
@@ -321,6 +328,13 @@ main {
 		font-size: 1.1em;
 	}
 	.user-answer {
+		font-size: 0.85em;
+	}
+	#recent-answers .question:last-of-type {
+		padding-bottom: 0;
+		border-bottom: none;
+	}
+	.none-text {
 		font-size: 0.85em;
 	}
 }
@@ -456,6 +470,7 @@ main {
 	}
 	.header, .relation-header {
 		font-size: 1em;
+		line-height: 1em;
 		margin: initial;
 		background: transparent;
 		border-radius: 0;
@@ -479,7 +494,9 @@ main {
 		padding: 1px 8px 1px 9px;
 	}
 	.none-text {
-		padding: 0;
+		padding: 0 0 10px 0;
+		color: #353436;
+		font-size: 0.95em;
 	}
 	.profile-questions {
 		border-top: 1px solid rgba(0,0,0,.065);
@@ -497,8 +514,8 @@ main {
 		border-bottom: 1px solid rgba(0,0,0,.065);
 	}
 	.questions-wrapper {
-		width: calc(100% + 8px);
-		transform: translateX(-3px);
+		width: calc(100% + 10px);
+		transform: translateX(-5px);
 	}
 	.question {
 		width: calc(33.3% - 10px);
@@ -517,8 +534,6 @@ main {
 	.user-answer {
 		font-size: 0.9em;
 		color: #353436;
-		border: 1px solid rgba(0,0,0,.065);
-		border-top: none;
 	}
 	.backer {
 		top: 15px;

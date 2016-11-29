@@ -46,6 +46,20 @@ main {
 	height: 120px;
 	width: 120px;
 	object-fit: cover;
+	transition: opacity 0.3s;
+}
+#loading-circle {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: 40px;
+	width: 40px;
+}
+#loading-circle img {
+	height: 40px !important;
+	width: 40px !important;
+	display: none;
 }
 .dropzone {
     display: inline-block;
@@ -112,6 +126,9 @@ main {
 #bio .wrapper {
 	min-height: calc(1em + 8px);
 }
+.wrapper.active {
+	color: #999;
+}
 #row-settings {
 	width: calc(100% - 20px);
 	margin: 0 auto;
@@ -177,16 +194,23 @@ main {
 #url-prefix {
 	text-align: left;
 	color: #999;
+	margin-bottom: 4px;
 }
 #email {
 	color: #2eb398;
 	font-weight: bold;
 	display: inline-block;
+	max-width: 180px;
+	text-overflow: ellipsis;
+	overflow-x: hidden;
 }
 #custom-url {
 	color: #2eb398;
 	font-weight: bold;
 	float: right;
+	max-width: 180px;
+	text-overflow: ellipsis;
+	overflow-x: hidden;
 }
 #custom-url-button {
 	width: initial;
@@ -194,13 +218,10 @@ main {
 .error-message {
 	font-size: 0.75em;
 	color: #e64c65;
-	width: calc(100% - 20px);
 	max-width: 250px;
 	margin: 0 auto;
 	position: absolute;
-	bottom: 5px;
-	left: 50%;
-	transform: translateX(-50%);
+	margin-top: 5px;
 }
 .backer {
 	position: absolute;
@@ -241,6 +262,12 @@ main {
 		margin-bottom: 40px;
 		border-bottom: 1px solid rgba(0,0,0,.065);
 	}
+	#email {
+		max-width: 240px;
+	}
+	#custom-url {
+		max-width: 240px;
+	}
 }
 
 @media only screen and (min-width: 600px) {
@@ -256,6 +283,12 @@ main {
 	}
 	.value {
 		font-size: 1em;
+	}
+	#email {
+		max-width: 280px;
+	}
+	#custom-url {
+		max-width: 280px;
 	}
 }
 
@@ -344,9 +377,13 @@ main {
 	#email {
 		color: #2eb398;
 		font-weight: bold;
+		max-width: 330px;
+	}
+	#custom-url {
+		max-width: 330px;
 	}
 	#url-prefix {
-		margin-bottom: 2px;
+		color: #353436;
 	}
 }
 

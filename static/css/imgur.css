@@ -53,6 +53,6 @@
     margin: -16px 0 0 -16px
 }
 
-body.busy .loading-modal {
-    display: block;
+.busy #user-profile-pic img {
+    opacity: 0.5;
 }
