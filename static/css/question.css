@@ -32,6 +32,10 @@ main {
 	margin-bottom: 15px;
 	overflow: auto;
 }
+.comment-form {
+	opacity: 0;
+	display: none;
+}
 
 @media only screen and (min-width: 460px) {
 	body {
@@ -67,6 +71,7 @@ main {
 	#mobile-tab-bar-wrapper {
 		display: block !important;
 		opacity: 1 !important;
+		z-index: 130 !important;
 	}
 }
 
@@ -79,6 +84,9 @@ main {
 		width: calc(100% - 240px);
 		max-width: initial;
 		float: right;
+	}
+	main.centered {
+		width: 100%;
 	}
 	#content-and-comments-wrapper {
 		width: calc(100% - 80px);

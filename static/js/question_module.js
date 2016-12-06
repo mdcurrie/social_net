@@ -9,9 +9,10 @@ $(function() {
                 window.location.href = data.redirect;
             }
             else {
-                q.parent().find('.poll-percentage-wrapper').removeClass('active');
+                q.removeClass('active');
+                q.siblings().removeClass('active');
                 if (!data.removed_vote) {
-                    q.find('.poll-percentage-wrapper').addClass('active');
+                    q.addClass('active');
                 }
                 q.parents('.question-wrapper').find('.vote-count').text(data.votes + ' Votes');
                 for (var i=0; i < data.percentages.length; i++) {

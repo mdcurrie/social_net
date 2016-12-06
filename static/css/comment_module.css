@@ -61,7 +61,7 @@
     position: fixed;
     bottom: 0px;
     left: 0px;
-    box-shadow: 0 0 20px rgba(46, 179, 152, .15);
+    border-top: 1px solid rgba(0,0,0,.065);
     height: 46px;
     background: white;
     z-index: 110;
@@ -201,6 +201,7 @@
 		border-bottom-left-radius: 6px;
 		border-bottom-right-radius: 6px;
 		opacity: 1 !important;
+		display: block !important;
 	}
 	.comment-form form {
 		max-width: initial;

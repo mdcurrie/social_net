@@ -204,18 +204,20 @@
 	position: relative;
 }
 #close-question div:first-of-type {
-	font-family: serif;
-    font-size: 3em;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    color: white;
-    padding-right: 23px;
-    padding-left: 6px;	
+	position: absolute;
+    top: 0;
+    left: 0;
+    padding: 7px 20px 4px 3px;
+}
+#close-question div:first-of-type svg {
+	height: 32px;
+	width: 32px;
 }
 #close-question div:nth-of-type(2) {
-	font-size: 1.25em;
-	line-height: 1.25em;
+	font-size: 1.1em;
+	font-weight: bold;
+	letter-spacing: 0.03em;
+	padding: 2px 0;
     color: white;
     position: absolute;
     left: 55px;

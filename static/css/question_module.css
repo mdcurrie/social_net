@@ -55,22 +55,23 @@
 .action-buttons {
 	position: absolute;
 	z-index: 10;
-	bottom: 4px;
-	right: 6px;
+	bottom: -6px;
+	right: 0;
 }
 .favorite-count {
 	position: relative;
-	height: 18px;
+	height: 38px;
 	float: left;
+	padding: 10px 7px 10px 5px;
 }
 .favorite-count:hover {
 	cursor: pointer;
 }
 .comment-count {
 	position: relative;
-	height: 18px;
+	height: 38px;
 	float: left;
-	margin-left: 16px;
+	padding: 10px 4px 10px 7px;
 }
 .count-text {
 	color: white;
@@ -128,19 +129,12 @@
 	float: left;
 	transition: background-color 0.3s;
 }
-.poll-percentage-wrapper.active {
-	background: #2eb398;
-}
-.poll-percentage-wrapper.active * {
-	color: white;
-}
 .poll-percentage {
 	color: #999;
 	position: relative;
 	top: 50%;
 	transform: translateY(-50%);
 	font-size: 0.8em;
-	transition: color 0.3s;
 }
 .bar-wrapper1 {
 	margin-left: 45px;
@@ -155,6 +149,7 @@
 	background-color: #2eb398;
 	width: 100%;
 	position: relative;
+	transition: background-color 0.3s;
 }
 .poll-bar > div {
 	position: absolute;
@@ -169,6 +164,21 @@
     overflow-x: hidden;
     width: calc(100% - 5px);
     color: white;
+}
+.poll-percentage-wrapper {
+	background: #2eb398;
+}
+.poll-percentage-wrapper > div {
+	color: white;
+}
+.poll-answer.active .poll-percentage-wrapper {
+	background: #2e8cb3;
+}
+.poll-answer.active .poll-bar {
+	background: #2e8cb3;
+}
+.poll-answer.active .poll-bar > div {
+	color: white;
 }
 .behind-poll-bar {
 	position: absolute;
@@ -236,7 +246,13 @@
 	    font-size: 0.75em;
 	}
 	.action-buttons {
-	    right: 16px;
+		bottom: -7px;
+	}
+	.favorite-count {
+		padding: 10px 7px 10px 16px;
+	}
+	.comment-count {
+		padding: 10px 16px 10px 7px;
 	}
 	.count-text {
 		font-size: 0.85em;
@@ -337,6 +353,12 @@
 	.question-title {
 		bottom: 65px;
 	}
+	.favorite-count {
+		padding-right: 16px;
+	}
+	.comment-count {
+		padding-left: 16px;
+	}
 	.question-image {
 		border-top-left-radius: 6px;
 		border-top-right-radius: 6px;
@@ -359,8 +381,11 @@
 	.question-image {
 		height: 240px;
 	}
+	.favorite-count {
+		padding-right: 9px;
+	}
 	.comment-count {
-		margin-left: 18px;
+		padding-left: 9px;
 	}
 	.question-content {
 		padding-top: 26px;
@@ -394,14 +419,14 @@
 		font-weight: normal;
 		letter-spacing: 0.04em;
 	}
+}
+
+@media only screen and (pointer: fine) {
 	.poll-answer:hover {
-		cursor: pointer;
+		cursor: pointer;	
 	}
-	.poll-answer:hover .poll-percentage-wrapper {
-		background-color: #2eb398;
-	}
-	.poll-answer:hover .poll-percentage {
-		color: white;
+	.poll-answer:hover .poll-percentage-wrapper, .poll-answer:hover .poll-bar {
+		background: #2e8cb3;
 	}
 }
 

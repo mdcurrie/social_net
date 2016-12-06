@@ -116,12 +116,11 @@ function hasScrolled() {
 	        header = $('header');
 	        if ($('.comment-form').length && !comment_enabled) {
 	        	comment_enabled = true;
-	        	form    = $('.comment-form').css({"opacity": 0});
+	        	form    = $('.comment-form');
 	        	wrapper = $('#mobile-tab-bar-wrapper');
 	        	sequence = [
 	        		{e: header,  p: {translateY: -46}, o: {duration: 300, easing: "easeInOutCubic"}},
 	        		{e: form,    p: {opacity: 1},      o: {display: "block", duration: 300, sequenceQueue: false}},
-	        		{e: wrapper, p: {opacity: 0},      o: {display: "none", duration: 300, sequenceQueue: false}},
 	        	];
 	        }
 	        else {
@@ -137,7 +136,6 @@ function hasScrolled() {
 	        if (comment_enabled && !$('.comment-form input').is(":focus")) {
 	        	if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
 	        		sequence = [
-		        		{e: wrapper, p: {opacity: 0},    o: {display: "none", duration: 0}},
 		        		{e: form,    p: {opacity: 1},    o: {display: "block", duration: 0, sequenceQueue: false}}
 		        	];
 	        	}
@@ -145,7 +143,6 @@ function hasScrolled() {
 	        		comment_enabled = false;
 		        	sequence = [
 		        		{e: header,  p: {translateY: 0}, o: {duration: 300, easing: "easeInOutCubic"}},
-		        		{e: wrapper, p: {opacity: 1},    o: {display: "block", duration: 300, sequenceQueue: false}},
 		        		{e: form,    p: {opacity: 0},    o: {display: "none", duration: 300, sequenceQueue: false}}
 		        	];
 		        }

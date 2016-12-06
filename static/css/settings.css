@@ -203,6 +203,7 @@ main {
 	max-width: 180px;
 	text-overflow: ellipsis;
 	overflow-x: hidden;
+	padding: 2px 0;
 }
 #custom-url {
 	color: #2eb398;
@@ -211,6 +212,7 @@ main {
 	max-width: 180px;
 	text-overflow: ellipsis;
 	overflow-x: hidden;
+	padding: 2px 0;
 }
 #custom-url-button {
 	width: initial;

@@ -7,8 +7,7 @@ header {
 	z-index: 100;
 	height: 46px;
 	top: 0;
-	background: white;
-	box-shadow: 0 0 20px rgba(46, 179, 152, .15);
+	background: #353436;
 	will-change: transform;
 }
 #search-form {
@@ -17,7 +16,8 @@ header {
 #mobile-search-icon {
 	position: absolute;
 	top: 50%;
-	transform: translate(5px, -50%);
+	right: 7px;
+	transform: translateY(calc(-50% + 1px));
 }
 #mobile-search-icon svg {
 	height: 32px;
@@ -53,18 +53,34 @@ header {
 	background: black;
 	z-index: -10;
 }
-#logo {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	font-size: 1.5em;
-	padding-top: 3px;
+.logo {
+	display: none;
 }
-#logo a {
+.logo.mobile {
+	display: block;
+	overflow-y: hidden;
+	padding-top: 6px;
+}
+.mobile a {
 	font-family: Jaapokki;
-	color: #2eb398;
-	display: inline-block;
+	color: white;
+	font-size: 1.3em;
+	letter-spacing: 0.055em;
+}
+#page-title {
+	position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-weight: bold;
+    letter-spacing: 0.03em;
+    font-size: 1.1em;
+    width: calc(100% - 60px);
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 2px 0;
 }
 #header-icon-area {
 	display: none;
@@ -80,7 +96,7 @@ main {
     height: 46px;
     background: white;
     z-index: 20;
-    box-shadow: 0 0 20px rgba(46, 179, 152, .15);
+    border-top: 1px solid rgba(0,0,0,.065);
 }
 #mobile-tab-bar {
 	width: 100%;
@@ -133,13 +149,24 @@ main {
 	#header-icon-area {
 		display: block;
 	}
-	#logo {
+	.logo {
+		display: block;
+		position: absolute;
+		top: 50%;
 		left: calc(50% + 120px);
+		transform: translate(-50%, -50%);
 		font-size: 2em;
-		padding: 0;
+		padding-top: 3px;
 	}
-	#logo a {
+	.logo.centered {
+		left: 50%;
+	}
+	.logo a {
+		font-family: Jaapokki;
 		color: white;
+	}
+	#page-title {
+		display: none;
 	}
 	#search-form {
 		width: 240px;
