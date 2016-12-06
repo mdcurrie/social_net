@@ -93,9 +93,9 @@
                     </div>
                 {% else %}
                     {% if idx == vote %}
-                        <div class="poll-answer">
+                        <div class="poll-answer active">
                             <div class="percent-and-bar">
-                                <div class="poll-percentage-wrapper active">
+                                <div class="poll-percentage-wrapper">
                                     <div class="poll-percentage">{% if total_votes == 0 %}0%{% else %}{{ int(q["votes"]*100/total_votes) }}%{% end %}</div>
                                 </div>
                                 <div class="bar-wrapper1">

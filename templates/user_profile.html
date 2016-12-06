@@ -14,11 +14,11 @@
         <![endif]-->
     </head>
     <body>
-        {% module Header('Profile' if own_profile else '', True, current_user != None) %}
+        {% module Header('Profile' if own_profile else '', True, current_user != None, profile["username"]) %}
         {% if current_user %}
             {% module SideColumn('') %}
         {% end %}
-        <main>
+        <main {% if not current_user %}class="centered"{% end %}>
             <section id="user-profile">
                 <div id="profile-info">
                     <div id="profile-picture">
@@ -45,6 +45,9 @@
                         </div>
                         <div id="metrics-wrapper">
                             <div id="metrics">
+                                <div id="triangle-wrapper">
+                                    <div id="triangle"></div>
+                                </div>
                                 <div id="question-count">
                                     <span>
                                         {% if question_count <= 1000 %}

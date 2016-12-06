@@ -22,7 +22,11 @@
 		</div>
 	{% else %}
 		<div class="none-text">
-			None yet.
+			{% if relation == "follower" %}
+				No followers yet. Sad!
+			{% else %}
+				Not following anyone yet. 
+			{% end %}
 		</div>
 	{% end %}
 </div>
