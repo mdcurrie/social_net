@@ -1,5 +1,4 @@
 $(function() {
-	/*
 	$('#create-question button').hover(
 		function() {
 			$('#off-canvas-question-form-backer').css({"will-change": "transform"});
@@ -21,26 +20,38 @@ $(function() {
 			$('#off-canvas-question-form').css({"will-change": "initial"});
 		}
 	);
-*/
+
 	$('#create-question button').on('click', function() {
-		$('#off-canvas-question-form-backer').css({"display": "block"}).transition({y: 80}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)');
-		$('#off-canvas-question-form').css({"display": "block"}).transition({y: 80}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-			$('#question-dark-overlay').css({'z-index': 40});
-			$('#question-dark-overlay').transition({opacity: 0.5}, 200);
-			$('#question-title').focus();
-		});
+		backer  = $('#off-canvas-question-form-backer');
+		form    = $('#off-canvas-question-form');
+		overlay = $('#question-dark-overlay');
+		title   = $('#question-title');
+
+		sequence = [
+			{e: backer,  p: {translateY: "-100%"}, o: {display: "block", duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
+			{e: form,    p: {translateY: "-100%"}, o: {display: "block", duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+			{e: overlay, p: {"z-index": 40},       o: {duration: 0}},
+			{e: overlay, p: {opacity: 0.5},        o: {duration: 200, complete: function() {
+				title.focus();
+			}}}
+		];
+
+		$.Velocity.RunSequence(sequence);
 	});
 
 	$('#question-dark-overlay').on('click', function() {
-		$('#off-canvas-question-form').transition({y: "calc(100% + 80px)"}, 300, 'cubic-bezier(1.000, 0.000, 1.000, 1.000)', function() {
-			$(this).css({"display": "none"});
-		});
-		$('#off-canvas-question-form-backer').transition({y: "calc(100% + 80px)"}, 500, 'cubic-bezier(1.000, 0.000, 0.585, 1.000)', function() {
-			$(this).css({"display": "none"});
-			$('#question-dark-overlay').transition({opacity: 0}, 200, function() {
-				$('#question-dark-overlay').css({'z-index': -10});
-			});
-		});
+		backer  = $('#off-canvas-question-form-backer');
+		form    = $('#off-canvas-question-form');
+		overlay = $('#question-dark-overlay');
+
+		sequence = [
+			{e: form,    p: {translateY: 0},  o: {display: "none", duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
+			{e: backer,  p: {translateY: 0},  o: {display: "none", duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+			{e: overlay, p: {opacity: 0},     o: {duration: 200}},
+			{e: overlay, p: {"z-index": -10}, o: {duration: 0}}
+		];
+
+		$.Velocity.RunSequence(sequence);
 	});
 
 	$('#add-topics-button').on('click', function() {

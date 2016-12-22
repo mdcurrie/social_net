@@ -16,7 +16,7 @@ header {
 #mobile-search-icon {
 	position: absolute;
 	top: 50%;
-	right: 7px;
+	right: 4px;
 	transform: translateY(calc(-50% + 1px));
 }
 #mobile-search-icon svg {
@@ -102,7 +102,7 @@ main {
 	width: 100%;
     max-width: 400px;
     margin: 0 auto;
-    overflow: auto;
+    overflow: hidden;
     height: 100%;
 }
 .nav-option {
@@ -130,6 +130,15 @@ main {
 	font-size: 0.65em;
 	color: #2eb398;
     letter-spacing: 0.03em;
+}
+
+@media only screen and (min-width: 380px) {
+	#mobile-search-icon {
+		right: 16px;
+	}
+	#page-title {
+		left: 16px;
+	}
 }
 
 @media only screen and (min-width: 1200px) {

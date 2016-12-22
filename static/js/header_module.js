@@ -99,10 +99,8 @@ $(function() {
 	});	
 });
 
-var comment_enabled = false;
-
 function hasScrolled() {
-	if ($(window).width() < 1200) {
+	if (window.innerWidth < 1200 && $(document).height() > $(window).height()) {
 	    var st = $(this).scrollTop();
 	    
 	    // Make sure they scroll more than delta
@@ -114,44 +112,17 @@ function hasScrolled() {
 	    if (st > lastScrollTop && st > navbarHeight) {
 	        // Scroll Down
 	        header = $('header');
-	        if ($('.comment-form').length && !comment_enabled) {
-	        	comment_enabled = true;
-	        	form    = $('.comment-form');
-	        	wrapper = $('#mobile-tab-bar-wrapper');
-	        	sequence = [
-	        		{e: header,  p: {translateY: -46}, o: {duration: 300, easing: "easeInOutCubic"}},
-	        		{e: form,    p: {opacity: 1},      o: {display: "block", duration: 300, sequenceQueue: false}},
-	        	];
-	        }
-	        else {
-	        	sequence = [
-	        		{e: header,  p: {translateY: -46}, o: {duration: 300, easing: "easeInOutCubic"}},
-	        	];
-	        }
+        	sequence = [
+        		{e: header,  p: {translateY: -46}, o: {duration: 300, easing: "easeInOutCubic"}},
+        	];
 	        $.Velocity.RunSequence(sequence);
 	    }
 	    else {
 	        // Scroll Up
 	        header = $('header');
-	        if (comment_enabled && !$('.comment-form input').is(":focus")) {
-	        	if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-	        		sequence = [
-		        		{e: form,    p: {opacity: 1},    o: {display: "block", duration: 0, sequenceQueue: false}}
-		        	];
-	        	}
-	        	else {
-	        		comment_enabled = false;
-		        	sequence = [
-		        		{e: header,  p: {translateY: 0}, o: {duration: 300, easing: "easeInOutCubic"}},
-		        		{e: form,    p: {opacity: 0},    o: {display: "none", duration: 300, sequenceQueue: false}}
-		        	];
-		        }
-	        }
-	        else {
-	        	sequence = [
-	        		{e: header,  p: {translateY: 0}, o: {duration: 300, easing: "easeInOutCubic"}},
-	        	];
-	        }
+        	sequence = [
+        		{e: header,  p: {translateY: 0}, o: {duration: 300, easing: "easeInOutCubic"}},
+        	];
 	        $.Velocity.RunSequence(sequence);
 	    }
 

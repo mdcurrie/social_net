@@ -70,7 +70,15 @@ $(function() {
 
 		    $('.comment-form form').preventDoubleSubmission();
 		    
-		    $('.comment-form img').on('click', function() {
+		    $('#comment-img-wrapper').on('click', function() {
+		        if (window.innerWidth < 900) {
+		            wrapper = $(this);
+		            sequence = [
+		                {e: wrapper, p: {scaleX: 1.35, scaleY: 1.35}, o: {duration: 150}},
+		                {e: wrapper, p: {scaleX: 1, scaleY: 1},       o: {duration: 150}}
+		            ];
+		            $.Velocity.RunSequence(sequence);
+		        }
 		        $('.comment-form form').submit();
 		    });
 
@@ -133,18 +141,42 @@ $(function() {
 		$.Velocity.RunSequence(sequence);
 	});
 
-	$('#follow-topic-button').on('click', function(e) {
+	$('.follow-topic-button').on('click', function(e) {
 		e.preventDefault();
-		var url = $('#follow-topic-button').attr('formaction');
+		url     = $('.follow-topic-button').attr('formaction');
+		clicked = $(this);
+
+		if (window.innerWidth < 1200) {
+			if (clicked.text() == "Following") {
+	            sequence = [
+	                {e: clicked, p: {scaleX: 1.15, scaleY: 1.15}, o: {duration: 150}},
+	                {e: clicked, p: {scaleX: 1, scaleY: 1},       o: {duration: 150, complete: function() {
+	                	clicked.text("Follow");
+	                	clicked.removeClass("active");
+	                }}},
+	            ];
+	        }
+	        else {	
+	            sequence = [
+	                {e: clicked, p: {scaleX: 1.15, scaleY: 1.15}, o: {duration: 150}},
+	                {e: clicked, p: {scaleX: 1, scaleY: 1},       o: {duration: 150, complete: function() {
+	                	clicked.text("Following");
+	                	clicked.addClass("active");
+	                }}},
+	            ];
+	        }
+
+	        $.Velocity.RunSequence(sequence);
+	    }
 
 		$.post(url, {_xsrf: getCookie('_xsrf')}, function(data) {
-			$('#topic-follower-count span').text(data.count);
+			$('.main-content-topic-follower-count').text(data.count);
 			if (data.following) {
-				$('#follow-topic-button').addClass('active').text('Following');
+				$('.follow-topic-button').addClass('active').text('Following');
 				$('#topics ul').append('<a href="/topics/' + data.name + '"><li class="active">#' + data.name + '</li></a>');
 			}
 			else {
-				$('#follow-topic-button').removeClass('active').text('Follow');
+				$('.follow-topic-button').removeClass('active').text('Follow');
 				$('#topics .active').parent().remove();
 			}
 		});
@@ -159,9 +191,49 @@ $(function() {
 			$('.user img').css({"height": $('.user img').eq(0).width() + 'px'});
 		});
 	});
+
+	if (window.innerWidth >= 800 && window.innerWidth < 1200) {
+		resizeTwoColumns($('.labels'));
+	}
+	if (window.innerWidth >= 1200) {
+		resizeThreeColumns($('.labels'));
+	}
+
+	var resizeTimer;
+	$(window).resize(function(e) {
+		clearTimeout(resizeTimer);
+		resizeTimer = setTimeout(function() {
+			if (window.innerWidth >= 1200) {
+				resizeThreeColumns($('.labels'));
+			}
+			else if (window.innerWidth >= 800) {
+				resizeTwoColumns($('.labels'));
+			}
+			else {
+				$('.labels').css({"height": ""});
+			}
+		}, 200);
+	});
 });
 
 function getCookie(name) {
     var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
     return r ? r[1] : undefined;
+}
+
+function resizeTwoColumns(labels) {
+	for (i = 0; i < labels.length; i += 2) {
+		max_height = Math.max(labels.eq(i).height(), labels.eq(i + 1).height());
+		labels.eq(i).height(max_height);
+		labels.eq(i + 1).height(max_height);
+	}
+}
+
+function resizeThreeColumns(labels) {
+	for (i = 0; i < labels.length; i += 3) {
+		max_height = Math.max(labels.eq(i).height(), labels.eq(i + 1).height(), labels.eq(i + 2).height());
+		labels.eq(i).height(max_height);
+		labels.eq(i + 1).height(max_height);
+		labels.eq(i + 2).height(max_height);
+	}
 }

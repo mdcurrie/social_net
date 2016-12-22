@@ -9,9 +9,8 @@
 .comment-section {
 	background: white;
 }
-.all-comments {
-	padding-top: 10px;
-	padding-bottom: 46px;
+.comment-wrapper:first-of-type {
+	padding-top: 18px;
 }
 .comment {
 	overflow: auto;
@@ -56,15 +55,7 @@
 	font-weight: normal;
 }
 .comment-form {
-    width: 100%;
-    margin: 0 auto;
-    position: fixed;
-    bottom: 0px;
-    left: 0px;
     border-top: 1px solid rgba(0,0,0,.065);
-    height: 46px;
-    background: white;
-    z-index: 110;
 }
 .comment-form form {
 	max-width: 460px;
@@ -80,8 +71,8 @@
 	float: left;
 	background-color: white;
 	font-family: Gotham;
-	font-size: 0.9em;
-	letter-spacing: 0.02em;
+	font-size: 0.85em;
+	letter-spacing: 0.03em;
 	border: none;
 	outline: none;
 	border-radius: 0;
@@ -107,15 +98,15 @@
 
 
 @media only screen and (min-width: 380px) {
+	.comment-wrapper:first-of-type {
+		padding-top: 20px;
+	}
 	.comment-section-title div {
 		font-size: 0.95em;
 	}
 	.profile-pic {
 		margin: 0 10px 0 20px;
 		float: left;
-	}
-	.all-comments {
-		padding-top: 20px;
 	}
 	.comment-text {
 	    width: calc(100% - 65px);
@@ -129,14 +120,19 @@
 	.comment-time {
 		font-size: 0.65em;
 	}
+	.comment-form input[name="comment"] {
+		padding-left: 20px;
+		width: calc(100% - 56px);
+	}
+	#comment-img-wrapper {
+		right: 20px;
+		left: initial;
+	}
 }
 
 @media only screen and (min-width: 420px) {
 	.comment-section-title div {
 		font-size: 1em;
-	}
-	.all-comments {
-		padding-top: 18px;
 	}
 	.profile-pic {
 		height: 40px;
@@ -166,15 +162,18 @@
 	.comment-section {
 		border-radius: 6px;
 	}
+	.comment-form form {
+		border-bottom-left-radius: 6px;
+		border-top-left-radius: 6px;
+	}
 }
 
-@media only screen and (min-width: 900px) {
+@media only screen and (min-width: 800px) {
 	.comment-section {
 		position: relative;
 	}
 	.all-comments {
 		height: calc(100% - 46px);
-		padding-top: 18px;
 		padding-bottom: 0;
 		overflow: auto;
 		-webkit-overflow-scrolling: touch;
@@ -196,12 +195,7 @@
 		position: absolute;
 		bottom: 0;
 		left: 0;
-		box-shadow: none;
-		border-top: 1px solid rgba(0,0,0,.065);
-		border-bottom-left-radius: 6px;
-		border-bottom-right-radius: 6px;
-		opacity: 1 !important;
-		display: block !important;
+		width: 100%;
 	}
 	.comment-form form {
 		max-width: initial;
@@ -209,6 +203,7 @@
 	}
 	.comment-form input[name="comment"] {
 		height: 45px;
+		width: calc(100% - 46px);
 		border-bottom-left-radius: 6px;
 		padding-left: 20px;
 		padding-right: 20px;
@@ -219,7 +214,7 @@
 		background: #2eb398;
 		float: left;
 		position: relative;
-		border-bottom-right-radius: 6px;
+		right: initial;
 		left: inherit;
 		top: initial;
 		border-radius: initial;
@@ -229,7 +224,7 @@
 	}
 }
 
-@media only screen and (pointer: fine) {
+@media only screen and (min-width: 1200px) {
 	#comment-img-wrapper:hover {
 		cursor: pointer;
 		background: #23927c;

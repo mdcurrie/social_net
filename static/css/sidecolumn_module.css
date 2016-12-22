@@ -14,13 +14,16 @@
 }
 #create-question button {
 	width: 100%;
+	font-size: 0.9em;
+	letter-spacing: 0.03em;
 	border: none;
 	outline: none;
 	color: white;
 	background: #2eb398;
 	padding: 10px 0;
 	border-radius: 3px;
-	font-family: Gotham;		
+	font-family: Gotham;
+	transition: background 0.3s;	
 }
 #create-question button:hover {
 	cursor: pointer;
@@ -186,7 +189,6 @@
 	z-index: 110;
 	background: rgba(46, 179, 152, .8);
 	display: none;
-	will-change: transform;	
 }
 #off-canvas-question-form {
 	position: fixed;
@@ -196,7 +198,6 @@
 	z-index: 120;
 	background: white;
 	display: none;
-	will-change: transform;
 }
 #close-question {
 	height: 46px;

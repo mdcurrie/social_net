@@ -375,7 +375,10 @@ main {
 	}
 	.form-button {
 		padding: 5px 10px;
-	}	
+	}
+	.value > button {
+		padding: 10px;
+	}
 	#email {
 		color: #2eb398;
 		font-weight: bold;
@@ -395,9 +398,6 @@ main {
 		width: calc(100% - 240px);
 		float: right;
 	}
-}
-
-@media only screen and (pointer: fine) {
 	#user-settings .wrapper:hover {
 		cursor: pointer;
 	}
@@ -410,11 +410,5 @@ main {
 		}
 	#custom-url:hover {
 		cursor: pointer;
-	}
-}
-
-@media only screen and (pointer: coarse) {
-	.form-button:active {
-		background: #23927c;
 	}
 }

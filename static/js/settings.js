@@ -6,12 +6,23 @@ $(function() {
 
 	}
 
-	$('input').on('focusin', function() {
-		$('#mobile-tab-bar-wrapper').velocity({translateY: 46}, 0);
+	var focusTimer;
+	var form_inputs = $('main input');
+	$(form_inputs).on('focusout', function() {
+		clearTimeout(focusTimer);
+		focusTimer = setTimeout(function() {
+			if (form_inputs.is(':focus')) {
+				;
+			}
+			else {
+				$('#mobile-tab-bar-wrapper').velocity({"translateY": 0}, {display: "block", duration: 250});
+			}
+		}, 600);
 	});
 
-	$('input').on('focusout', function() {
-		$('#mobile-tab-bar-wrapper').velocity({translateY: 0}, 0);
+	$(form_inputs).on('focusin', function() {
+		clearTimeout(focusTimer);
+		$('#mobile-tab-bar-wrapper').velocity({"translateY": 0}, {duration: 650}).velocity({"translateY": 46}, {display: "none", duration: 250});
 	});
 
 	/* profile picture section */
@@ -120,12 +131,14 @@ $(function() {
 
 		sequence = [
 			{e: row,          p: {height: row.height() + 130}, o: {duration: 500}},
-			{e: row_backer,   p: {translateX: "100%"}, o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
-			{e: form_wrapper, p: {translateX: "100%"}, o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false, complete: function() {
+			{e: row_backer,   p: {opacity: 1},                 o: {duration: 0, sequenceQueue: false}},
+			{e: row_backer,   p: {translateX: "100%"},         o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
+			{e: form_wrapper, p: {translateX: "100%"},         o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+			{e: row_backer,   p: {opacity: 0},                 o: {duration: 0, complete: function() {
 				if (userAgent != 'iOS') {
 					$('.row:first-of-type input').eq(1).focus();
 				}}}}
-		]
+		];
 
 		$.Velocity.RunSequence(sequence);
 	});
@@ -161,7 +174,7 @@ $(function() {
 
 				row.velocity({height: value.height() + 51}, 500);
 				form_wrapper.velocity({translateX: 0}, 300, [1.000, 0.000, 1.000, 1.000]);
-				backer.velocity({translateX: 0}, 500, [1.000, 0.000, 0.585, 1.000]);
+				backer.velocity({opacity: 1}, 0).velocity({translateX: 0}, {duration: 500, easing: [1.000, 0.000, 0.585, 1.000]});
 			}
 		});
 	});
@@ -174,12 +187,14 @@ $(function() {
 
 		sequence = [
 			{e: row,          p: {height: row.height() + 150}, o: {duration: 500}},
-			{e: row_backer,   p: {translateX: "100%"}, o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
-			{e: form_wrapper, p: {translateX: "100%"}, o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false, complete: function() {
+			{e: row_backer,   p: {opacity: 1},                 o: {duration: 0, sequenceQueue: false}},
+			{e: row_backer,   p: {translateX: "100%"},         o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
+			{e: form_wrapper, p: {translateX: "100%"},         o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+			{e: row_backer,   p: {opacity: 0},                 o: {duration: 0, complete: function() {
 				if (userAgent != 'iOS') {
 					$('.row:nth-of-type(2) input').eq(1).focus();
 				}}}}
-		]
+		];
 
 		$.Velocity.RunSequence(sequence);
 	});
@@ -218,7 +233,7 @@ $(function() {
 
 				row.velocity({height: value.height() + 51}, 500);
 				form_wrapper.velocity({translateX: 0}, 300, [1.000, 0.000, 1.000, 1.000]);
-				backer.velocity({translateX: 0}, 500, [1.000, 0.000, 0.585, 1.000]);
+				backer.velocity({opacity: 1}, 0).velocity({translateX: 0}, {duration: 500, easing: [1.000, 0.000, 0.585, 1.000]});
 			}
 		});
 	});
@@ -231,12 +246,14 @@ $(function() {
 
 		sequence = [
 			{e: row,          p: {height: row.height() + 125}, o: {duration: 500}},
-			{e: row_backer,   p: {translateX: "100%"}, o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
-			{e: form_wrapper, p: {translateX: "100%"}, o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false, complete: function() {
+			{e: row_backer,   p: {opacity: 1},                 o: {duration: 0, sequenceQueue: false}},
+			{e: row_backer,   p: {translateX: "100%"},         o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
+			{e: form_wrapper, p: {translateX: "100%"},         o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+			{e: row_backer,   p: {opacity: 0},                 o: {duration: 0, complete: function() {
 				if (userAgent != 'iOS') {
 					$('.row:nth-of-type(3) input').eq(1).focus();
 				}}}}
-		]
+		];
 
 		$.Velocity.RunSequence(sequence);
 	});
@@ -280,7 +297,7 @@ $(function() {
 						form_wrapper = $('.row:nth-of-type(3) .form-wrapper');
 
 						row.velocity({"height": form.height() + 70}, 500);
-						row_backer.velocity({translateX: "100%"}, 300, [1.000, 0.000, 1.000, 1.000]);
+						row_backer.velocity({opacity: 1}, 0).velocity({translateX: "100%"}, {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]});
 						form_wrapper.velocity({translateX: "100%"}, 500, [1.000, 0.000, 0.585, 1.000], function() {
 							if (userAgent != 'iOS') {
 								$('.row:nth-of-type(3) input').eq(1).focus();
@@ -302,7 +319,7 @@ $(function() {
 
 				row.velocity({height: value.height() + 51}, 500);
 				form_wrapper.velocity({translateX: 0}, 300, [1.000, 0.000, 1.000, 1.000]);
-				row_backer.velocity({translateX: 0}, 500, [1.000, 0.000, 0.585, 1.000]);
+				row_backer.velocity({opacity: 1}, 0).velocity({translateX: 0}, {duration: 500, easing: [1.000, 0.000, 0.585, 1.000]});
 			}
 		});
 	});
