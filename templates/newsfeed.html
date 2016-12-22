@@ -29,94 +29,117 @@
 	    <main>
 	        <section id="main-content">
 	        	<div id="main-content-wrapper">
-		        	<div id="main-content-header">
-			        	<div id="main-content-title">
+	        		<div id="main-content-header-wrapper">
+	        			<div id="main-content-title">
 			        		{% if not topic %}
 			        			{{ title }}
 			        		{% else %}
 			        			#{{ topic }}
 			        		{% end %}
 			        	</div>
-			        	<div id="main-content-selection">
-			        		{% if title == 'Feed' %}
-			        			{% set top_selection    = '/feed' %}
-			        			{% set recent_selection = '/feed/recent' %}
-			        		{% elif title == 'Favorites' %}
-			        			{% set top_selection    = '/favorites' %}
-			        			{% set recent_selection = '/favorites/recent' %}
-			        		{% else %}
-			        			{% set top_selection    = '/topics/' + title %}
-			        			{% set recent_selection = '/topics/' + title + '/recent' %}
-			        		{% end %}
-			        		<a href={{ top_selection }}>
-				        		<div title="Top" class="selection">
-				        			{% if selection == 'Top' %}
-				        				<div class="triangle"></div>
-				        			{% end %}
-				        			<svg fill="{% if selection == 'Top' %}#2eb398{% else %}#b9bcc1{% end %}" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-									    <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>
-									    <path d="M0 0h24v24H0z" fill="none"/>
-									</svg>
-									<div>Top</div>
-				        		</div>
-				        	</a>
-				        	<a href={{ recent_selection }}>
-				        		<div title="Most Recent" class="selection {% if selection == 'Recent' %}active{% end %}">
-				        			{% if selection == 'Recent' %}
-				        				<div class="triangle"></div>
-				        			{% end %}
-				        			<svg fill="{% if selection == 'Recent' %}#2eb398{% else %}#b9bcc1{% end %}" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-									    <defs>
-									        <path d="M0 0h24v24H0V0z" id="a"/>
-									    </defs>
-									    <clipPath id="b">
-									        <use overflow="visible" xlink:href="#a"/>
-									    </clipPath>
-									    <path clip-path="url(#b)" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/>
-									</svg>
-									<div>Recent</div>
-				        		</div>
-				        	</a>
-			        	</div>
 			        	{% if topic %}
-			        		<div id="main-content-following-info">
-			        			<div id="main-content-follow-form">
+			        		<div class="main-content-following-info">
+			        			<div class="main-content-follow-form">
 				        			<form action="/add_topic?topic-name={{ topic }}" method="post">
 				        				{% raw xsrf_form_html() %}
 					        			{% if following_topic %}
-					        				<button formaction="/add_topic?topic-name={{ topic }}" formmethod="post" id="follow-topic-button" class="active">Following</button>
+					        				<button formaction="/add_topic?topic-name={{ topic }}" formmethod="post" class="follow-topic-button active">Following</button>
 					        			{% else %}
-					        				<button formaction="/add_topic?topic-name={{ topic }}" formmethod="post" id="follow-topic-button">Follow</button>
+					        				<button formaction="/add_topic?topic-name={{ topic }}" formmethod="post" class="follow-topic-button">Follow</button>
 					        			{% end %}
 					        		</form>
 					        	</div>
-			        			<div id="main-content-topic-metrics">
-				        			<div id="main-content-topic-question-count">
-				        				<span>
-				        					{% if topic_question_count <= 1000 %}
-							                    {{ topic_question_count }}
-							                {% elif topic_question_count <= 999999 %}
-							                    {{ round(topic_question_count/1000, 1) }}K
-							                {% else %}
-							                    {{ round(topic_question_count/1000000, 1) }}M
-							                {% end %}
-				        				</span> questions
-				        			</div>
-				        			<div id="main-content-topic-follower-count">
-				        				<span>
-				        					{% if topic_follower_count <= 1000 %}
-							                    {{ topic_follower_count }}
-							                {% elif topic_follower_count <= 999999 %}
-							                    {{ round(topic_follower_count/1000, 1) }}K
-							                {% else %}
-							                    {{ round(topic_follower_count/1000000, 1) }}M
-							                {% end %}
-				        				</span> followers
-				        			</div>
-				        		</div>
+			        			<div class="main-content-topic-question-count">
+		        					{% if topic_question_count <= 1000 %}
+					                    {{ topic_question_count }}
+					                {% elif topic_question_count <= 999999 %}
+					                    {{ round(topic_question_count/1000, 1) }}K
+					                {% else %}
+					                    {{ round(topic_question_count/1000000, 1) }}M
+					                {% end %} questions
+					            </div>
+			        			<div class="main-content-topic-follower-count">
+		        					{% if topic_follower_count <= 1000 %}
+					                    {{ topic_follower_count }}
+					                {% elif topic_follower_count <= 999999 %}
+					                    {{ round(topic_follower_count/1000, 1) }}K
+					                {% else %}
+					                    {{ round(topic_follower_count/1000000, 1) }}M
+					                {% end %}
+					            </div>
+		        				<svg fill="#999" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+								    <path d="M0 0h24v24H0z" fill="none"/>
+								    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+								</svg>
 				        	</div>
 				        {% end %}
-			        </div>
+			        	<div id="main-content-header">
+				        	<div id="main-content-selection">
+				        		{% if title == 'Feed' %}
+				        			{% set top_selection    = '/feed' %}
+				        			{% set recent_selection = '/feed/recent' %}
+				        		{% elif title == 'Favorites' %}
+				        			{% set top_selection    = '/favorites' %}
+				        			{% set recent_selection = '/favorites/recent' %}
+				        		{% else %}
+				        			{% set top_selection    = '/topics/' + title %}
+				        			{% set recent_selection = '/topics/' + title + '/recent' %}
+				        		{% end %}
+				        		<a href={{ top_selection }}>
+					        		<div title="Top" class="selection">
+					        			{% if selection == 'Top' %}
+					        				<div class="triangle"></div>
+					        			{% end %}
+										<div {% if selection == 'Top' %}class="active"{% end %}>Top</div>
+					        		</div>
+					        	</a>
+					        	<a href={{ recent_selection }}>
+					        		<div title="Most Recent" class="selection {% if selection == 'Recent' %}active{% end %}">
+					        			{% if selection == 'Recent' %}
+					        				<div class="triangle"></div>
+					        			{% end %}
+										<div {% if selection == 'Recent' %}class="active"{% end %}>Recent</div>
+					        		</div>
+					        	</a>
+				        	</div>
+				        	{% if topic %}
+				        		<div class="main-content-following-info">
+				        			<div class="main-content-follow-form">
+					        			<form action="/add_topic?topic-name={{ topic }}" method="post">
+					        				{% raw xsrf_form_html() %}
+						        			{% if following_topic %}
+						        				<button formaction="/add_topic?topic-name={{ topic }}" formmethod="post" class="follow-topic-button active">Following</button>
+						        			{% else %}
+						        				<button formaction="/add_topic?topic-name={{ topic }}" formmethod="post" class="follow-topic-button">Follow</button>
+						        			{% end %}
+						        		</form>
+						        	</div>
+				        			<div class="main-content-topic-question-count">
+			        					{% if topic_question_count <= 1000 %}
+						                    {{ topic_question_count }}
+						                {% elif topic_question_count <= 999999 %}
+						                    {{ round(topic_question_count/1000, 1) }}K
+						                {% else %}
+						                    {{ round(topic_question_count/1000000, 1) }}M
+						                {% end %} questions
+						            </div>
+				        			<div class="main-content-topic-follower-count">
+			        					{% if topic_follower_count <= 1000 %}
+						                    {{ topic_follower_count }}
+						                {% elif topic_follower_count <= 999999 %}
+						                    {{ round(topic_follower_count/1000, 1) }}K
+						                {% else %}
+						                    {{ round(topic_follower_count/1000000, 1) }}M
+						                {% end %}
+						            </div>
+			        				<svg fill="#999" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+									    <path d="M0 0h24v24H0z" fill="none"/>
+									    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+									</svg>
+					        	</div>
+					        {% end %}
+				        </div>
+				    </div>
 			        <div id="feed">
 			        	{% for idx, question in enumerate(questions) %}
 			        		{% module Question(askers[idx], question, votes[idx], favorite_count[idx], favorited_this_question[idx], comment_count[idx]) %}

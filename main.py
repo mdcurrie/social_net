@@ -958,7 +958,7 @@ class FeedHandler(BaseHandler):
 			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
 
 			searches = 0
-			while len(questions) < 20 and searches < 10:
+			while len(questions) < 20 and searches < 7:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
@@ -991,7 +991,7 @@ class RecentFeedHandler(BaseHandler):
 			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
 
 			searches = 0
-			while len(questions) < 20 and searches < 10:
+			while len(questions) < 20 and searches < 7:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
@@ -1066,7 +1066,7 @@ class TopicHandler(BaseHandler):
 		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(20)
 
 		searches = 0
-		while len(questions) < 20 and searches < 10:
+		while len(questions) < 20 and searches < 7:
 			days      = days + 14
 			old_span  = time_span
 			time_span = datetime.utcnow() - timedelta(days=days)
@@ -1103,7 +1103,7 @@ class RecentTopicHandler(BaseHandler):
 		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(20)
 
 		searches = 0
-		while len(questions) < 20 and searches < 10:
+		while len(questions) < 20 and searches < 7:
 			days      = days + 14
 			old_span  = time_span
 			time_span = datetime.utcnow() - timedelta(days=days)
@@ -1222,5 +1222,5 @@ class CustomURLHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
