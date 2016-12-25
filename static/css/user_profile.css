@@ -21,6 +21,9 @@ a {
 
 /*=================== GENERAL STYLING END ====================*/
 
+body {
+	background: #f1f1f1;
+}
 main {
 	padding-top: 45px;
 	overflow-x: hidden;
@@ -359,7 +362,6 @@ main {
 	}
 	main {
 		padding-top: 86px;
-		background: #f1f1f1;
 	}
 	#user-profile {
 		padding: 20px 0;

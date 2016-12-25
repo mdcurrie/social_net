@@ -173,11 +173,15 @@ $(function() {
 			$('.main-content-topic-follower-count').text(data.count);
 			if (data.following) {
 				$('.follow-topic-button').addClass('active').text('Following');
-				$('#topics ul').append('<a href="/topics/' + data.name + '"><li class="active">#' + data.name + '</li></a>');
+				$('#topics ul').append('<a href="/topics/' + data.name + '"><li style="opacity:0" class="active">#' + data.name + '</li></a>');
+				topic = $('#topics .active');
+				topic.velocity({opacity: 1}, 300);
 			}
 			else {
 				$('.follow-topic-button').removeClass('active').text('Follow');
-				$('#topics .active').parent().remove();
+				$('#topics .active').velocity({opacity: 0}, 300, function() {
+					$(this).parent().remove();
+				});
 			}
 		});
 	});

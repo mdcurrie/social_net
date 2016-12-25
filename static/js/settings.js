@@ -28,24 +28,19 @@ $(function() {
 	/* profile picture section */
 	var picture_upload_callback = function (res) {
         if (res.success === true) {
-        	$("<img>", {
-        		src: res.data.link,
-        		error: function() {
-        			console.log('imgur error');
-        		},
-        		load: function() {
-        			$.post('/settings/updatePicture', {_xsrf: getCookie('_xsrf'), "profile-picture": res.data.link}, function(data) {
-        				if (data.error) {
-							$('#profile-pic-error').velocity({"opacity": 0}, 0).text(data.error).velocity({opacity: 1}, 300);
-						}
-						else {
-							$('#profile-pic-error').remove();
-							$('#user-profile-pic .dropzone > img').attr({"src": res.data.link});
-							$('#current-user-profile-pic img').attr({"src": res.data.link});	
-	        			}
-	        		});
-        		}
-        	});
+			$.post('/settings/updatePicture', {_xsrf: getCookie('_xsrf'), "profile-picture": res.data.link}, function(data) {
+				if (data.error) {
+					$('#profile-pic-error').velocity({"opacity": 0}, 0).text(data.error).velocity({opacity: 1}, 300);
+				}
+				else {
+					$('#profile-pic-error').remove();
+					$('#user-profile-pic .dropzone > img').attr({"src": res.data.link});
+					$('#current-user-profile-pic img').attr({"src": res.data.link});	
+    			}
+    		});
+		}
+        else {
+        	$('#profile-pic-error').velocity({"opacity": 0}, 0).text("There was an error uploading your image, please try again later.").velocity({opacity: 1}, 300);
         }
     };
 

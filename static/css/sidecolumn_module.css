@@ -47,15 +47,23 @@
 }
 .nav-links li {
 	color: white;
-	padding: 8px 20px 8px 34px;
-	transition: background 0.3s;
+	padding: 8px 20px 8px 13px;
+	margin-left: 18px;
+	border-left: 3px solid transparent;
+	transition: color 0.3s, border-left 0.3s, background 0.3s;
 }
 .nav-links li.active {
-	background: #868686;
+	background: #f1f1f1;
+	color: #999;
+	padding-left: 13px;
+	margin-left: 18px;
+	border-left: 3px solid #2eb398;
 }
 .nav-links li:hover {
-	background: #868686;
 	cursor: pointer;
+	border-left: 3px solid #2eb398;
+	background: #f1f1f1;
+	color: #999;
 }
 #topics {
 	position: relative;
@@ -116,7 +124,7 @@
 }
 #question-form-wrapper {
 	height: calc(100% - 46px);
-	padding-top: 10px;
+	padding-top: 15px;
 	margin: 0 auto;
 	overflow: auto;
     -webkit-overflow-scrolling: touch;
@@ -130,11 +138,6 @@
 	font-size: 1.25em;
 	margin-bottom: 20px;
 }
-.question-form-error {
-	font-size: 0.85em;
-	margin-top: 3px;
-	color: #e64c65;
-}
 .input-section {
 	margin: 20px 0;
 }
@@ -143,7 +146,7 @@
 }
 .input-label {
 	margin-bottom: 4px;
-	font-size: 0.95em;
+	font-size: 0.85em;
 	color: #2eb398;
 }
 .input-section input {
@@ -152,13 +155,57 @@
     border: none;
     outline: none;
     padding: 8px 5px;
-    font-size: .9em;
+    font-size: .85em;
     width: 100%;
     border-radius: 3px;		
 }
 .input-section:nth-of-type(6), .input-section:nth-of-type(7) {
 	display: none;
 	opacity: 0;
+}
+.input-section:nth-of-type(2) {
+    height: 220px;
+    background: #f1f1f1;
+    border-radius: 3px;
+    border: 4px dashed #d7d7d7;
+}
+.dropzone {
+	height: 100%;
+	position: relative;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 40%;
+	border-radius: 3px;
+}
+#image-link-text {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: rgba(0,0,0,.3);
+	font-size: 0.85em;
+}
+#image-link {
+	display: none;
+}
+.loading-circle {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: 40px;
+	width: 40px;
+}
+.loading-circle img {
+	height: 40px !important;
+	width: 40px !important;
+	display: none;
+}
+.create-question-error {
+	opacity: 0;
+	font-size: 0.8em;
+	margin-top: 3px;
+	color: #e64c65;
 }
 .optional {
 	color: #9c9c9c;

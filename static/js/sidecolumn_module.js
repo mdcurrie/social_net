@@ -54,214 +54,198 @@ $(function() {
 		$.Velocity.RunSequence(sequence);
 	});
 
-	$('#add-topics-button').on('click', function() {
-		if ($('#topics li:first-of-type').css("display") == 'none') {
-			$('#add-topics-button').html('&times;');
-			$('#topics li:first-of-type').css({"opacity": 0, "display": "block"});
-			$('#topics li:first-of-type').animate({"opacity": 1}, 300);
-			$('#topic-name-input').focus();
-		}
-		else {
-			$('#add-topics-button').text('+');
-			$('#topics li:first-of-type').animate({"opacity": 0}, 300, function() {
-				$('#topics li:first-of-type').css({"display": "none"});
-			});
-		}
-	});
+	var picture_upload_callback = function (res) {
+        if (res.success == true) {
+        	$('#image-link-text').css({display: "none"});
+        	$('#image-link').val(res.data.link);
+			$('.input-section:nth-of-type(2) .create-question-error').remove();
+			$('.input-section:nth-of-type(2) .dropzone').css({"background-image": "url(" + res.data.link + ")"});
+			$('.input-section:nth-of-type(2)').css({"border": "none", "background-color": "transparent"})
+    	}
+        else {
+        	$('.input-section:nth-of-type(2)').append('<div class="create-question-error">There was an error uploading your image, please try again later.</div>');
+        	$('.input-section:nth-of-type(2) .create-question-error').velocity({opacity: 1}, 300);
+        }
+    };
+
+    new Imgur({
+        clientid: 'a512d4db12a3c8d',
+        callback: picture_upload_callback
+    });
 
 	jQuery.fn.preventDoubleSubmission = function() {
 		$(this).on('submit', function(e) {
-			var $form = $(this);
-
-			if ($form.data('submitted') === true) {
-				e.preventDefault();
-				$("<img>", {
-					src: $('#image-link').val(),
-					error: function() {
-						;
-					},
-
-					load: function() {
-						;
-					}
-				});
-			} 
+			e.preventDefault();
+			form = $(this);
+			if ($(this).data('submitted') == true) {
+				;
+			}
 			else {
-				e.preventDefault();
 				if ($('#question-title').val() == '') {
-					if (!$('.input-section:first-of-type .question-form-error').length)
-						$('.input-section:first-of-type').append('<div class="question-form-error">Please enter a title for your question.</div>');
+					if (!$('.input-section:first-of-type .create-question-error').length) {
+						$('.input-section:first-of-type').append('<div class="create-question-error">Please enter a title for your question.</div>');
+						$('.input-section:first-of-type .create-question-error').velocity({opacity: 1}, 300);
+					}
 					else
-						$('.input-section:first-of-type .question-form-error').text('Please enter a title for your question.');
+						$('.input-section:first-of-type .create-question-error').text('Please enter a title for your question.');
 					
 					$('#question-title').focus();
 					return;
 				}
-				$('.input-section:first-of-type .question-form-error').remove();
 
 				if ($('#question-title').val().length > 120) {
-					if (!$('.input-section:first-of-type .question-form-error').length)
-						$('.input-section:first-of-type').append('<div class="question-form-error">Question titles must be 120 characters or less.</div>');
+					if (!$('.input-section:first-of-type .create-question-error').length) {
+						$('.input-section:first-of-type').append('<div class="create-question-error">Question titles must be 120 characters or less.</div>');
+						$('.input-section:first-of-type .create-question-error').velocity({opacity: 1}, 300);
+					}
 					else
-						$('.input-section:first-of-type .question-form-error').text('Question titles must be 120 characters or less.');
+						$('.input-section:first-of-type .create-question-error').text('Question titles must be 120 characters or less.');
 					
 					$('#question-title').focus();
 					return;
 				}
-				$('.input-section:first-of-type .question-form-error').remove();
-
-				if ($('#image-link').val() == '') {
-					if (!$('.input-section:nth-of-type(2) .question-form-error').length)
-						$('.input-section:nth-of-type(2)').append('<div class="question-form-error">Please enter a link to an image.</div>');
-					else
-						$('.input-section:nth-of-type(2) .question-form-error').text('Please enter a link to an image.');
-					
-					$('#image-link').focus();
-					return;
-				}
-				$('.input-section:nth-of-type(2) .question-form-error').remove();
+				$('.input-section:first-of-type .create-question-error').remove();
 
 				if ($('#choice-a').val() == '') {
-					if (!$('.input-section:nth-of-type(3) .question-form-error').length)
-						$('.input-section:nth-of-type(3)').append('<div class="question-form-error">Please enter a choice for voting.</div>');
+					if (!$('.input-section:nth-of-type(3) .create-question-error').length) {
+						$('.input-section:nth-of-type(3)').append('<div class="create-question-error">Please enter a choice for voting.</div>');
+						$('.input-section:nth-of-type(3) .create-question-error').velocity({opacity: 1}, 300);
+					}
 					else
-						$('.input-section:nth-of-type(3) .question-form-error').text('Please enter a choice for voting.');
+						$('.input-section:nth-of-type(3) .create-question-error').text('Please enter a choice for voting.');
 					
 					$('#choice-a').focus();
 					return;
 				}
-				$('.input-section:nth-of-type(3) .question-form-error').remove();
+				$('.input-section:nth-of-type(3) .create-question-error').remove();
 
 				if ($('#choice-b').val() == '') {
-					if (!$('.input-section:nth-of-type(4) .question-form-error').length)
-						$('.input-section:nth-of-type(4)').append('<div class="question-form-error">Please enter a choice for voting.</div>');
+					if (!$('.input-section:nth-of-type(4) .create-question-error').length) {
+						$('.input-section:nth-of-type(4)').append('<div class="create-question-error">Please enter a choice for voting.</div>');
+						$('.input-section:nth-of-type(4) .create-question-error').velocity({opacity: 1}, 300);
+					}
 					else
-						$('.input-section:nth-of-type(4) .question-form-error').text('Please enter a choice for voting.');
+						$('.input-section:nth-of-type(4) .create-question-error').text('Please enter a choice for voting.');
 					
 					$('#choice-b').focus();
 					return;
 				}
-				$('.input-section:nth-of-type(4) .question-form-error').remove();
+				$('.input-section:nth-of-type(4) .create-question-error').remove();
 
 				if ($('#choice-a').val().length > 40 || $('#choice-b').val().length > 40 || $('#choice-c').val().length > 40 || $('#choice-d').val().length > 40 || $('#choice-e').val().length > 40) {
-					if (!$('.input-section:nth-of-type(3) .question-form-error').length)
-						$('.input-section:nth-of-type(3)').append('<div class="question-form-error">Choices must be 40 characters or less.</div>');
+					if (!$('.input-section:nth-of-type(3) .create-question-error').length) {
+						$('.input-section:nth-of-type(3)').append('<div class="create-question-error">Choices must be 40 characters or less.</div>');
+						$('.input-section:nth-of-type(3) .create-question-error').velocity({opacity: 1}, 300);
+					}
 					else
-						$('.input-section:nth-of-type(3) .question-form-error').text('Choices must be 40 characters or less.');
+						$('.input-section:nth-of-type(3) .create-question-error').text('Choices must be 40 characters or less.');
 					
-					$('#choice-a').focus();
 					return;
 				}
-				$('.input-section:nth-of-type(3) .question-form-error').remove();
+				$('.input-section:nth-of-type(3) .create-question-error').remove();
 
 				if ($('#topics-input').val() == '') {
-					if (!$('.input-section:nth-of-type(8) .question-form-error').length)
-						$('.input-section:nth-of-type(8)').append('<div class="question-form-error">Please enter at least 1 topic.</div>');
+					if (!$('.input-section:nth-of-type(8) .create-question-error').length) {
+						$('.input-section:nth-of-type(8)').append('<div class="create-question-error">Please enter at least 1 topic.</div>');
+						$('.input-section:nth-of-type(8) .create-question-error').velocity({opacity: 1}, 300);
+					}
 					else
-						$('.input-section:nth-of-type(8) .question-form-error').text('Please enter at least 1 topic.');
+						$('.input-section:nth-of-type(8) .create-question-error').text('Please enter at least 1 topic.');
 					
 					$('#topics-input').focus();
 					return;
 				}
-				$('.input-section:nth-of-type(8) .question-form-error').remove();
+				$('.input-section:nth-of-type(8) .create-question-error').remove();
 
 				if (!(/^[a-zA-Z0-9 \-]+$/i.test($('#topics-input').val()))) {
-					if (!$('.input-section:nth-of-type(8) .question-form-error').length)
-						$('.input-section:nth-of-type(8)').append('<div class="question-form-error">Topics can only contain letters, numbers, and hyphens.</div>');
+					if (!$('.input-section:nth-of-type(8) .create-question-error').length) {
+						$('.input-section:nth-of-type(8)').append('<div class="create-question-error">Topics can only contain letters, numbers, and hyphens.</div>');
+						$('.input-section:nth-of-type(8) .create-question-error').velocity({opacity: 1}, 300);
+					}
 					else
-						$('.input-section:nth-of-type(8) .question-form-error').text('Topics can only contain letters, numbers, and hyphens.');
+						$('.input-section:nth-of-type(8) .create-question-error').text('Topics can only contain letters, numbers, and hyphens.');
 					
 					$('#topics-input').focus();
 					return;
 				}
-				$('.input-section:nth-of-type(8) .question-form-error').remove();
+				$('.input-section:nth-of-type(8) .create-question-error').remove();
 
 				if ($('#choice-a').val() == $('#choice-b').val()) {
-					if (!$('.input-section:nth-of-type(3) .question-form-error').length)
-						$('.input-section:nth-of-type(3)').append('<div class="question-form-error">Choice A must be different from Choice B.</div>');
+					if (!$('.input-section:nth-of-type(3) .create-question-error').length) {
+						$('.input-section:nth-of-type(3)').append('<div class="create-question-error">Choice A must be different than Choice B.</div>');
+						$('.input-section:nth-of-type(3) .create-question-error').velocity({opacity: 1}, 300);
+					}
 					else
-						$('.input-section:nth-of-type(3) .question-form-error').text('Choice A must be different from Choice B.');
+						$('.input-section:nth-of-type(3) .create-question-error').text('Choice A must be different than Choice B.');
 					
 					$('#choice-a').focus();
 					return;
 				}
-				$('.input-section:nth-of-type(3) .question-form-error').remove();
+				$('.input-section:nth-of-type(3) .create-question-error').remove();
 
-				$("<img>", {
-					src: $('#image-link').val(),
-					error: function() {
-						if (!$('.input-section:nth-of-type(2) .question-form-error').length)
-							$('.input-section:nth-of-type(2)').append('<div class="question-form-error">Please enter a link to an image.</div>');
+				var question_data = $('#question-form-wrapper form').serialize();
+				form.data('submitted', true);
+				$.post('/create_question', question_data, function(data) {
+					if (data.title_error) {
+						if (!$('.input-section:first-of-type .create-question-error').length) {
+							$('.input-section:first-of-type').append('<div class="create-question-error">' + data.title_error + '</div>');
+							$('.input-section:first-of-type .create-question-error').velocity({opacity: 1}, 300);
+						}
 						else
-							$('.input-section:nth-of-type(2) .question-form-error').text('Please enter a link to an image.');
+							$('.input-section:first-of-type .create-question-error').text(data.title_error);
 						
-						$('#image-link').focus();
-					},
+						$('#question-title').focus();
+						form.data('submitted', false);
+						return;
+					}
+					$('.input-section:first-of-type .create-question-error').remove();
 
-					load: function() {
-						$('.input-section:nth-of-type(2) .question-form-error').remove();
+					if (data.image_error) {
+						if (!$('.input-section:nth-of-type(2) .create-question-error').length) {
+							$('.input-section:nth-of-type(2)').append('<div class="create-question-error">' + data.image_error + '</div>');
+							$('.input-section:nth-of-type(2) .create-question-error').velocity({opacity: 1}, 300);
+						}
+						else
+							$('.input-section:nth-of-type(2) .create-question-error').text(data.image_error);
+						
+						form.data('submitted', false);
+						return;
+					}
+					$('.input-section:nth-of-type(2) .create-question-error').remove();
 
-						var question_data = $('#question-form-wrapper form').serialize();
-						$form.data('submitted', true);
-						$.post('/create_question', question_data, function(data) {
-							console.log(data);
-							if (data.title_error) {
-								if (!$('.input-section:first-of-type .question-form-error').length)
-									$('.input-section:first-of-type').append('<div class="question-form-error">' + data.title_error + '</div>');
-								else
-									$('.input-section:first-of-type .question-form-error').text(data.title_error);
-								
-								$('#question-title').focus();
-								$form.data('submitted', false);
-								return;
-							}
-							$('.input-section:first-of-type .question-form-error').remove();
+					if (data.choice_error) {
+						if (!$('.input-section:nth-of-type(3) .create-question-error').length) {
+							$('.input-section:nth-of-type(3)').append('<div class="create-question-error">' + data.choice_error + '</div>');
+							$('.input-section:nth-of-type(3) .create-question-error').velocity({opacity: 1}, 300);
+						}
+						else
+							$('.input-section:nth-of-type(3) .create-question-error').text(data.choice_error);
+						
+						$form.data('submitted', false);
+						return;
+					}
+					$('.input-section:nth-of-type(3) .create-question-error').remove();
 
-							if (data.image_error) {
-								if (!$('.input-section:nth-of-type(2) .question-form-error').length)
-									$('.input-section:nth-of-type(2)').append('<div class="question-form-error">' + data.image_error + '</div>');
-								else
-									$('.input-section:nth-of-type(2) .question-form-error').text(data.image_error);
-								
-								$('#image-link').focus();
-								$form.data('submitted', false);
-								return;
-							}
-							$('.input-section:nth-of-type(2) .question-form-error').remove();
+					if (data.topics_error) {
+						if (!$('.input-section:nth-of-type(8) .create-question-error').length) {
+							$('.input-section:nth-of-type(8)').append('<div class="create-question-error">' + data.topics_error + '</div>');
+							$('.input-section:nth-of-type(8) .create-question-error').velocity({opacity: 1}, 300);
+						}
+						else
+							$('.input-section:nth-of-type(8) .create-question-error').text(data.topics_error);
+						
+						$('#topics-input').focus();
+						$form.data('submitted', false);
+						return;
+					}
+					$('.input-section:nth-of-type(8) .create-question-error').remove();
 
-							if (data.choice_error) {
-								if (!$('.input-section:nth-of-type(3) .question-form-error').length)
-									$('.input-section:nth-of-type(3)').append('<div class="question-form-error">' + data.choice_error + '</div>');
-								else
-									$('.input-section:nth-of-type(3) .question-form-error').text(data.choice_error);
-								
-								$('#choice-a').focus();
-								$form.data('submitted', false);
-								return;
-							}
-							$('.input-section:nth-of-type(3) .question-form-error').remove();
-
-							if (data.topics_error) {
-								if (!$('.input-section:nth-of-type(8) .question-form-error').length)
-									$('.input-section:nth-of-type(8)').append('<div class="question-form-error">' + data.topics_error + '</div>');
-								else
-									$('.input-section:nth-of-type(8) .question-form-error').text(data.topics_error);
-								
-								$('#topics-input').focus();
-								$form.data('submitted', false);
-								return;
-							}
-							$('.input-section:nth-of-type(8) .questino-form-error').remove();
-
-							if (data.redirect) {
-								window.location.href = data.redirect;
-							}
-						});
+					if (data.redirect) {
+						window.location.href = data.redirect;
 					}
 				});
 			}
 		});
-
 		return this;
 	};
 
@@ -271,19 +255,19 @@ $(function() {
 		if ($('#choice-c').val() != '') {
 			if ($('.input-section:nth-of-type(6)').css("display") == "none") {
 				$('.input-section:nth-of-type(6)').css({"display": "block"});
-				$('.input-section:nth-of-type(6)').animate({"opacity": 1}, 300);
+				$('.input-section:nth-of-type(6)').velocity({"opacity": 1}, 300);
 			}
 		}
 		else {
 			if ($('.input-section:nth-of-type(6)').css("display") == "block") {
 				$('#choice-d').val('');
-				$('.input-section:nth-of-type(6)').animate({"opacity": 0}, 300, function() {
+				$('.input-section:nth-of-type(6)').velocity({"opacity": 0}, 300, function() {
 					$('.input-section:nth-of-type(6)').css({"display": "none"});
 				});
 			}
 			if ($('.input-section:nth-of-type(7)').css("display") == "block") {
 				$('#choice-e').val('');
-				$('.input-section:nth-of-type(7)').animate({"opacity": 0}, 300, function() {
+				$('.input-section:nth-of-type(7)').velocity({"opacity": 0}, 300, function() {
 					$('.input-section:nth-of-type(7)').css({"display": "none"});
 				});
 			}
@@ -294,13 +278,13 @@ $(function() {
 		if ($('#choice-d').val() != '') {
 			if ($('.input-section:nth-of-type(7)').css("display") == "none") {
 				$('.input-section:nth-of-type(7)').css({"display": "block"});
-				$('.input-section:nth-of-type(7)').animate({"opacity": 1}, 300);
+				$('.input-section:nth-of-type(7)').velocity({"opacity": 1}, 300);
 			}
 		}
 		else {
 			if ($('.input-section:nth-of-type(7)').css("display") == "block") {
 				$('#choice-e').val('');
-				$('.input-section:nth-of-type(7)').animate({"opacity": 0}, 300, function() {
+				$('.input-section:nth-of-type(7)').velocity({"opacity": 0}, 300, function() {
 					$('.input-section:nth-of-type(7)').css({"display": "none"});
 				});
 			}
