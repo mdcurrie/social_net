@@ -76,8 +76,13 @@
                     <input name="question-title" id="question-title" placeholder="Good vacation spot in Europe?" autocomplete="off" maxlength="120">
                 </div>
                 <div class="input-section">
-                    <div class="input-label">Cover Image Link</div>
-                    <input name="image-link" id="image-link" placeholder="http://i.imgur.com/jmWKu1r.jpg" autocomplete="off">
+                    <div class="dropzone">
+                        <div id="image-link-text">Add an Image</div>
+                        <div class="loading-circle">
+                            <img src="{{ static_url("images/loading-svg.svg") }}" alt="Loading icon">
+                        </div>
+                        <input name="image-link" id="image-link" autocomplete="off">
+                    </div>
                 </div>
                 <div class="input-section">
                     <div class="input-label">Choice A</div>

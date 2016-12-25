@@ -7,6 +7,9 @@
         <title>{{ profile["username"] }}'s profile - Hive</title>
         <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
         <link rel="stylesheet" href="{{ static_url("css/user_profile.css") }}">
+        {% if current_user %}
+            <link rel="stylesheet" href="{{ static_url("css/imgur.min.css") }}">
+        {% end %}
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
           <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -144,5 +147,8 @@
         <script src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
         <script src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
         <script src="{{ static_url("js/user_profile.js") }}"></script>
+        {% if current_user %}
+            <script src="{{ static_url("js/imgur.min.js") }}"></script>
+        {% end %}
     </body>
 </html>
