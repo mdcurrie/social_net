@@ -216,6 +216,17 @@ $(function() {
 			else {
 				$('.labels').css({"height": ""});
 			}
+
+			if ($('#off-canvas-comments').length && $('#off-canvas-comments').css("display") == "block") {
+				if ($(window).width() < 1200) {
+					$('main').css({"display": "none"});
+					$('#content-overlay').css({"z-index": -10, opacity: 0});
+				}
+				else {
+					$('#content-overlay').css({"z-index": 40, opacity: 0.5});
+					$('main').css({"display": "block"});
+				}
+			}
 		}, 200);
 	});
 });

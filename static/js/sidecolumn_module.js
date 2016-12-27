@@ -1,4 +1,21 @@
 $(function() {
+	var resizeTimer;
+	$(window).resize(function(e) {
+		clearTimeout(resizeTimer);
+		resizeTimer = setTimeout(function() {
+			if ($('#off-canvas-question-form').css("display") == "block") {
+				if ($(window).width() < 1200) {
+					$('main').css({"display": "none"});
+					$('#question-dark-overlay').css({"z-index": -100, opacity: 0});
+				}
+				else {
+					$('#question-dark-overlay').css({"z-index": 40, opacity: 0.5});
+					$('main').css({"display": "block"});
+				}
+			}
+		}, 200);
+	});
+
 	$('#create-question button').hover(
 		function() {
 			$('#off-canvas-question-form-backer').css({"will-change": "transform"});
@@ -59,8 +76,7 @@ $(function() {
         	$('#image-link-text').css({display: "none"});
         	$('#image-link').val(res.data.link);
 			$('.input-section:nth-of-type(2) .create-question-error').remove();
-			$('.input-section:nth-of-type(2) .dropzone').css({"background-image": "url(" + res.data.link + ")"});
-			$('.input-section:nth-of-type(2)').css({"border": "none", "background-color": "transparent"})
+			$('.input-section:nth-of-type(2) .dropzone').css({"border": "none", "background-color": "transparent", "background-image": "url(" + res.data.link + ")"});
     	}
         else {
         	$('.input-section:nth-of-type(2)').append('<div class="create-question-error">There was an error uploading your image, please try again later.</div>');
@@ -105,6 +121,18 @@ $(function() {
 					return;
 				}
 				$('.input-section:first-of-type .create-question-error').remove();
+
+				if ($('#image-link').val() == '') {
+					if (!$('.input-section:nth-of-type(2) .create-question-error').length) {
+						$('.input-section:nth-of-type(2)').append('<div class="create-question-error">Please add an image.</div>');
+						$('.input-section:nth-of-type(2) .create-question-error').velocity({opacity: 1}, 300);
+					}
+					else
+						$('.input-section:nth-of-type(2) .create-question-error').text('Please add an image.');
+					
+					return;
+				}
+				$('.input-section:nth-of-type(2) .create-question-error').remove();
 
 				if ($('#choice-a').val() == '') {
 					if (!$('.input-section:nth-of-type(3) .create-question-error').length) {
@@ -183,7 +211,7 @@ $(function() {
 				}
 				$('.input-section:nth-of-type(3) .create-question-error').remove();
 
-				var question_data = $('#question-form-wrapper form').serialize();
+				question_data = $('#question-form-wrapper form').serialize();
 				form.data('submitted', true);
 				$.post('/create_question', question_data, function(data) {
 					if (data.title_error) {
@@ -221,7 +249,7 @@ $(function() {
 						else
 							$('.input-section:nth-of-type(3) .create-question-error').text(data.choice_error);
 						
-						$form.data('submitted', false);
+						form.data('submitted', false);
 						return;
 					}
 					$('.input-section:nth-of-type(3) .create-question-error').remove();
@@ -235,7 +263,7 @@ $(function() {
 							$('.input-section:nth-of-type(8) .create-question-error').text(data.topics_error);
 						
 						$('#topics-input').focus();
-						$form.data('submitted', false);
+						form.data('submitted', false);
 						return;
 					}
 					$('.input-section:nth-of-type(8) .create-question-error').remove();

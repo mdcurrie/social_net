@@ -61,7 +61,7 @@ main {
 	width: 40px !important;
 	display: none;
 }
-.dropzone {
+#user-settings .dropzone {
     display: inline-block;
     position: relative;
 }

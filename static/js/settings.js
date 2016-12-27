@@ -25,7 +25,6 @@ $(function() {
 		$('#mobile-tab-bar-wrapper').velocity({"translateY": 0}, {duration: 650}).velocity({"translateY": 46}, {display: "none", duration: 250});
 	});
 
-	/* profile picture section */
 	var picture_upload_callback = function (res) {
         if (res.success === true) {
 			$.post('/settings/updatePicture', {_xsrf: getCookie('_xsrf'), "profile-picture": res.data.link}, function(data) {
@@ -44,7 +43,7 @@ $(function() {
         }
     };
 
-    new Imgur({
+    new settings_upload({
         clientid: 'a512d4db12a3c8d',
         callback: picture_upload_callback
     });

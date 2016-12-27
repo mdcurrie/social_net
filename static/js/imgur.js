@@ -27,7 +27,8 @@
         this.clientid = options.clientid;
         this.endpoint = 'https://api.imgur.com/3/image';
         this.callback = options.callback || undefined;
-        this.dropzone = document.querySelectorAll('.dropzone');
+        this.dropzone = document.querySelectorAll('.input-section .dropzone');
+        console.log
 
         this.run();
     };
