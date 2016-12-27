@@ -72,10 +72,11 @@
             <form action="/create_question" method="post">
                 {% raw xsrf_form_html() %}
                 <div class="input-section">
-                    <div class="input-label">Question Title</div>
+                    <div class="input-label">Question</div>
                     <input name="question-title" id="question-title" placeholder="Good vacation spot in Europe?" autocomplete="off" maxlength="120">
                 </div>
                 <div class="input-section">
+                    <div class="input-label">Cover Image</div>
                     <div class="dropzone">
                         <div id="image-link-text">Add an Image</div>
                         <div class="loading-circle">
