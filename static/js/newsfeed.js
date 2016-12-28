@@ -114,18 +114,6 @@ $(function() {
 		});
 	});
 
-	$('#off-canvas-question-form input').on('focusin', function() {
-		if ($(window).width() < 1200) {
-			$('#submit-question-button').velocity({translateY: 46}, 0);
-		}
-	});
-
-	$('#off-canvas-question-form input').on('focusout', function() {
-		if ($(window).width() < 1200) {
-			$('#submit-question-button').velocity({translateY: 0}, 0);
-		}
-	});
-
 	$('#content-overlay').on('click', function() {
 		comments = $('#off-canvas-comments');
 		backer   = $('#off-canvas-comments-backer');

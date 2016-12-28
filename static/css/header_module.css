@@ -132,6 +132,69 @@ main {
 	color: #2eb398;
     letter-spacing: 0.03em;
 }
+#more-options-overlay {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	z-index: -10;
+	background: black;
+	opacity: 0;
+}
+#more-options-wrapper {
+	background: white;
+	position: fixed;
+    height: 100%;
+    width: 75%;
+    right: 100%;
+    z-index: 200;
+}
+#more-options-picture-and-username {
+	padding: 43px 35px 15px 35px;
+}
+#more-options-picture img {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	object-fit: cover;
+	margin-bottom: 15px;
+}
+#more-options-username {
+	color: #999;
+}
+#more-options-settings-and-logout {
+	padding-left: 33px;
+	padding-bottom: 15px;
+}
+#more-options-logout {
+	float: left;
+	margin-right: 15px;
+}
+#more-options-logout button {
+	border: none;
+	outline: none;
+	background: transparent;
+	padding: 0;
+}
+/*#more-options-settings-and-logout {
+	position: absolute;
+	top: 53px;
+	right: 35px;
+}*/
+#more-options-followed-topics {
+	background: #f1f1f1;
+	height: 800px;
+	padding: 30px 35px;
+}
+#more-options-topics-header {
+	font-size: 0.75em;
+	font-weight: bold;
+	margin-bottom: 10px;
+	color: #999;
+}
+#more-options li {
+	margin-bottom: 10px;
+	color: #999;
+}
 
 @media only screen and (min-width: 380px) {
 	#mobile-search-icon {

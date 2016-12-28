@@ -96,7 +96,35 @@ $(function() {
 		];
 
 		$.Velocity.RunSequence(sequence);
-	});	
+	});
+
+	$('.nav-option:nth-of-type(5)').on('click', function() {
+		options = $('#more-options-wrapper');
+		overlay = $('#more-options-overlay');
+		$('body').css({"overflow": "hidden"});
+
+		sequence = [
+			{e: options, p: {translateX: "100%"},  o: {duration: 200}},
+			{e: overlay, p: {"z-index": 150},       o: {duration: 0}},
+			{e: overlay, p: {opacity: 0.5},         o: {duration: 200}}
+		];
+
+		$.Velocity.RunSequence(sequence);
+	});
+
+	$('#more-options-overlay').on('click', function() {
+		options = $('#more-options-wrapper');
+		overlay = $('#more-options-overlay');
+		$('body').css({"overflow": ""});
+
+		sequence = [
+			{e: options, p: {translateX: 0},  o: {duration: 200}},
+			{e: overlay, p: {opacity: 0},     o: {duration: 200}},
+			{e: overlay, p: {"z-index": -10}, o: {duration: 0}}
+		];
+
+		$.Velocity.RunSequence(sequence);
+	});
 });
 
 function hasScrolled() {
