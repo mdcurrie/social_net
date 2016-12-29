@@ -111,13 +111,13 @@ main {
     opacity: .4;
 	float: left;
 	text-align: center;
-	transform: translateY(4px);
+	padding-top: 4px;
+}
+.nav-option:nth-of-type(3) {
+	padding-top: 1px;
 }
 .nav-option.active {
     opacity: 1;
-}
-.nav-option:nth-of-type(3) {
-    transform: translateY(1px);
 }
 .nav-option:nth-of-type(3) svg {
     height: 42px;
@@ -139,17 +139,22 @@ main {
 	z-index: -10;
 	background: black;
 	opacity: 0;
+	display: none;
 }
 #more-options-wrapper {
-	background: white;
+	display: none;
+	background: #f1f1f1;
 	position: fixed;
     height: 100%;
     width: 75%;
     right: 100%;
     z-index: 200;
+    overflow: auto;
+    max-width: 340px;
 }
 #more-options-picture-and-username {
-	padding: 43px 35px 15px 35px;
+	padding: 43px 35px 20px 35px;
+	background: white;
 }
 #more-options-picture img {
 	width: 80px;
@@ -159,41 +164,51 @@ main {
 	margin-bottom: 15px;
 }
 #more-options-username {
-	color: #999;
-}
-#more-options-settings-and-logout {
-	padding-left: 33px;
-	padding-bottom: 15px;
-}
-#more-options-logout {
-	float: left;
-	margin-right: 15px;
-}
-#more-options-logout button {
-	border: none;
-	outline: none;
-	background: transparent;
-	padding: 0;
-}
-/*#more-options-settings-and-logout {
-	position: absolute;
-	top: 53px;
-	right: 35px;
-}*/
-#more-options-followed-topics {
-	background: #f1f1f1;
-	height: 800px;
-	padding: 30px 35px;
-}
-#more-options-topics-header {
-	font-size: 0.75em;
+	color: #353436;
 	font-weight: bold;
 	margin-bottom: 10px;
+}
+#more-options-view-profile a {
 	color: #999;
+	font-size: 0.9em;
+}
+#more-options-lists {
+	padding: 20px 35px 0 35px;
+}
+.more-options-list {
+	padding-bottom: 20px;
+	border-bottom: 1px solid rgba(0,0,0,.065);
+	margin-bottom: 20px;
+}
+.more-options-list:last-of-type {
+	border-bottom: none;
+	margin-bottom: 0;
+	padding-bottom: 10px;
+}
+.more-options-header {
+	font-size: 0.70em;
+	font-weight: bold;
+	margin-bottom: 15px;
+	color: #353436;
 }
 #more-options li {
-	margin-bottom: 10px;
+	margin-bottom: 12px;
 	color: #999;
+}
+#more-options li.active {
+	color: #2eb398;
+}
+#more-options ul a:last-of-type li {
+	margin-bottom: 0;
+}
+#more-options button {
+	border: none;
+    outline: none;
+    background: transparent;
+    color: #999;
+    font-family: Gotham;
+    font-size: 1em;
+    padding: 0;
 }
 
 @media only screen and (min-width: 380px) {
@@ -202,6 +217,12 @@ main {
 	}
 	#page-title {
 		left: 16px;
+	}
+}
+
+@media only screen and (min-width: 460px) {
+	#more-options li {
+		margin-bottom: 15px;
 	}
 }
 

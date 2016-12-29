@@ -104,9 +104,9 @@ $(function() {
 		$('body').css({"overflow": "hidden"});
 
 		sequence = [
-			{e: options, p: {translateX: "100%"},  o: {duration: 200}},
-			{e: overlay, p: {"z-index": 150},       o: {duration: 0}},
-			{e: overlay, p: {opacity: 0.5},         o: {duration: 200}}
+			{e: options, p: {translateX: "100%"}, o: {display: "block", duration: 200}},
+			{e: overlay, p: {"z-index": 150},     o: {display: "block", duration: 0}},
+			{e: overlay, p: {opacity: 0.5},       o: {duration: 200}}
 		];
 
 		$.Velocity.RunSequence(sequence);
@@ -118,12 +118,24 @@ $(function() {
 		$('body').css({"overflow": ""});
 
 		sequence = [
-			{e: options, p: {translateX: 0},  o: {duration: 200}},
+			{e: options, p: {translateX: 0},  o: {display: "none", duration: 200}},
 			{e: overlay, p: {opacity: 0},     o: {duration: 200}},
-			{e: overlay, p: {"z-index": -10}, o: {duration: 0}}
+			{e: overlay, p: {"z-index": -10}, o: {display: "none", duration: 0}}
 		];
 
 		$.Velocity.RunSequence(sequence);
+	});
+
+	var resizeTimer;
+	$(window).resize(function(e) {
+		clearTimeout(resizeTimer);
+		resizeTimer = setTimeout(function() {
+			if ($('#more-options-wrapper').css("display") == "block" && $(window).width() >= 1200) {
+				$('#more-options-wrapper').css({"transform": "translateX(0px)", "display": "none"});
+				$('#more-options-overlay').css({"z-index": -10, "opacity": 0, "display": "none"});
+				$('body').css({"overflow": ""});
+			}
+		}, 200);
 	});
 });
 
