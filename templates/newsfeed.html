@@ -18,11 +18,7 @@
         <![endif]-->
     </head>
     <body>
-    	{% if current_user %}
-	    	{% module Header('#' + title if topic else title, True, True) %}
-	    {% else %}
-	    	{% module Header() %}
-	    {% end %}
+	    {% module Header('#' + title if topic else title) %}
 	    {% module SideColumn(title) %}
 		<aside id="off-canvas-comments-backer"></aside>
 	    <aside id="off-canvas-comments">

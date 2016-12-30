@@ -186,8 +186,8 @@ class Application(tornado.web.Application):
 
 # module to render the page header
 class HeaderModule(tornado.web.UIModule):
-	def render(self, page, search=True, logged_in=False, username=''):
-		return self.render_string("header_module.html", current_user=self.current_user, page=page, search=search, logged_in=logged_in, username=username)
+	def render(self, page, search=True):
+		return self.render_string("header_module.html", current_user=self.current_user, page=page, search=search)
 
 	def css_files(self):
 		return self.handler.static_url("css/header_module.css")
@@ -958,7 +958,7 @@ class FeedHandler(BaseHandler):
 			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
 
 			searches = 0
-			while len(questions) < 20 and searches < 10:
+			while len(questions) < 20 and searches < 7:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
@@ -991,7 +991,7 @@ class RecentFeedHandler(BaseHandler):
 			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
 
 			searches = 0
-			while len(questions) < 20 and searches < 10:
+			while len(questions) < 20 and searches < 7:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
@@ -1066,7 +1066,7 @@ class TopicHandler(BaseHandler):
 		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(20)
 
 		searches = 0
-		while len(questions) < 20 and searches < 10:
+		while len(questions) < 20 and searches < 7:
 			days      = days + 14
 			old_span  = time_span
 			time_span = datetime.utcnow() - timedelta(days=days)
@@ -1103,7 +1103,7 @@ class RecentTopicHandler(BaseHandler):
 		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(20)
 
 		searches = 0
-		while len(questions) < 20 and searches < 10:
+		while len(questions) < 20 and searches < 7:
 			days      = days + 14
 			old_span  = time_span
 			time_span = datetime.utcnow() - timedelta(days=days)
@@ -1176,11 +1176,11 @@ class SearchHandler(BaseHandler):
 	def get(self):
 		search_term = self.get_argument("search-term").lower()
 
-		ret = yield [self.application.db.users.find({"username_search": {"$regex": search_term}}, {"username": 1, "profile_pic_link": 1, "bio": 1}).to_list(20),
-			   		 self.application.db.questions.find({"question_search": {"$regex": search_term}}).to_list(20),
-			   		 self.application.db.topics.find({"name_search": {"$regex": search_term}}, {"name": 1}).to_list(20)]
+		users, questions, topics = yield [self.application.db.users.find({"username_search": {"$regex": search_term}}, {"username": 1, "profile_pic_link": 1}).to_list(20),
+			   		                      self.application.db.questions.find({"question_search": {"$regex": search_term}}, {"question": 1, "image_link": 1}).to_list(20),
+			   		                      self.application.db.topics.find({"name_search": {"$regex": search_term}}, {"name": 1}).to_list(20)]
 
-		logging.info(ret)
+		self.render("search.html", current_user=self.current_user, search_term=search_term, users=users, questions=questions, topics=topics)
 
 class CustomURLHandler(BaseHandler):
 	@tornado.gen.coroutine
@@ -1222,5 +1222,5 @@ class CustomURLHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()

@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ question["question"] }} - Hive</title>
+        <title>Search for '{{ search_term }}' - Hive</title>
         <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
         <link rel="stylesheet" href="{{ static_url("css/question.css") }}">
         {% if current_user %}
@@ -17,19 +17,12 @@
         <![endif]-->
     </head>
     <body>
-        {% module Header(question["question"]) %}
+        {% module Header("Search for '" + search_term + "'") %}
         {% if current_user %}
             {% module SideColumn('') %}
         {% end %}
         <main {% if not current_user %}class="centered"{% end %}>
-            <div id="content-and-comments-wrapper">
-                <section id="question-content">
-                    {% module Question(asker, question, vote, favorite_count, favorited_this_question, comment_count) %}  
-                </section>
-                <section id="question-comments">
-                    {% module Comment(str(question["_id"]), comments, commenters) %}
-                </section>
-            </div>
+            
         </main>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
         <script src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>

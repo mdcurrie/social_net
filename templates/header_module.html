@@ -12,16 +12,14 @@
             </svg>
         </div>
     {% end %}
-    <div class="logo {% if not logged_in %}centered{% end %}">
+    <div class="logo {% if not current_user %}centered{% end %}">
         <a href={% if current_user %}"/feed"{% else %}"/"{% end %}>
             &middot;HIVE&middot;
         </a>
     </div>
     <div id="page-title">
-        {% if logged_in %}
-            {% if username %}
-                {{ username }}
-            {% elif page == 'Feed' %}
+        {% if current_user %}
+            {% if page == 'Feed' %}
                 Home
             {% else %}
                 {{ page }}
@@ -81,7 +79,11 @@
     {% end %}
 </header>
 <div id="off-canvas-mobile-search-backer"></div>
-<div id="off-canvas-mobile-search"></div>
+<div id="off-canvas-mobile-search">
+    <form action="/search" method="get">
+        <input name="search-term" placeholder="Search all..." autocomplete="off">
+    </form>
+</div>
 <div id="mobile-search-overlay"></div>
 
 {% if current_user %}

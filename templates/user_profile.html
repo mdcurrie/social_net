@@ -17,7 +17,7 @@
         <![endif]-->
     </head>
     <body>
-        {% module Header('Profile' if own_profile else '', True, current_user != None, profile["username"]) %}
+        {% module Header('Profile' if own_profile else profile["username"]) %}
         {% if current_user %}
             {% module SideColumn('') %}
         {% end %}
