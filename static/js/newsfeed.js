@@ -162,6 +162,7 @@ $(function() {
 			if (data.following) {
 				$('.follow-topic-button').addClass('active').text('Following');
 				$('#topics ul').append('<a href="/topics/' + data.name + '"><li style="opacity:0" class="active">#' + data.name + '</li></a>');
+				$('.more-options-list:nth-of-type(2) ul').append('<a href="/topics/' + data.name + '"><li class="active">#' + data.name + '</li></a>')
 				topic = $('#topics .active');
 				topic.velocity({opacity: 1}, 300);
 			}
@@ -170,6 +171,7 @@ $(function() {
 				$('#topics .active').velocity({opacity: 0}, 300, function() {
 					$(this).parent().remove();
 				});
+				$('.more-options-list:nth-of-type(2) li.active').parent().remove();
 			}
 		});
 	});

@@ -77,7 +77,9 @@ $(function() {
 			{e: backer,  p: {translateX: "100%"}, o: {display: "block", duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
 			{e: search,  p: {translateX: "100%"}, o: {display: "block", duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
 			{e: overlay, p: {"z-index": 40},      o: {duration: 0}},
-			{e: overlay, p: {opacity: 0.5},       o: {duration: 200}}
+			{e: overlay, p: {opacity: 0.5},       o: {duration: 200, complete: function() {
+				$('#off-canvas-mobile-search input').focus();
+			}}}
 		];
 
 		$.Velocity.RunSequence(sequence);

@@ -44,6 +44,25 @@ header {
 	right: 100%;
 	display: none;
 }
+#off-canvas-mobile-search form {
+	position: relative;
+	height: 100%;
+}
+#off-canvas-mobile-search input {
+    outline: none;
+    font-family: Gotham;
+    border: none;
+    font-size: 1em;
+    padding: 7px 10px;
+    background: #f1f1f1;
+    border-radius: 3px;
+    width: calc(100% - 20px);
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 #mobile-search-overlay {
 	position: fixed;
 	width: 100%;
@@ -229,6 +248,15 @@ main {
 @media only screen and (min-width: 1200px) {
 	#mobile-search-icon {
 		display: none;
+	}
+	#off-canvas-mobile-search {
+		display: none !important;
+	}
+	#off-canvas-mobile-search-backer {
+		display: none !important;
+	}
+	#mobile-search-overlay {
+		display: none !important;
 	}
 	header {
 		height: 80px;
