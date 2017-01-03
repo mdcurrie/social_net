@@ -363,7 +363,7 @@ main {
 		width: 30%;
 	}
 	#row-settings {
-		max-width: 650px;
+		max-width: 648px;
 	}
 	.key {
 		color: #353436;
@@ -386,6 +386,9 @@ main {
 	}
 	#custom-url {
 		max-width: 330px;
+	}
+	#custom-url-button {
+		padding: 10px;
 	}
 	#url-prefix {
 		color: #353436;

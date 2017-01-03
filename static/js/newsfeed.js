@@ -158,6 +158,9 @@ $(function() {
 	    }
 
 		$.post(url, {_xsrf: getCookie('_xsrf')}, function(data) {
+			if (data.redirect) {
+                window.location.href = data.redirect;
+            }
 			$('.main-content-topic-follower-count').text(data.count);
 			if (data.following) {
 				$('.follow-topic-button').addClass('active').text('Following');
@@ -189,7 +192,13 @@ $(function() {
 	if (window.innerWidth >= 800 && window.innerWidth < 1200) {
 		resizeTwoColumns($('.labels'));
 	}
-	if (window.innerWidth >= 1200) {
+	if (window.innerWidth >= 1200 && $('main').hasClass('centered')) {
+		resizeThreeColumns($('.labels'));
+	}
+	if (window.innerWidth >= 1200 && !$('main').hasClass('centered')) {
+		resizeTwoColumns($('.labels'));
+	}
+	if (window.innerWidth > 1400) {
 		resizeThreeColumns($('.labels'));
 	}
 

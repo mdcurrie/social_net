@@ -139,6 +139,25 @@ $(function() {
 			}
 		}, 200);
 	});
+
+	var focusTimer;
+	var form_inputs = $('input');
+	$(form_inputs).on('focusout', function() {
+		clearTimeout(focusTimer);
+		focusTimer = setTimeout(function() {
+			if (form_inputs.is(':focus')) {
+				;
+			}
+			else {
+				$('#mobile-tab-bar-wrapper').velocity({"translateY": 0}, {display: "block", duration: 250});
+			}
+		}, 600);
+	});
+
+	$(form_inputs).on('focusin', function() {
+		clearTimeout(focusTimer);
+		$('#mobile-tab-bar-wrapper').velocity({"translateY": 0}, {duration: 650}).velocity({"translateY": 46}, {display: "none", duration: 250});
+	});
 });
 
 function hasScrolled() {

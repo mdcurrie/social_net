@@ -1,4 +1,7 @@
 $(function() {
+	triangle = $('#triangle-wrapper');
+	tab_wrapper = $('#mobile-tab-bar-wrapper');
+
 	follower_url = $('#followers-count').attr('class');
 	$.get(follower_url, function(data) {
 		$('#misc').append(data);
@@ -26,83 +29,122 @@ $(function() {
 	});
 
 	$('#followers-count').on('click', function() {
-		var url = $(this).attr('class');
+		backer    = $('.backer');
+		questions = $('#recent-answers');
+		following = $('#following-wrapper');
+		followers = $('#follower-wrapper');
 
-		if (window.innerWidth < 900) {
-			triangle = $('#triangle-wrapper');
+		if (questions.hasClass("top-layer")) {
+			questions.removeClass("top-layer");
+			followers.addClass("top-layer");
+			backer.velocity({translateX: 0}, 0).css({"z-index": parseInt(questions.css("z-index")) + 1});
+			followers.velocity({translateX: 0}, 0).css({"z-index": parseInt(backer.css("z-index")) + 1});
+			tab_wrapper.css({"z-index": parseInt(tab_wrapper.css("z-index")) + 2});
+
 			sequence = [
-				{e: triangle, p: {translateX: "33.33%"}, o: {duration: 300, begin: function() {getFollowers(url);}}}
+				{e: triangle,  p: {translateX: "33.33%"}, o: {duration: 300}},
+				{e: backer,    p: {translateX: "100%"},   o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
+				{e: followers, p: {translateX: "100%"},   o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
 			];
-			$.Velocity.RunSequence(sequence);
+
+		$.Velocity.RunSequence(sequence);
+		}
+		else if (followers.hasClass("top-layer")) {
+			;
 		}
 		else {
-			getFollowers(url);
+			following.removeClass("top-layer");
+			followers.addClass("top-layer");
+			backer.velocity({translateX: 0}, 0).css({"z-index": parseInt(following.css("z-index")) + 1});
+			followers.velocity({translateX: 0}, 0).css({"z-index": parseInt(backer.css("z-index")) + 1});
+			tab_wrapper.css({"z-index": parseInt(tab_wrapper.css("z-index")) + 2});
+
+			sequence = [
+				{e: triangle,  p: {translateX: "33.33%"}, o: {duration: 300}},
+				{e: backer,    p: {translateX: "100%"},   o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
+				{e: followers, p: {translateX: "100%"},   o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
+			];
+
+			$.Velocity.RunSequence(sequence);
 		}
 	});
 
 	$('#following-count').on('click', function() {
-		var url = $(this).attr('class');
+		backer    = $('.backer');
+		questions = $('#recent-answers');
+		following = $('#following-wrapper');
+		followers = $('#follower-wrapper');
 
-		if (window.innerWidth < 900) {
-			triangle = $('#triangle-wrapper');
+		if (questions.hasClass("top-layer")) {
+			questions.removeClass("top-layer");
+			following.addClass("top-layer");
+			backer.velocity({translateX: 0}, 0).css({"z-index": parseInt(questions.css("z-index")) + 1});
+			following.velocity({translateX: 0}, 0).css({"z-index": parseInt(backer.css("z-index")) + 1});
+			tab_wrapper.css({"z-index": parseInt(tab_wrapper.css("z-index")) + 2});
+
 			sequence = [
-				{e: triangle, p: {translateX: "66.66%"}, o: {duration: 300, begin: function() {getFollowing(url);}}}
+				{e: triangle,  p: {translateX: "66.66%"}, o: {duration: 300}},
+				{e: backer,    p: {translateX: "100%"},   o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
+				{e: following, p: {translateX: "100%"},   o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
 			];
+
+		$.Velocity.RunSequence(sequence);
+		}
+		else if (followers.hasClass("top-layer")) {
+			followers.removeClass("top-layer");
+			following.addClass("top-layer");
+			backer.velocity({translateX: 0}, 0).css({"z-index": parseInt(followers.css("z-index")) + 1});
+			following.velocity({translateX: 0}, 0).css({"z-index": parseInt(backer.css("z-index")) + 1});
+			tab_wrapper.css({"z-index": parseInt(tab_wrapper.css("z-index")) + 2});
+
+			sequence = [
+				{e: triangle,  p: {translateX: "66.66%"}, o: {duration: 300}},
+				{e: backer,    p: {translateX: "100%"},   o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
+				{e: following, p: {translateX: "100%"},   o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
+			];
+
 			$.Velocity.RunSequence(sequence);
 		}
 		else {
-			getFollowing(url);
+			;
 		}
 	});
 
 	$('#question-count').on('click', function() {
+		backer    = $('.backer');
+		questions = $('#recent-answers');
+		following = $('#following-wrapper');
+		followers = $('#follower-wrapper');
 
-		question  = $('.profile-questions');
-		triangle  = $('#triangle-wrapper');
-		questions = $('.profile-questions');
-		other_wrapper = false;
-		if ($('#follower-wrapper').length && !$('#following-wrapper').length) {
-			wrapper = $('#follower-wrapper');
-			backer  = $('#misc .backer');
+		if (questions.hasClass("top-layer")) {
+			;
 		}
-		if (!$('#follower-wrapper').length && $('#following-wrapper').length) {
-			wrapper = $('#following-wrapper');
-			backer  = $('#misc .backer');
-		}
-		if ($('#follower-wrapper').length && $('#following-wrapper').length) {
-			if ($('#follower-wrapper').css("z-index") >= $('#following-wrapper').css("z-index")) {
-				wrapper = $('#follower-wrapper');
-				backer  = $('#misc .backer');
-				other_wrapper = $('#following-wrapper');
-			}
-			else {
-				wrapper = $('#following-wrapper');
-				backer  = $('#misc .backer');
-				other_wrapper = $('#follower-wrapper');
-			}
-		}
+		else if (followers.hasClass("top-layer")) {
+			followers.removeClass("top-layer");
+			questions.addClass("top-layer");
+			following.velocity({translateX: 0}, 0);
 
-		if (other_wrapper) {
 			sequence = [
-				{e: questions,     p: {opacity: 1},       o: {duration: 0}},
-				{e: backer,        p: {opacity: 1},       o: {duration: 0}},
-				{e: other_wrapper, p: {translateX: 0},    o: {duration: 0}},
-				{e: triangle,      p: {translateX: "0%"}, o: {duration: 300}},
-				{e: wrapper,       p: {translateX: 0},    o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
-				{e: backer,        p: {translateX: 0},    o: {display: "block", duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
+				{e: triangle,  p: {translateX: 0}, o: {duration: 300}},
+				{e: followers, p: {translateX: 0}, o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
+				{e: backer,    p: {translateX: 0}, o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
 			];
+
+			$.Velocity.RunSequence(sequence);
 		}
 		else {
-			sequence = [
-				{e: questions, p: {opacity: 1},       o: {duration: 0}},
-				{e: backer,    p: {opacity: 1},       o: {duration: 0}},
-				{e: triangle,  p: {translateX: "0%"}, o: {duration: 300}},
-				{e: wrapper,   p: {translateX: 0},    o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
-				{e: backer,    p: {translateX: 0},    o: {display: "block", duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
-			];
-		}
+			following.removeClass("top-layer");
+			questions.addClass("top-layer");
+			followers.velocity({translateX: 0}, 0);
 
-		$.Velocity.RunSequence(sequence);
+			sequence = [
+				{e: triangle,  p: {translateX: 0}, o: {duration: 300}},
+				{e: following, p: {translateX: 0}, o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000], sequenceQueue: false}},
+				{e: backer,    p: {translateX: 0}, o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}}
+			];
+
+			$.Velocity.RunSequence(sequence);
+		}
 	});
 
 	$('#username-and-button button').on('click', function(e) {
@@ -170,194 +212,6 @@ $(function() {
 		}, 200);
 	});
 });
-
-function getFollowers(url) {
-	if (!$('#follower-wrapper').length) {
-		$.get(url, function(data) {
-			if (!$('#following-wrapper').length) {
-				$('#misc').append(data);
-				user_img = $('.user img');
-				overlay  = $('.user-relationship-overlay');
-				backer   = $('#misc .backer');
-				wrapper  = $('#follower-wrapper');
-				question = $('.profile-questions');
-
-				sequence = [
-					{e: user_img, p: {height: user_img.width()}, o: {duration: 0}},
-					{e: overlay,  p: {height: user_img.width()}, o: {duration: 0}},
-					{e: backer,   p: {opacity: 1},               o: {duration: 0}},
-					{e: backer,   p: {translateX: "100%"},       o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-					{e: wrapper,  p: {translateX: "100%"},       o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
-					{e: backer,   p: {opacity: 0},               o: {duration: 0}},
-					{e: question, p: {opacity: 0},               o: {duration: 0}}
-				];
-
-				$.Velocity.RunSequence(sequence);
-			}
-			else {
-				$('#misc').append(data);
-				user_img = $('.user img');
-				overlay  = $('.user-relationship-overlay');
-				backer   = $('#misc .backer');
-				wrapper  = $('#follower-wrapper');
-				other    = $('#following-wrapper');
-				question = $('.profile-questions');
-				tab_bar  = $('#mobile-tab-bar-wrapper');
-				z_index  = parseInt($('#following-wrapper').css("z-index"));
-
-				sequence = [
-					{e: user_img, p: {height: user_img.width()}, o: {duration: 0}},
-					{e: overlay,  p: {height: user_img.width()}, o: {duration: 0}},
-					{e: tab_bar,  p: {"z-index": z_index + 3},   o: {duration: 0}},
-					{e: wrapper,  p: {"z-index": z_index + 2},   o: {duration: 0}},
-					{e: backer,   p: {"z-index": z_index + 1},   o: {duration: 0}},
-					{e: backer,   p: {opacity: 1},               o: {duration: 0}},
-					{e: backer,   p: {translateX: "100%"},       o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-					{e: wrapper,  p: {translateX: "100%"},       o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
-					{e: backer,   p: {opacity: 0},               o: {duration: 0}},
-					{e: question, p: {opacity: 0},               o: {duration: 0}}
-				];
-
-				$.Velocity.RunSequence(sequence);
-			}
-		});
-	}
-	else if ($('#following-wrapper').css("z-index") >= $('#follower-wrapper').css("z-index")) {
-		backer  = $('#misc .backer');
-		wrapper = $('#follower-wrapper');
-		other    = $('#following-wrapper');
-		question = $('.profile-questions');
-		tab_bar = $('#mobile-tab-bar-wrapper');
-		z_index = parseInt($('#following-wrapper').css("z-index"));
-
-		sequence = [
-			{e: tab_bar,  p: {"z-index": z_index + 3},                o: {duration: 0}},
-			{e: wrapper,  p: {translateX: 0, "z-index": z_index + 2}, o: {duration: 0}},
-			{e: backer,   p: {translateX: 0, "z-index": z_index + 1}, o: {duration: 0}},
-			{e: backer,   p: {opacity: 1},                            o: {duration: 0}},
-			{e: backer,   p: {translateX: "100%"},                    o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-			{e: wrapper,  p: {translateX: "100%"},                    o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
-			{e: backer,   p: {opacity: 0},                            o: {duration: 0}},
-			{e: question, p: {opacity: 0},                            o: {duration: 0}}
-		];
-
-		$.Velocity.RunSequence(sequence);
-	}
-	else {
-		backer  = $('#misc .backer');
-		wrapper = $('#follower-wrapper');
-		question = $('.profile-questions');
-		tab_bar = $('#mobile-tab-bar-wrapper');
-		z_index = parseInt(wrapper.css("z-index"));
-
-		sequence = [
-			{e: tab_bar,  p: {"z-index": z_index + 3}, o: {duration: 0}},
-			{e: wrapper,  p: {"z-index": z_index + 2}, o: {duration: 0}},
-			{e: backer,   p: {"z-index": z_index + 1}, o: {duration: 0}},
-			{e: backer,   p: {opacity: 1},             o: {duration: 0}},
-			{e: backer,   p: {translateX: "100%"},     o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-			{e: wrapper,  p: {translateX: "100%"},     o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
-			{e: backer,   p: {opacity: 0},             o: {duration: 0}},
-			{e: question, p: {opacity: 0},             o: {duration: 0}}
-		];
-
-		$.Velocity.RunSequence(sequence);
-	}
-}
-
-function getFollowing(url) {
-	if (!$('#following-wrapper').length) {
-		$.get(url, function(data) {
-			if (!$('#follower-wrapper').length) {
-				$('#misc').append(data);
-				user_img = $('.user img');
-				overlay  = $('.user-relationship-overlay');
-				backer   = $('#misc .backer');
-				wrapper  = $('#following-wrapper');
-				question = $('.profile-questions');
-
-				sequence = [
-					{e: user_img, p: {height: user_img.width()}, o: {duration: 0}},
-					{e: overlay,  p: {height: user_img.width()}, o: {duration: 0}},
-					{e: backer,   p: {opacity: 1},               o: {duration: 0}},
-					{e: backer,   p: {translateX: "100%"},       o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-					{e: wrapper,  p: {translateX: "100%"},       o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
-					{e: backer,   p: {opacity: 0},               o: {duration: 0}},
-					{e: question, p: {opacity: 0},               o: {duration: 0}}
-				];
-
-				$.Velocity.RunSequence(sequence);
-			}
-			else {
-				$('#misc').append(data);
-				user_img = $('.user img');
-				overlay  = $('.user-relationship-overlay');
-				backer   = $('#misc .backer');
-				question = $('.profile-questions');
-				other    = $('#follower-wrapper');
-				wrapper  = $('#following-wrapper');
-				tab_bar  = $('#mobile-tab-bar-wrapper');
-				z_index  = parseInt($('#follower-wrapper').css("z-index"));
-
-				sequence = [
-					{e: user_img, p: {height: user_img.width()}, o: {duration: 0}},
-					{e: overlay,  p: {height: user_img.width()}, o: {duration: 0}},
-					{e: tab_bar,  p: {"z-index": z_index + 3},   o: {duration: 0}},
-					{e: wrapper,  p: {"z-index": z_index + 2},   o: {duration: 0}},
-					{e: backer,   p: {"z-index": z_index + 1},   o: {duration: 0}},
-					{e: backer,   p: {opacity: 1},               o: {duration: 0}},
-					{e: backer,   p: {translateX: "100%"},       o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-					{e: wrapper,  p: {translateX: "100%"},       o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
-					{e: backer,   p: {opacity: 0},               o: {duration: 0}},
-					{e: question, p: {opacity: 0},               o: {duration: 0}}
-				];
-
-				$.Velocity.RunSequence(sequence);
-			}
-		});
-	}
-	else if ($('#follower-wrapper').css("z-index") >= $('#following-wrapper').css("z-index")) {
-		backer   = $('#misc .backer');
-		wrapper  = $('#following-wrapper');
-		other    = $('#follower-wrapper');
-		question = $('.profile-questions');
-		tab_bar  = $('#mobile-tab-bar-wrapper');
-		z_index  = parseInt($('#follower-wrapper').css("z-index"));
-
-		sequence = [
-			{e: tab_bar,  p: {"z-index": z_index + 3},                o: {duration: 0}},
-			{e: wrapper,  p: {translateX: 0, "z-index": z_index + 2}, o: {duration: 0}},
-			{e: backer,   p: {translateX: 0, "z-index": z_index + 1}, o: {duration: 0}},
-			{e: backer,   p: {opacity: 1},                            o: {duration: 0}},
-			{e: backer,   p: {translateX: "100%"},                    o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-			{e: wrapper,  p: {translateX: "100%"},                    o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
-			{e: backer,   p: {opacity: 0},                            o: {duration: 0}},
-			{e: question, p: {opacity: 0},                            o: {duration: 0}}
-		];
-
-		$.Velocity.RunSequence(sequence);
-	}
-	else {
-		backer   = $('#misc .backer');
-		wrapper  = $('#following-wrapper');
-		question = $('.profile-questions');
-		tab_bar  = $('#mobile-tab-bar-wrapper');
-		z_index  = parseInt(wrapper.css("z-index"));
-
-		sequence = [
-			{e: tab_bar,  p: {"z-index": z_index + 3}, o: {duration: 0}},
-			{e: wrapper,  p: {"z-index": z_index + 2}, o: {duration: 0}},
-			{e: backer,   p: {"z-index": z_index + 1}, o: {duration: 0}},
-			{e: backer,   p: {opacity: 1},             o: {duration: 0}},
-			{e: backer,   p: {translateX: "100%"},     o: {duration: 300, easing: [1.000, 0.000, 1.000, 1.000]}},
-			{e: wrapper,  p: {translateX: "100%"},     o: {duration: 500, easing: [1.000, 0.000, 0.585, 1.000], sequenceQueue: false}},
-			{e: backer,   p: {opacity: 0},             o: {duration: 0}},
-			{e: question, p: {opacity: 0},             o: {duration: 0}}
-		];
-
-		$.Velocity.RunSequence(sequence);
-	}
-}
 
 function getCookie(name) {
     var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");

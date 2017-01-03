@@ -22,11 +22,14 @@ a {
 /*=================== GENERAL STYLING END ====================*/
 
 body {
-	background: #f1f1f1;
+	background: #ededed;
 }
 main {
 	padding-top: 45px;
 	overflow-x: hidden;
+}
+#user-profile {
+	min-height: 550px;
 }
 #profile-info {
 	background: #2eb398;
@@ -145,7 +148,6 @@ main {
 	position: absolute;
 	width: 100%;
     font-size: 0.75em;
-    letter-spacing: 0.02em;
     bottom: 5px;
     padding: 1px 5px;
     color: white;
@@ -165,6 +167,9 @@ main {
     letter-spacing: 0.03em;
     color: #999;
     margin: 18px 0 8px 0;
+}
+.profile-questions {
+	z-index: 1;
 }
 .question {
 	padding-bottom: 10px;
@@ -357,6 +362,9 @@ main {
 }
 
 @media only screen and (min-width: 900px) {
+	body {
+		background: #f1f1f1;
+	}
 	#triangle-wrapper {
 		display: none;
 	}
@@ -561,7 +569,7 @@ main {
 	}
 	#user-profile {
 		padding: 20px 0;
-		max-width: 1010px;
+		max-width: 1008px;
 		border-radius: 5px;
 		margin: 0 auto;
 		margin-bottom: 40px;
