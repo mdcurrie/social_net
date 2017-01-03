@@ -953,25 +953,35 @@ class FeedHandler(BaseHandler):
 		if not self.current_user:
 			self.redirect("/")
 		else:
-			days       = 7
-			time_span  = datetime.utcnow() - timedelta(days=days)
-			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
+			topics    = self.current_user.get("topics", None)
+			following = yield self.application.db.following.find({"user_id": self.current_user["_id"]}, {"following": 1}).to_list(None)
+			if following:
+				following = following[0].get("following", None)
 
-			searches = 0
-			while len(questions) < 20 and searches < 7:
+			days      = 7
+			time_span = datetime.utcnow() - timedelta(days=days)
+			questions = yield self.application.db.questions.find({"$or": [{"$and": [{"date": {"$gte": time_span}}, {"asker": {"$in": following + [self.current_user["_id"]]}}]}, {"topics": {"$in": topics}}]}).to_list(50)
+			searches  = 0
+			while not questions or len(questions) < 50 and searches < 10:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
-				more_qs   = yield self.application.db.questions.find({"date": {"$gt": time_span, "$lt": old_span}}).to_list(20 - len(questions))
-				questions = questions + more_qs
-				searches  = searches + 1
+				more_qs   = yield self.application.db.questions.find({"$or": [{"$and": [{"date": {"$gte": time_span, "$lt": old_span}}, {"asker": {"$in": following + [self.current_user["_id"]]}}]}, {"topics": {"$in": topics}}]}).to_list(50 - len(questions))
+				if more_qs:
+					if not questions:
+						questions = more_qs
+					else:
+						for q in more_qs:
+							if not q in questions:
+								questions.append(q)
+				searches = searches + 1
 
 			if questions:
 				questions.sort(key=lambda question: sum([q["votes"] for q in question["data"]]), reverse=True)
 
-			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
-						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
-						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(20),
+			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(50),
+						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(50),
+						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(50),
 						 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
 
 			favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
@@ -986,25 +996,35 @@ class RecentFeedHandler(BaseHandler):
 
 			self.redirect("/")
 		else:
-			days       = 7
-			time_span  = datetime.utcnow() - timedelta(days=days)
-			questions  = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(20)
+			topics    = self.current_user.get("topics", None)
+			following = yield self.application.db.following.find({"user_id": self.current_user["_id"]}, {"following": 1}).to_list(None)
+			if following:
+				following = following[0].get("following", None)
 
-			searches = 0
-			while len(questions) < 20 and searches < 7:
+			days      = 7
+			time_span = datetime.utcnow() - timedelta(days=days)
+			questions = yield self.application.db.questions.find({"$or": [{"$and": [{"date": {"$gte": time_span}}, {"asker": {"$in": following + [self.current_user["_id"]]}}]}, {"topics": {"$in": topics}}]}).to_list(50)
+			searches  = 0
+			while not questions or len(questions) < 50 and searches < 10:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
-				more_qs   = yield self.application.db.questions.find({"date": {"$gt": time_span, "$lt": old_span}}).to_list(20 - len(questions))
-				questions = questions + more_qs
-				searches  = searches + 1
+				more_qs   = yield self.application.db.questions.find({"$or": [{"$and": [{"date": {"$gte": time_span, "$lt": old_span}}, {"asker": {"$in": following + [self.current_user["_id"]]}}]}, {"topics": {"$in": topics}}]}).to_list(50 - len(questions))
+				if more_qs:
+					if not questions:
+						questions = more_qs
+					else:
+						for q in more_qs:
+							if not q in questions:
+								questions.append(q)
+				searches = searches + 1
 
 			if questions:
 				questions.sort(key=lambda question: question["date"], reverse=True)
 
-			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
-						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
-						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(20),
+			ret = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(50),
+						 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(50),
+						 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(50),
 						 self.application.db.votes.find_one({"user_id": self.current_user["_id"]})]
 
 			favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
@@ -1061,29 +1081,46 @@ class RecentFavoritesHandler(BaseHandler):
 class TopicHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, topic_name):
+		if not (yield self.application.db.topics.find_one({"name_search": topic_name.lower()})):
+			self.redirect("/")
+
 		days       = 7
 		time_span  = datetime.utcnow() - timedelta(days=days)
-		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(20)
+		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gte": time_span}}).to_list(50)
 
 		searches = 0
-		while len(questions) < 20 and searches < 7:
+		while len(questions) < 50 and searches < 10:
 			days      = days + 14
 			old_span  = time_span
 			time_span = datetime.utcnow() - timedelta(days=days)
-			more_qs   = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span, "$lt": old_span}}).to_list(20 - len(questions))
-			questions = questions + more_qs
+			more_qs   = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gte": time_span, "$lt": old_span}}).to_list(50 - len(questions))
+			if more_qs:
+				if not questions:
+					questions = more_qs
+				else:
+					for q in more_qs:
+						if not q in questions:
+							questions.append(q)
 			searches  = searches + 1
 
 		if questions:
 			questions.sort(key=lambda question: sum([q["votes"] for q in question["data"]]), reverse=True)
 
-		*ret, topic = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
-							 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
-							 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(20),
-							 self.application.db.votes.find_one({"user_id": self.current_user["_id"]}),
-							 self.application.db.topics.find_one({"name": topic_name}, {"created_by": 1, "question_count": 1, "follower_count": 1})]
+		if self.current_user:
+			*ret, topic = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(50),
+								 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(50),
+								 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(50),
+								 self.application.db.votes.find_one({"user_id": self.current_user["_id"]}),
+								 self.application.db.topics.find_one({"name": topic_name}, {"created_by": 1, "question_count": 1, "follower_count": 1})]
 
-		favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
+			favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
+		else:
+			*ret, topic = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(50),
+								 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(50),
+								 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(50),
+								 self.application.db.topics.find_one({"name": topic_name}, {"created_by": 1, "question_count": 1, "follower_count": 1})]
+
+			favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret, None)
 
 		question_count, follower_count = topic.get("question_count", 0), topic.get("follower_count", 0)
 
@@ -1100,27 +1137,41 @@ class RecentTopicHandler(BaseHandler):
 	def get(self, topic_name):
 		days       = 7
 		time_span  = datetime.utcnow() - timedelta(days=days)
-		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(20)
+		questions  = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span}}).to_list(50)
 
 		searches = 0
-		while len(questions) < 20 and searches < 7:
+		while len(questions) < 50 and searches < 10:
 			days      = days + 14
 			old_span  = time_span
 			time_span = datetime.utcnow() - timedelta(days=days)
-			more_qs   = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span, "$lt": old_span}}).to_list(20 - len(questions))
-			questions = questions + more_qs
+			more_qs   = yield self.application.db.questions.find({"topics": topic_name, "date": {"$gt": time_span, "$lt": old_span}}).to_list(50 - len(questions))
+			if more_qs:
+				if not questions:
+					questions = more_qs
+				else:
+					for q in more_qs:
+						if not q in questions:
+							questions.append(q)
 			searches  = searches + 1
 
 		if questions:
 			questions.sort(key=lambda question: question["date"], reverse=True)
 
-		*ret, topic = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
-							 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(20),
-							 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(20),
-							 self.application.db.votes.find_one({"user_id": self.current_user["_id"]}),
-							 self.application.db.topics.find_one({"name": topic_name}, {"created_by": 1, "question_count": 1, "follower_count": 1})]
+		if self.current_user:
+			*ret, topic = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(50),
+								 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(50),
+								 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(50),
+								 self.application.db.votes.find_one({"user_id": self.current_user["_id"]}),
+								 self.application.db.topics.find_one({"name": topic_name}, {"created_by": 1, "question_count": 1, "follower_count": 1})]
 
-		favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
+			favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret)
+		else:
+			*ret, topic = yield [self.application.db.favorites.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(50),
+								 self.application.db.comments.find({"question_id": {"$in": [question["_id"] for question in questions]}}).to_list(50),
+								 self.application.db.users.find({"_id": {"$in": [question["asker"] for question in questions]}}, {"email": 0, "bio": 0, "password": 0, "salt": 0}).to_list(50),
+								 self.application.db.topics.find_one({"name": topic_name}, {"created_by": 1, "question_count": 1, "follower_count": 1})]
+
+			favorited_this_question, favorite_count, comment_count, askers, votes = process_questions(self.current_user, questions, *ret, None)
 
 		question_count, follower_count = topic.get("question_count", 0), topic.get("follower_count", 0)
 
@@ -1150,7 +1201,7 @@ class AddTopicToFeed(BaseHandler):
 	@tornado.gen.coroutine
 	def post(self):
 		if not self.current_user:
-			self.redirect("/login")
+			self.write({"redirect": "/login"})
 		else:
 			# topic will be added to the user's feed only if the topic already exists
 			topic_name = self.get_argument("topic-name")
@@ -1174,11 +1225,14 @@ class AddTopicToFeed(BaseHandler):
 class SearchHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self):
-		search_term = self.get_argument("search-term").lower()
-
-		users, questions, topics = yield [self.application.db.users.find({"username_search": {"$regex": search_term}}, {"username": 1, "profile_pic_link": 1}).to_list(20),
-			   		                      self.application.db.questions.find({"question_search": {"$regex": search_term}}, {"question": 1, "image_link": 1}).to_list(20),
-			   		                      self.application.db.topics.find({"name_search": {"$regex": search_term}}, {"name": 1}).to_list(20)]
+		search_term = self.get_argument("search-term", None)
+		if search_term:
+			search_term = search_term.lower()
+			users, questions, topics = yield [self.application.db.users.find({"username_search": {"$regex": search_term}}, {"username": 1, "profile_pic_link": 1}).to_list(20),
+				   		                      self.application.db.questions.find({"question_search": {"$regex": search_term}}, {"question": 1, "image_link": 1}).to_list(20),
+				   		                      self.application.db.topics.find({"name_search": {"$regex": search_term}}, {"name": 1}).to_list(20)]
+		else:
+			users = questions = topics = None
 
 		self.render("search.html", current_user=self.current_user, search_term=search_term, users=users, questions=questions, topics=topics)
 

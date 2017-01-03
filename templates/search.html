@@ -4,9 +4,15 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Search for '{{ search_term }}' - Hive</title>
+        <title>
+            {% if search_term %}
+                Search for {{ search_term }} - Hive
+            {% else %}
+                Search - Hive
+            {% end %}
+        </title>
         <link rel="stylesheet" href="{{ static_url("css/reset.css") }}">
-        <link rel="stylesheet" href="{{ static_url("css/question.css") }}">
+        <link rel="stylesheet" href="{{ static_url("css/search.css") }}">
         {% if current_user %}
             <link rel="stylesheet" href="{{ static_url("css/imgur.min.css") }}">
         {% end %}
@@ -17,17 +23,88 @@
         <![endif]-->
     </head>
     <body>
-        {% module Header("Search for '" + search_term + "'") %}
+        {% if search_term %}
+            {% module Header("Search for '" + search_term + "'") %}
+        {% else %}
+            {% module Header("Search") %}
+        {% end %}
         {% if current_user %}
             {% module SideColumn('') %}
         {% end %}
         <main {% if not current_user %}class="centered"{% end %}>
-            
+            <section id="search-results">
+                <div id="search-results-form">
+                    <form action="/search" method="get">
+                        <input name="search-term" placeholder="Search all..." {% if search_term %}value={{ search_term }}{% end %} autocomplete="off">
+                    </form>
+                </div>
+                <div id="search-results-headers-wrapper">
+                    <div id="search-results-headers">
+                        <div class="search-results-header">
+                            <div class="search-count">{{ len(questions) if questions else 0 }}</div>
+                            <div class="search-category">questions</div>
+                        </div>
+                        <div class="search-results-header">
+                            <div class="search-count">{{ len(users) if users else 0 }}</div>
+                            <div class="search-category">users</div>
+                        </div>
+                        <div class="search-results-header">
+                            <div class="search-count">{{ len(topics) if topics else 0 }}</div>
+                            <div class="search-category">topics</div>
+                        </div>
+                        <div id="search-triangle-wrapper">
+                            <div id="search-triangle"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="search-tabs">
+                    <div id="search-results-questions" class="search-top">
+                        {% if questions %}
+                            {% for question in questions %}
+                                <a href="/questions/{{ str(question["_id"]) }}">
+                                    <div class="search-question" style="background-image: url({{ question["image_link"] }})">
+                                        <div class="search-question-overlay"></div>
+                                        <div class="search-question-title">{{ question["question"] }}</div>
+                                    </div>
+                                </a>
+                            {% end %}
+                        {% else %}
+                            <div class="no-search-results">Sorry, we couldn't find any related questions.</div>
+                        {% end %}
+                    </div>
+                    <div id="search-results-users">
+                        {% if users %}
+                            {% for user in users %}
+                                <a href="/users/{{ str(user["_id"]) }}">
+                                    <div class="search-user" style="background-image: url({{ user["profile_pic_link"] }})">
+                                        <div class="search-user-overlay"></div>
+                                        <div class="search-username">{{ user["username"] }}</div>
+                                    </div>
+                                </a>
+                            {% end %}
+                        {% else %}
+                            <div class="no-search-results">Sorry, we couldn't find any related users.</div>
+                        {% end %}
+                    </div>
+                    <div id="search-results-topics">
+                        {% if topics %}
+                            {% for topic in topics %}
+                                <a href="/topics/{{ str(topic["name"]) }}">
+                                    <div class="topic-name">#{{ topic["name"] }}</div>
+                                </a>
+                            {% end %}
+                        {% else %}
+                            <div class="no-search-results">Sorry, we couldn't find any related topics.</div>
+                        {% end %}
+                    </div>
+                    <div id="search-results-backer"></div>
+                </div>
+            </section>
         </main>
         <script src="{{ static_url("js/jquery.min.js") }}"></script>
         <script src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
         <script src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
-        <script src="{{ static_url("js/question.js") }}"></script>
+        <script src="{{ static_url("js/search.js") }}"></script>
         {% if current_user %}
             <script src="{{ static_url("js/imgur.min.js") }}"></script>
         {% end %}
