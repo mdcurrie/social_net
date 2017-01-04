@@ -403,7 +403,7 @@ class FollowHateHandler(BaseHandler):
 						
 						user        = yield self.application.db.users.find_one({"_id": target_id}, fields={"notifications": 1})
 						user_notifs = add_notification(user, "/users/" + str(self.current_user["_id"]), self.current_user["profile_pic_link"], self.current_user["username"] + ' started following you.', datetime.utcnow())
-						yield self.application.db.users.update({"_id": target_id}, {"$set": {"notifications": user_notifs}})
+						self.application.db.users.update({"_id": target_id}, {"$set": {"notifications": user_notifs}})
 						self.write({"followers": ret[0]["count"], "display_text": "Following"})
 				else:
 					if (yield self.application.db.haters.find_one({"user_id": target_id, "haters": self.current_user["_id"]}, fields={"_id": 1})):
@@ -798,15 +798,23 @@ class FavoriteShareHandler(BaseHandler):
 			else:
 				action = self.get_argument("action")
 				if action == "favorite":
-					action_list = yield self.application.db.favorites.find_one({"question_id": question_id}, fields={"user_ids": 1})
+					action_list = yield self.application.db.favorites.find_one({"question_id": question_id}, fields={"asker": 1, "user_ids": 1})
 					action_db   = self.application.db.favorites
 				else:
-					action_list = yield self.application.db.shares.find_one({"question_id": question_id}, fields={"user_ids": 1})
+					action_list = yield self.application.db.shares.find_one({"question_id": question_id}, fields={"asker": 1, "user_ids": 1})
 					action_db   = self.application.db.shares
 
 				# first user to favorite or share this question
 				if not action_list:
-					yield action_db.update({"question_id": question_id}, {"$inc": {"count": 1}, "$addToSet": {"user_ids": self.current_user["_id"]}}, upsert=True)
+					question = yield self.application.db.questions.find_one({"_id": question_id}, {"question": 1, "asker": 1})
+					if question["asker"] != self.current_user["_id"]:
+						ret = yield [action_db.update({"question_id": question_id}, {"$inc": {"count": 1}, "$addToSet": {"user_ids": self.current_user["_id"]}}, upsert=True),
+					                 self.application.db.users.find_one({"_id": question["asker"]}, fields={"notifications": 1})]
+						user_notifs = add_notification(ret[1], "/users/" + str(self.current_user["_id"]), self.current_user["profile_pic_link"], self.current_user["username"] + ' added "' + question["question"] + '" to their favorites.', datetime.utcnow())
+						self.application.db.users.update({"_id": question["asker"]}, {"$set": {"notifications": user_notifs}})
+					else:
+						action_db.update({"question_id": question_id}, {"$inc": {"count": 1}, "$addToSet": {"user_ids": self.current_user["_id"]}}, upsert=True)
+
 					self.write({action: True, "count": 1})
 				# not the first
 				else:
@@ -841,6 +849,12 @@ class FavoriteShareHandler(BaseHandler):
 							count = str(round(action_list["count"])/1000000, 1) + 'M'
 
 						self.write({action: True, "count": count})
+
+						question = yield self.application.db.questions.find_one({"_id": question_id}, {"question": 1, "asker": 1})
+						if question["asker"] != self.current_user["_id"]:
+							user = yield self.application.db.users.find_one({"_id": question["asker"]}, fields={"notifications": 1})
+							user_notifs = add_notification(user, "/users/" + str(self.current_user["_id"]), self.current_user["profile_pic_link"], self.current_user["username"] + ' added "' + question["question"] + '" to their favorites.', datetime.utcnow())
+							self.application.db.users.update({"_id": question["asker"]}, {"$set": {"notifications": user_notifs}})
 
 # handler for the home page
 class IndexHandler(BaseHandler):
