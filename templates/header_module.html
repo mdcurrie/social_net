@@ -38,6 +38,46 @@
                 <svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
                 </svg>
+                {% if current_user.get("notifications", None) %}
+                    {% for notif in current_user["notifications"] %}
+                        {% if not notif[0] %}
+                            <div id="new-notifications-indicator"></div>
+                            {% break %}
+                        {% end %}
+                    {% end %}
+                    <div id="notifications-dropdown">
+                        {% for notif in reversed(current_user["notifications"]) %}
+                            <a href={{ notif[1] }}>
+                                <div class="notification">
+                                    <div class="notification-image">
+                                        <img src={{ notif[2] }} alt="notification image">
+                                    </div>
+                                    <div class="notification-time">
+                                        {% set total_seconds = (datetime.utcnow() - notif[4]).total_seconds() %}
+                                        {% if total_seconds < 30 %}
+                                            Just now
+                                        {% elif total_seconds < 60 %}
+                                            {{ int(total_seconds) }}s ago
+                                        {% elif total_seconds < 3600 %}
+                                            {{ int(total_seconds * 0.0166667) }}m ago
+                                        {% elif total_seconds < 86400 %}
+                                            {{ int(total_seconds * 0.000277778) }}h ago
+                                        {% elif total_seconds < 172800 %}
+                                            Yesterday
+                                        {% elif total_seconds < 15770000 %}
+                                            {{ notif[4].strftime("%B %d").replace(' 0', ' ') }}
+                                        {% else %}
+                                            {{ notif[4].strftime("%B %d, %Y").replace(' 0', ' ') }}
+                                        {% end %}
+                                    </div>
+                                    <div class="notification-text">
+                                        {{ notif[3] }}
+                                    </div>
+                                </div>
+                            </a>
+                        {% end %}
+                    </div>
+                {% end %}
             </div>
             <div id="current-user-profile-pic">
                 <div class="dropdown">

@@ -49,6 +49,7 @@ class Application(tornado.web.Application):
 					(r"/favorites", FavoritesHandler),
 					(r"/favorites/recent", RecentFavoritesHandler),
 					(r"/search", SearchHandler),
+					(r"/process_notifications", NotificationsHandler),
 					(r"/(\w+)", CustomURLHandler),
 		]
 		settings = dict(
@@ -144,14 +145,6 @@ class Application(tornado.web.Application):
 		# 			"salt":			    b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
 		# 			"profile_pic_link": "http://i.imgur.com/MQam61S.jpg",
 		# 			"bio":              "Mogul, First Rapper Ever To Write And Publish A Book at 19, Film Score, Composer, Producer, Director #BASED"
-		# 		},
-		# 		{
-		# 			"username":         "marcus", 
-		# 			"email":            "m@e.com",
-		# 			"password":         b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.27IisMTqvAEtSZrxVkJ9ZM.UWHQ476y',
-		# 			"salt":			    b'$2b$12$y5gm/JA4Sbqahkuo4o.kX.',
-		# 			"profile_pic_link": "http://i.imgur.com/pq88IQx.png",
-		# 			"bio": "I'm new here!"
 		# 		}],
 		# 		callback=insert_questions
 		# 	)
@@ -187,7 +180,7 @@ class Application(tornado.web.Application):
 # module to render the page header
 class HeaderModule(tornado.web.UIModule):
 	def render(self, page, search=True):
-		return self.render_string("header_module.html", current_user=self.current_user, page=page, search=search)
+		return self.render_string("header_module.html", current_user=self.current_user, page=page, search=search, datetime=datetime)
 
 	def css_files(self):
 		return self.handler.static_url("css/header_module.css")
@@ -366,6 +359,27 @@ class ProfileHandler(BaseHandler):
 					 							 answered_questions=answered_questions, questions=questions, question_count=question_count, user_following_count=user_following_count,
 					 							 user_followers_count=user_followers_count)
 
+def add_notification(user, link, image, notif, current_time):
+	if user:
+		user_notifs = user.get("notifications", [])
+		user_notifs.append([False, link, image, notif, current_time])
+		if len(user_notifs) > 200:
+			user_notifs = user_notifs[100:]
+
+		return user_notifs
+
+class NotificationsHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def post(self):
+		if not self.current_user:
+			self.write({"redirect": "/login"})
+		else:
+			user_notifs = self.current_user.get("notifications", [])
+			for notif in user_notifs:
+				notif[0] = True
+
+			self.application.db.users.update({"_id": self.current_user["_id"]}, {"$set": {"notifications": user_notifs}})
+
 # handler to follow or hate a user
 class FollowHateHandler(BaseHandler):
 	@tornado.gen.coroutine
@@ -386,6 +400,10 @@ class FollowHateHandler(BaseHandler):
 					else:
 						ret = yield [self.application.db.followers.find_and_modify({"user_id": target_id}, {"$inc": {"count": 1}, "$addToSet": {"followers": self.current_user["_id"]}}, fields={"_id": 0, "count": 1}, upsert=True, new=True),
 								     self.application.db.following.update({"user_id": self.current_user["_id"]}, {"$inc": {"count": 1}, "$addToSet": {"following": target_id}}, upsert=True)]
+						
+						user        = yield self.application.db.users.find_one({"_id": target_id}, fields={"notifications": 1})
+						user_notifs = add_notification(user, "/users/" + str(self.current_user["_id"]), self.current_user["profile_pic_link"], self.current_user["username"] + ' started following you.', datetime.utcnow())
+						yield self.application.db.users.update({"_id": target_id}, {"$set": {"notifications": user_notifs}})
 						self.write({"followers": ret[0]["count"], "display_text": "Following"})
 				else:
 					if (yield self.application.db.haters.find_one({"user_id": target_id, "haters": self.current_user["_id"]}, fields={"_id": 1})):
@@ -953,10 +971,10 @@ class FeedHandler(BaseHandler):
 		if not self.current_user:
 			self.redirect("/")
 		else:
-			topics    = self.current_user.get("topics", None)
+			topics    = self.current_user.get("topics", [])
 			following = yield self.application.db.following.find({"user_id": self.current_user["_id"]}, {"following": 1}).to_list(None)
 			if following:
-				following = following[0].get("following", None)
+				following = following[0].get("following", [])
 
 			days      = 7
 			time_span = datetime.utcnow() - timedelta(days=days)
@@ -996,10 +1014,10 @@ class RecentFeedHandler(BaseHandler):
 
 			self.redirect("/")
 		else:
-			topics    = self.current_user.get("topics", None)
+			topics    = self.current_user.get("topics", [])
 			following = yield self.application.db.following.find({"user_id": self.current_user["_id"]}, {"following": 1}).to_list(None)
 			if following:
-				following = following[0].get("following", None)
+				following = following[0].get("following", [])
 
 			days      = 7
 			time_span = datetime.utcnow() - timedelta(days=days)
@@ -1276,5 +1294,5 @@ class CustomURLHandler(BaseHandler):
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
 	http_server = tornado.httpserver.HTTPServer(Application())
-	http_server.listen((int(os.environ.get('PORT', 8000))))
+	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
