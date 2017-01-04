@@ -336,10 +336,96 @@ main {
 	}
 	#notification-icon {
 		float: left;
-		transform: translate(-25px, 28px);
+		margin-top: 28px;
+		margin-right: 25px;
+		position: relative;
 	}
-	#notification-icon img {
-		height: 27px;
+	#notification-icon:hover {
+		cursor: pointer;
+	}
+	#new-notifications-indicator {
+		border-radius: 50%;
+	    background: #e64c65;
+	    opacity: 0.5;
+	    width: 8px;
+	    height: 8px;
+	    position: absolute;
+	    top: 2px;
+	    right: 1px;
+	}
+	@keyframes pulse { 
+		0%   { opacity: 0 }
+		50%  { opacity: 1}
+		100% { opacity: 0 }
+	}
+	#new-notifications-indicator {
+	  animation: pulse 2s infinite;
+	}
+	#notifications-dropdown {
+		position: absolute;
+	    background: white;
+	    border: 1px solid #f1f1f1;
+	    border-radius: 7px;
+	    right: 0px;
+	    top: 37px;
+	    max-height: 250px;
+	    width: 280px;
+	    overflow: auto;
+	    display: none;
+	    opacity: 0;
+	}
+	#notifications-dropdown::-webkit-scrollbar {
+	    width: 6px;
+	} 
+	#notifications-dropdown::-webkit-scrollbar-track {
+	    -webkit-border-radius: 10px;
+	    border-radius: 10px;
+	    background: white;
+	}
+	#notifications-dropdown::-webkit-scrollbar-thumb {
+	    -webkit-border-radius: 10px;
+	    border-radius: 10px;
+	    background: rgba(0, 0, 0,0.2); 
+	}
+	.notification {
+		padding: 0 0 15px 15px;
+		overflow: auto;
+		transition: background 0.3s;
+	}
+	#notifications-dropdown a:first-of-type .notification {
+		padding-top: 15px;
+	}
+	#notifications-dropdown a:last-of-type .notification {
+		padding-bottom: 0;
+	}
+	#notifications-dropdown a:last-of-type .notification-text {
+		border-bottom: none;
+	}
+	.notification:hover {
+		background: #f1f1f1;
+	}
+	.notification-image {
+		float: left;
+		margin-right: 10px;
+	}
+	.notification-image img {
+		width: 40px;
+		height: 40px;
+		object-fit: cover;
+		border-radius: 50%;
+	}
+	.notification-time {
+		font-size: 0.7em;
+	    color: #999;
+	    transform: translateY(2px);
+	    margin-bottom: 5px;
+	}
+	.notification-text {
+		font-size: 0.85em;
+		padding-right: 15px;
+		border-bottom: 1px solid rgba(0,0,0,.065);
+		padding-bottom: 15px;
+		margin-left: 50px;
 	}
 	#current-user-profile-pic {
 		float: left;

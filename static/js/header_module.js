@@ -21,6 +21,31 @@ $(function() {
 		$.Velocity.RunSequence(sequence);
 	});
 
+	$('#notification-icon').on('click', function() {
+		dropdown_content = $('#notifications-dropdown');
+		indicator = $('#new-notifications-indicator');
+		if (dropdown_content.css("display") == 'none') {
+			sequence = [
+				{e: dropdown_content, p: {opacity: 0},                 o: {display: "block", duration: 0}},
+				{e: dropdown_content, p: {opacity: 1, translateY: 25}, o: {duration: 300, easing: 'easeInOutCubic'}},
+				{e: indicator,        p: {opacity: 0},                 o: {duration: 300, display: "none", complete: function() {
+					$.post("/process_notifications", {_xsrf: getCookie('_xsrf')}, function(data) {
+						if (data.redirect) {
+							window.location.href = data.redirect;
+						}
+					});
+				}}}
+			];
+		}
+		else {
+			sequence = [
+				{e: dropdown_content, p: {opacity: 0, translateY: 0},  o: {display: "none", duration: 300, easing: "easeInOutCubic"}},
+			];
+		}
+
+		$.Velocity.RunSequence(sequence);
+	});
+
 	$(window).scroll(function(event){
 	    didScroll = true;
 	});
@@ -189,4 +214,9 @@ function hasScrolled() {
 
 	    lastScrollTop = st;
 	}
+}
+
+function getCookie(name) {
+    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+    return r ? r[1] : undefined;
 }
