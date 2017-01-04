@@ -388,12 +388,9 @@ main {
 	    background: rgba(0, 0, 0,0.2); 
 	}
 	.notification {
-		padding: 0 0 15px 15px;
+		padding: 15px 0 0 15px;
 		overflow: auto;
 		transition: background 0.3s;
-	}
-	#notifications-dropdown a:first-of-type .notification {
-		padding-top: 15px;
 	}
 	#notifications-dropdown a:last-of-type .notification {
 		padding-bottom: 0;
@@ -421,7 +418,7 @@ main {
 	    margin-bottom: 5px;
 	}
 	.notification-text {
-		font-size: 0.85em;
+		font-size: 0.8em;
 		padding-right: 15px;
 		border-bottom: 1px solid rgba(0,0,0,.065);
 		padding-bottom: 15px;
