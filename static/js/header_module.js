@@ -133,7 +133,7 @@ $(function() {
 		sequence = [
 			{e: options, p: {translateX: "100%"}, o: {display: "block", duration: 200}},
 			{e: overlay, p: {"z-index": 150},     o: {display: "block", duration: 0}},
-			{e: overlay, p: {opacity: 0.5},       o: {duration: 200}}
+			{e: overlay, p: {opacity: 0.5},       o: {duration: 200}},
 		];
 
 		$.Velocity.RunSequence(sequence);
@@ -142,12 +142,20 @@ $(function() {
 	$('#more-options-overlay').on('click', function() {
 		options = $('#more-options-wrapper');
 		overlay = $('#more-options-overlay');
+		icons   = $('.mobile-notification-icon');
 		$('body').css({"overflow": ""});
 
 		sequence = [
 			{e: options, p: {translateX: 0},  o: {display: "none", duration: 200}},
 			{e: overlay, p: {opacity: 0},     o: {duration: 200}},
-			{e: overlay, p: {"z-index": -10}, o: {display: "none", duration: 0}}
+			{e: overlay, p: {"z-index": -10}, o: {display: "none", duration: 0}},
+			{e: icons,   p: {opacity: 0},     o: {duration: 300, display: "none", complete: function() {
+				$.post("/process_notifications", {_xsrf: getCookie('_xsrf')}, function(data) {
+					if (data.redirect) {
+						window.location.href = data.redirect;
+					}
+				});
+			}}}
 		];
 
 		$.Velocity.RunSequence(sequence);

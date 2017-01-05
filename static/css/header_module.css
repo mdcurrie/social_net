@@ -131,6 +131,7 @@ main {
 	float: left;
 	text-align: center;
 	padding-top: 4px;
+	position: relative;
 }
 .nav-option:nth-of-type(3) {
 	padding-top: 1px;
@@ -150,6 +151,57 @@ main {
 	font-size: 0.65em;
 	color: #2eb398;
     letter-spacing: 0.03em;
+}
+.mobile-notification-icon {
+	border-radius: 50%;
+    background: #e64c65;
+    opacity: 0.5;
+    width: 8px;
+    height: 8px;
+}
+@keyframes pulse { 
+	0%   { opacity: 0 }
+	50%  { opacity: 1}
+	100% { opacity: 0 }
+}
+.mobile-notification-icon {
+  animation: pulse 2s infinite;
+}
+.mobile-notif-image {
+	float: left;
+}
+.mobile-notif-image img {
+	width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.mobile-notif-text {
+	font-size: 0.8em;
+	color: #999;
+	transform: translateY(2px);
+}
+#mobile-notifs-list {
+	position: relative;
+}
+#mobile-notification-icon-more-options {
+	position: absolute;
+    top: 1px;
+    left: 60px;
+}
+#mobile-notifs-list a {
+	padding: 3px 0;
+	display: block;
+    overflow: auto;
+    margin-bottom: 10px;
+}
+#mobile-notifs-list a:last-of-type {
+	margin-bottom: 5px;
+}
+#mobile-notification-icon-tab {
+	position: absolute;
+	right: 30%;
+	top: 5px;
 }
 #more-options-overlay {
 	position: fixed;
@@ -236,6 +288,9 @@ main {
 	}
 	#page-title {
 		left: 16px;
+	}
+	#mobile-notification-icon-tab {
+		right: 33%;
 	}
 }
 
@@ -353,11 +408,6 @@ main {
 	    top: 2px;
 	    right: 1px;
 	}
-	@keyframes pulse { 
-		0%   { opacity: 0 }
-		50%  { opacity: 1}
-		100% { opacity: 0 }
-	}
 	#new-notifications-indicator {
 	  animation: pulse 2s infinite;
 	}
@@ -423,6 +473,7 @@ main {
 		border-bottom: 1px solid rgba(0,0,0,.065);
 		padding-bottom: 15px;
 		margin-left: 50px;
+		line-height: 1.3em;
 	}
 	#current-user-profile-pic {
 		float: left;
