@@ -38,12 +38,16 @@
                 <svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
                 </svg>
+                {% set new_notif = False %}
                 {% if current_user.get("notifications", None) %}
                     {% for notif in current_user["notifications"] %}
                         {% if not notif[0] %}
-                            <div id="new-notifications-indicator"></div>
+                            {% set new_notif = True %}                
                             {% break %}
                         {% end %}
+                    {% end %}
+                    {% if new_notif %}
+                        <div id="new-notifications-indicator"></div>
                     {% end %}
                     <div id="notifications-dropdown">
                         {% for notif in reversed(current_user["notifications"]) %}
@@ -171,6 +175,9 @@
                 </a>
             </div>
             <div class="nav-option">
+                {% if new_notif %}
+                    <div id="mobile-notification-icon-tab" class="mobile-notification-icon"></div>
+                {% end %}
                 <div class="nav-icon">
                     <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M0 0h24v24H0z" fill="none"/>
@@ -194,7 +201,7 @@
                     <a href="{{ '/users/' + str(current_user['_id']) }}">View Profile</a>
                 </div>
             </div>
-            <div id="more-options-lists">
+            <div id="more-options-lists">  
                 <div class="more-options-list">
                     <div class="more-options-header">MAIN</div>
                     <ul>
@@ -206,18 +213,36 @@
                         </a>
                     </ul>
                 </div>
-                <div class="more-options-list">
-                    <div class="more-options-header">TOPICS</div>
-                    <ul>
-                        {% if current_user.get("topics") %}
+                {% if current_user.get("notifications", None) %}
+                    <div class="more-options-list" id="mobile-notifs-list">
+                        <div class="more-options-header">NOTIFS</div>
+                        {% if new_notif %}
+                            <div id="mobile-notification-icon-more-options" class="mobile-notification-icon"></div>
+                        {% end %}
+                        <ul>
+                            {% for notif in reversed(current_user["notifications"][-3:]) %}
+                                <a href={{ notif[1] }}>
+                                    <div class="mobile-notif-image">
+                                        <img src="{{ notif[2] }}">
+                                    </div>
+                                    <div class="mobile-notif-text">{{ notif[3] }}</div>
+                                </a>
+                            {% end %}
+                        </ul>
+                    </div>
+                {% end %}
+                {% if current_user.get("topics") %}
+                    <div class="more-options-list">
+                        <div class="more-options-header">TOPICS</div>
+                        <ul>
                             {% for topic in current_user["topics"] %}
                                 <a href="/topics/{{ topic }}">
                                     <li {% if page[1:] == topic %}class="active"{% end %}>#{{ topic }}</li>
                                 </a>
                             {% end %}
-                        {% end %}
-                    </ul>
-                </div>
+                        </ul>
+                    </div>
+                {% end %}
                 <div class="more-options-list">
                     <div class="more-options-header">ACCOUNT</div>
                     <ul>

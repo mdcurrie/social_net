@@ -172,7 +172,6 @@ class Application(tornado.web.Application):
 		#self.db.users.find_and_modify({"username": "marcus"}, {"$set": {"username_search": "marcus"}})
 		#self.db.users.find_and_modify({"username": "KayceLove"}, {"$set": {"username_search": "kaycelove"}})
 		#self.db.users.find_and_modify({"username": "thereallannis"}, {"$set": {"username_search": "thereallannis"}})
-		#self.db.users.find_and_modify({"username": "MegaTech"}, {"$set": {"username_search": "megatech"}})
 		#self.db.users.find_and_modify({"username": "example"}, {"$set": {"username_search": "example"}})
 
 		tornado.web.Application.__init__(self, handlers, **settings)	
@@ -268,7 +267,8 @@ class SignupHandler(BaseHandler):
 					"salt":             salt,
 					"bio":              "I'm new here!",
 					"profile_pic_link": "http://i.imgur.com/pq88IQx.png",
-					"join_date":		datetime.utcnow()})
+					"join_date":		datetime.utcnow(),
+					"notifications":    [[False, "", "http://i.imgur.com/pq88IQx.png", "Hi " + username + ", thanks so much for joining Hive. Get started by following some of your favorite users or topics.", datetime.utcnow()]]})
 
 			self.set_secure_cookie("auth_id", str(user), httponly=True)
 			self.redirect("/feed")
@@ -590,7 +590,7 @@ class CreateQuestionHandler(BaseHandler):
 							update_dict["question_count"] = 1
 							ret = yield self.application.db.topics.find_and_modify({"name": topic}, {"$inc": update_dict}, upsert=True)
 							if not ret:
-								yield self.application.db.topics.update({"name": topic}, {"$set": {"name_search": topics[0].lower(), "created_by": self.current_user["_id"], "creation_date": datetime.utcnow()}})
+								yield self.application.db.topics.update({"name": topic}, {"$set": {"name_search": topic.lower(), "created_by": self.current_user["_id"], "creation_date": datetime.utcnow()}})
 
 					self.write({"redirect": "/questions/" + str(question)})
 
@@ -705,6 +705,12 @@ class CommentHandler(BaseHandler):
 
 				self.write({"count": count, "replacement": str(self.render_string("comment_module.html", question_id=question_id, comments=comments, commenters=commenters, datetime=datetime), "utf-8")})
 
+				question = yield self.application.db.questions.find_one({"_id": question_id}, {"asker": 1, "question": 1})
+				if question["asker"] != self.current_user["_id"]:
+					user = yield self.application.db.users.find_one({"_id": question["asker"]}, fields={"notifications": 1})
+					user_notifs = add_notification(user, "/questions/" + str(question["_id"]), self.current_user["profile_pic_link"], self.current_user["username"] + ' left a comment on "' + question["question"] + '".', datetime.utcnow())
+					self.application.db.users.update({"_id": question["asker"]}, {"$set": {"notifications": user_notifs}})
+
 # handler for rendering comments
 class CommentModule(tornado.web.UIModule):
 	def render(self, question_id, comments, commenters):
@@ -806,6 +812,7 @@ class FavoriteShareHandler(BaseHandler):
 
 				# first user to favorite or share this question
 				if not action_list:
+					self.write({action: True, "count": 1})
 					question = yield self.application.db.questions.find_one({"_id": question_id}, {"question": 1, "asker": 1})
 					if question["asker"] != self.current_user["_id"]:
 						ret = yield [action_db.update({"question_id": question_id}, {"$inc": {"count": 1}, "$addToSet": {"user_ids": self.current_user["_id"]}}, upsert=True),
@@ -814,8 +821,6 @@ class FavoriteShareHandler(BaseHandler):
 						self.application.db.users.update({"_id": question["asker"]}, {"$set": {"notifications": user_notifs}})
 					else:
 						action_db.update({"question_id": question_id}, {"$inc": {"count": 1}, "$addToSet": {"user_ids": self.current_user["_id"]}}, upsert=True)
-
-					self.write({action: True, "count": 1})
 				# not the first
 				else:
 					if self.current_user["_id"] in action_list["user_ids"]:
@@ -992,13 +997,21 @@ class FeedHandler(BaseHandler):
 
 			days      = 7
 			time_span = datetime.utcnow() - timedelta(days=days)
-			questions = yield self.application.db.questions.find({"$or": [{"$and": [{"date": {"$gte": time_span}}, {"asker": {"$in": following + [self.current_user["_id"]]}}]}, {"topics": {"$in": topics}}]}).to_list(50)
-			searches  = 0
+			if topics or following:
+				questions = yield self.application.db.questions.find({"$or": [{"$and": [{"date": {"$gte": time_span}}, {"asker": {"$in": following + [self.current_user["_id"]]}}]}, {"topics": {"$in": topics}}]}).to_list(50)
+			else:
+				questions = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(50)
+
+			searches = 0
 			while not questions or len(questions) < 50 and searches < 10:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
-				more_qs   = yield self.application.db.questions.find({"$or": [{"$and": [{"date": {"$gte": time_span, "$lt": old_span}}, {"asker": {"$in": following + [self.current_user["_id"]]}}]}, {"topics": {"$in": topics}}]}).to_list(50 - len(questions))
+				if topics or following:
+					more_qs = yield self.application.db.questions.find({"$or": [{"$and": [{"date": {"$gte": time_span, "$lt": old_span}}, {"asker": {"$in": following + [self.current_user["_id"]]}}]}, {"topics": {"$in": topics}}]}).to_list(50 - len(questions))
+				else:
+					more_qs = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(50 - len(questions))
+
 				if more_qs:
 					if not questions:
 						questions = more_qs
@@ -1035,13 +1048,21 @@ class RecentFeedHandler(BaseHandler):
 
 			days      = 7
 			time_span = datetime.utcnow() - timedelta(days=days)
-			questions = yield self.application.db.questions.find({"$or": [{"$and": [{"date": {"$gte": time_span}}, {"asker": {"$in": following + [self.current_user["_id"]]}}]}, {"topics": {"$in": topics}}]}).to_list(50)
+			if topics or following:
+				questions = yield self.application.db.questions.find({"$or": [{"$and": [{"date": {"$gte": time_span}}, {"asker": {"$in": following + [self.current_user["_id"]]}}]}, {"topics": {"$in": topics}}]}).to_list(50)
+			else:
+				questions = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(50 - len(questions))
+
 			searches  = 0
 			while not questions or len(questions) < 50 and searches < 10:
 				days      = days + 14
 				old_span  = time_span
 				time_span = datetime.utcnow() - timedelta(days=days)
-				more_qs   = yield self.application.db.questions.find({"$or": [{"$and": [{"date": {"$gte": time_span, "$lt": old_span}}, {"asker": {"$in": following + [self.current_user["_id"]]}}]}, {"topics": {"$in": topics}}]}).to_list(50 - len(questions))
+				if topics or following:
+					more_qs = yield self.application.db.questions.find({"$or": [{"$and": [{"date": {"$gte": time_span}}, {"asker": {"$in": following + [self.current_user["_id"]]}}]}, {"topics": {"$in": topics}}]}).to_list(50)
+				else:
+					more_qs = yield self.application.db.questions.find({"date": {"$gt": time_span}}).to_list(50)
+				
 				if more_qs:
 					if not questions:
 						questions = more_qs
@@ -1303,7 +1324,6 @@ class CustomURLHandler(BaseHandler):
 			self.render("user_profile.html", profile=target_user, own_profile=own_profile, following_this_user=following_this_user, recent_answers=recent_answers,
 				 							 answered_questions=answered_questions, questions=questions, question_count=question_count, user_following_count=user_following_count,
 				 							 user_followers_count=user_followers_count)
-
 
 if __name__ == "__main__":
 	tornado.options.parse_command_line()

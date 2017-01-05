@@ -19,27 +19,27 @@
                 </div>
             </div>
             <div class="sidecolumn-divider"></div>
-            <div id="topics">
-                <div class="nav-links-header-text">TOPICS</div>
-                <!--<button id="add-topics-button">+</button>-->
-                <div class="nav-links">
-                    <ul>
-                        <!--<li>
-                            <form action="/add_topic" method="post">
-                                {% raw xsrf_form_html() %}
-                                <input id="topic-name-input" name="topic-name" placeholder='Like "music" or "new-york"' autocomplete="off" maxlength="30">
-                            </form>
-                        </li>-->
-                        {% if current_user.get("topics") %}
+            {% if current_user.get("topics") %}
+                <div id="topics">
+                    <div class="nav-links-header-text">TOPICS</div>
+                    <!--<button id="add-topics-button">+</button>-->
+                    <div class="nav-links">
+                        <ul>
+                            <!--<li>
+                                <form action="/add_topic" method="post">
+                                    {% raw xsrf_form_html() %}
+                                    <input id="topic-name-input" name="topic-name" placeholder='Like "music" or "new-york"' autocomplete="off" maxlength="30">
+                                </form>
+                            </li>-->
                             {% for topic in current_user["topics"] %}
                                 <a href="/topics/{{ topic }}">
                                     <li {% if title == topic %}class="active"{% end %}>#{{ topic }}</li>
                                 </a>
                             {% end %}
-                        {% end %}
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            {% end %}
         {% else %}
             <div id="account-button">
                 <a href="/signup">
